@@ -15,7 +15,7 @@
                         <p class="text-white">Thousands of clubs and suppliers already use our platform — join them today.</p>
                          <div class="d-md-flex justify-content-center flex- wrap gap-3">
                             <button type="button" class="btn rounded-4 bg-white px-4 py-3 me-md-2 fw-bold w-100 mb-3">Post a Job</button>
-                            <button type="button" class="btn rounded-4 border text-white py-3 px-4 w-100">Join as a Supplier</button>
+                            <button type="button" class="btn rounded-4 border text-white py-3 px-4 w-100 mb-3">Join as a Supplier</button>
                         </div>
                 </div>
             </div>
