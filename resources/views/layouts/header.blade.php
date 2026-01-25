@@ -15,21 +15,21 @@
       <!-- Menu -->
       <div class="collapse navbar-collapse" id="mainMenu">
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Suppliers</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">How it Works</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">FAQ's</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('supplier') }}">Suppliers</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('how-it-work') }}">How it Works</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('contact-us') }}">Contact Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('faq') }}">FAQ's</a></li>
         </ul>
 
         <!-- Buttons -->
         <div class="d-lg-flex text-center">
-          <button class="btn btn-outline-primary me-lg-2 rounded-4 px-4 mb-2 mb-lg-0">
+          <a type="button" href="#" class="btn btn-outline-primary me-lg-2 rounded-4 px-4 mb-2 mb-lg-0 dropdown-toggle">
             Login
-          </button>
-          <button class="btn btn-primary rounded-4 px-4">
+          </a>
+          <a type="button" href="#" class="btn btn-primary rounded-4 px-4 dropdown-toggle">
             Sign-up
-          </button>
+          </a>
         </div>
       </div>
 
