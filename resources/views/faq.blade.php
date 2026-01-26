@@ -2,6 +2,7 @@
 @section('title', 'FAQ')
 @section('section')
 
+@include('components.faq') 
  @include('components.testimonial')
     <section class="actions-section">
         <div class="container">
@@ -22,5 +23,4 @@
     <div class="py-5"></div>
     
    @include('components.contact-section')
-   @include('components.faq') 
 @endsection

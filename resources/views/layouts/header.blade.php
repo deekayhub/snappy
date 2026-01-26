@@ -15,11 +15,21 @@
       <!-- Menu -->
       <div class="collapse navbar-collapse" id="mainMenu">
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('supplier') }}">Suppliers</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('how-it-work') }}">How it Works</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('contact-us') }}">Contact Us</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('faq') }}">FAQ's</a></li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
+        </li>
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('supplier') ? 'active' : '' }}" href="{{ route('supplier') }}">Suppliers</a>
+        </li>
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('how-it-work') ? 'active' : '' }}" href="{{ route('how-it-work') }}">How it Works</a>
+        </li>
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('contact-us') ? 'active' : '' }}" href="{{ route('contact-us') }}">Contact Us</a>
+        </li>
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('faq') ? 'active' : '' }}" href="{{ route('faq') }}">FAQ's</a>
+        </li>
         </ul>
 
         <!-- Buttons -->
