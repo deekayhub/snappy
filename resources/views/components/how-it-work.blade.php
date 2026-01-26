@@ -1,7 +1,7 @@
 <section class="how-it-works">
         <div class="container">
             <div class="section-header mx-auto text-center mb-5">
-                <h2 class="display-4 fw-bold text-white">How It Works</h2>
+                <h2 class="h1 fw-bold text-white">How It Works</h2>
                 <p class="fs-5 text-white">Quickly connect with suppliers who specialise in your exact requirement.</p>
             </div>
             <div class="row position-relative text-center">

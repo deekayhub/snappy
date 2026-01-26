@@ -70,6 +70,10 @@ header .nav-link.active{
     color: var(--primary-color);
     font-weight: 600;
 }
+header .nav-link:hover{
+    color: var(--primary-color);
+    font-weight: 600;
+}
 
 /* footer section */
 footer {
@@ -85,6 +89,9 @@ footer .social-icons li{
     padding: 0px 4.5px;
     border-radius: 45px;
     margin-left: 12px;
+}
+footer .social-icons li:hover{
+    background-color: #fff;
 }
 
 /* hero section  */

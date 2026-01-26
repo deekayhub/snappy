@@ -33,15 +33,97 @@
         </ul>
 
         <!-- Buttons -->
-        <div class="d-lg-flex text-center">
-          <a type="button" href="#" class="btn btn-outline-primary me-lg-2 rounded-4 px-4 mb-2 mb-lg-0 dropdown-toggle">
-            Login
-          </a>
-          <a type="button" href="#" class="btn btn-primary rounded-4 px-4 dropdown-toggle">
-            Sign-up
-          </a>
-        </div>
-      </div>
+        <div class="d-lg-flex justify-content-center gap-lg-2">
+
+            @auth
+            <ul class="list-group">
+                <li class="nav-item list-group-item rounded-4 dropdown">
+                    <button type="button" class="nav-link dropdown-toggle d-flex align-items-center"
+                        href="#"
+                        id="userDropdown"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                            {{ ucfirst(Auth::user()->name) }}
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                        {{-- <li>
+                            <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                Profile
+                            </a>
+                        </li> --}}
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger">
+                                    Log Out
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            @else
+
+
+                <!-- Login -->
+                <div class="dropdown">
+                    <a
+                        href="#"
+                        class="btn btn-outline-primary rounded-4 px-4 dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        >
+                        Login
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end text-center">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('login', ['type' => 'customer']) }}">
+                            Customer Login
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('login', ['type' => 'supplier']) }}">
+                            Supplier Login
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Sign-up -->
+                <div class="dropdown">
+                    <a
+                    href="#"
+                    class="btn btn-primary rounded-4 px-4 dropdown-toggle"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    >
+                    Sign-up
+                    </a>
+
+                    <!-- 🔑 THIS FIX -->
+                    <ul class="dropdown-menu dropdown-menu-end text-center">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('register', ['type' => 'customer']) }}">
+                            Customer Sign-up
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('register', ['type' => 'supplier']) }}">
+                            Supplier Sign-up
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            @endauth
+
+            </div>
+
 
     </nav>
   </div>

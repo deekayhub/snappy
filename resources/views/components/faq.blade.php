@@ -2,7 +2,7 @@
         <div class="container">
             <div class="row">
                 <div class="section-header mx-auto text-center mb-5">
-                    <h2 class="display-4 fw-bold text-dark">Frequently Asked Questions <span class="text-primary">(FAQs)</span></h2>
+                    <h2 class="h1 fw-bold text-dark">Frequently Asked Questions <span class="text-primary">(FAQs)</span></h2>
                     <p class="fs-5 text-body-secondary">Find answers to the most common questions about posting jobs, receiving quotes and joining as a supplier.</p>
                 </div>
                 <div class="col-md-9 mb-3">

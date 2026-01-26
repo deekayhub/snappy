@@ -84,7 +84,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-5 mx-auto">
-                    <div class="text-center p-3 p-md-5 shadow rounded-3">
+                    <div class="text-center p-3 p-md-5 shadow rounded-3" style="background:#99bfdb38;">
                         <h4 class="fw-bold text-white mb-4">Let’s Build Your Next Winning Partnership</h4>
                         <p class="text-white">Thousands of clubs and suppliers already use our platform — join them today.</p>
                          <div class="d-md-flex justify-content-center flex- wrap gap-3">

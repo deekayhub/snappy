@@ -40,7 +40,7 @@
             <div class="col-md-12">
                 <div class="section-title">
                         <div class="p-3 pb-md-4 mx-auto text-center ">
-                        <h1 class="fw-bold text-body-emphasis">What <span class="text-primary">Clubs</span> and <span class="text-primary">Suppliers</span> Say</h1>
+                        <h2 class="h1 fw-bold text-body-emphasis">What <span class="text-primary">Clubs</span> and <span class="text-primary">Suppliers</span> Say</h2>
                     </div>
 
                     <div class="section-borders">
