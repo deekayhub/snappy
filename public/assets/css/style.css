@@ -105,7 +105,11 @@ footer .social-icons li:hover{
     background-position: center;
     background-repeat: no-repeat;
 }
-
+@media (max-width: 767px) {
+    .hero-3{
+        background-position: left center;
+    }
+}
 /* features section  */
 .features-section {
     padding: 106px 0 100px;

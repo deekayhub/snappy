@@ -35,7 +35,7 @@
                         <div class="card-body p-5 bg-primary text-white rounded-4">
                             <h5 class="card-title text-white text-uppercase">PRO PLAN <span class="badge text-bg-primary">Popular</span></h5>
                             <p>Best for suppliers wanting maximum opportunities.</p>
-                            <h1 class="display-5 mb-4 fw-bold">£39<small class="text-muted fw-light">/month</small></h1>
+                            <h1 class="display-5 mb-4 fw-bold">£39<small class="text-white fw-light">/month</small></h1>
                             <button class="btn btn-outline-primary border text-white btn-lg w-100 mb-4">Go Pro</button>
                             <ul class="list-unstyled feature-list text-white">
                                 <li class="text-white"><i class="bi bi-check2 text-white me-2"></i>Fully enhanced supplier profile</li>
