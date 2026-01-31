@@ -2,9 +2,11 @@
     <div class="container">
         <div class="row align-items-center rounded-3">
             <div class="col-lg-7">
-                <h1 class="fw-bold text-white">Instead Of Chasing Suppliers, <br> <span class="text-colored">Let Them Come To You</span></h1>
-                <p class="lead text-white">Post once, receive multiple quotes, pick the best deal.</p>
-                <p class="lead text-white">Snappy Quotes is a free platform specifically built to support UK schools and <br>sports clubs to get competitive quotes from verified suppliers, all in one place.</p>
+                <h1 class="fw-bold text-white">Instead Of Chasing Suppliers, <br>
+                    <div class="text-colored">Let Them Come To You</div>
+                </h1>
+                <p class="text-white">Post once, receive multiple quotes, pick the best deal.</p>
+                <p class="text-white">Snappy Quotes is a free platform specifically built to support UK schools and <br>sports clubs to get competitive quotes from verified suppliers, all in one place.</p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-5">
                     <button type="button" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium">Post a Job</button>
                     <button type="button" class="btn rounded-4 border text-white px-4 fw-medium">Join as a Supplier</button>

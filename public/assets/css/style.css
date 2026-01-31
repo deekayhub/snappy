@@ -1,16 +1,32 @@
+@font-face {
+    font-family: 'TimesNewRoman';
+    src: url('../fonts/times-new-roman/Times New Roman.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
 
 @font-face {
     font-family: 'TimesNewRoman';
-    src: url('../fonts/times-new-roman/TimesNewRoman.ttf') format('truetype');
-    font-weight: normal;
+    src: url('../fonts/times-new-roman/Times New Roman - Bold.ttf') format('truetype');
+    font-weight: 700;
     font-style: normal;
 }
+
 @font-face {
-    font-family: 'Inter';
-    src: url('../fonts/times-new-roman/Inter.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+    font-family: 'TimesNewRoman';
+    src: url('../fonts/times-new-roman/Times New Roman - Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
 }
+
+@font-face {
+    font-family: 'TimesNewRoman';
+    src: url('../fonts/times-new-roman/Times New Roman - Bold Italic.ttf') format('truetype');
+    font-weight: 700;
+    font-style: italic;
+}
+
+
 
 * {
     margin: 0;
@@ -20,12 +36,39 @@
 :root {
     --primary-color: #0284c7;
     --secondary-color: #0f172a;
-    --font-family: 'TimesNewRoman', serif;
+    /* --font-family: 'TimesNewRoman', serif; */
 
     --bs-primary: var(--primary-color);
 }
 body {
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'TimesNewRoman', "Times New Roman", serif;
+}
+
+.heading {
     font-family: 'TimesNewRoman', serif;
+    font-weight: 700;
+}
+
+.heading-italic {
+    font-family: 'TimesNewRoman', serif;
+    font-style: italic;
+}
+
+body,
+p,
+span,
+a,
+li,
+button,
+input,
+textarea,
+select {
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
 }
 
 
@@ -84,14 +127,30 @@ body {
 }
 .btn{
     padding: 16px 32px;
+    font-family: "Inter", sans-serif;
 }
+.owl-dots {
+    display: block !important;
+    margin-top: 20px;
+    text-align: center;
+}
+.owl-dots .owl-dot {
+    width: 12px;
+    height: 12px;
+    margin: 5px;
+    background-color: var(--secondary-color) !important;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
 /* header section  */
 header .nav-link{
     color: var(--secondary-color);
 }
 
 header .nav-link.active{
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
     font-weight: 600;
 }
 header .nav-link:hover{
@@ -107,6 +166,9 @@ footer {
 }
 footer .nav-link{
     color: #fff;
+}
+footer .nav-link.active{
+    color: var(--primary-color);
 }
 footer .social-icons li{
     background-color: var(--primary-color);

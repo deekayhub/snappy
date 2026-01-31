@@ -1,7 +1,7 @@
 <section class="features-section">
         <div class="container" id="featured-3">
             <div class="section-header mx-auto text-center mb-5">
-                <h2 class="h1 fw-bold text-body-emphasis">Simple, <span class="text-primary">Transparent Pricing</span> for Suppliers</h2>
+                <h2 class="h1 fw-bold text-body-emphasis">Simple, <div class="text-primary d-inline">Transparent Pricing</div> for Suppliers</h2>
                 <p class="fs-5 text-body-secondary">Start with the free plan and upgrade anytime as your business grows.</p>
             </div>
 
