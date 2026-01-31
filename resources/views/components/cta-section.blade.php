@@ -1,0 +1,15 @@
+<section class="actions-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div class="text-center p-3 p-md-4 shadow rounded-3" style="background:#99bfdb38;">
+                    <h4 class="fw-bold text-white mb-4">Let’s Build Your Next Winning Partnership</h4>
+                    <p class="text-white">Thousands of clubs and suppliers already use our platform — join them today.</p>
+                        <div class="d-md-flex justify-content-center flex- wrap gap-3">
+                        <button type="button" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium w-100 mb-3">Post a Job</button>
+                        <button type="button" class="btn rounded-4 border text-white px-4 w-100 mb-3">Join as a Supplier</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>

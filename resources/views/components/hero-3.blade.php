@@ -1,13 +1,13 @@
 <section class="hero-section hero-3 position-relative">
     <div class="container">
-        <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3">
-            <div class="col-lg-6 p-3 p-lg-5 pt-lg-3">
-                <h1 class="display-4 fw-bold lh-1 text-white">Instead Of Chasing Suppliers, <span class="text-colored">Let Them Come To You</span></h1>
+        <div class="row align-items-center rounded-3">
+            <div class="col-lg-7">
+                <h1 class="fw-bold text-white">Instead Of Chasing Suppliers, <br> <span class="text-colored">Let Them Come To You</span></h1>
                 <p class="lead text-white">Post once, receive multiple quotes, pick the best deal.</p>
-                    <p class="lead text-white">Snappy Quotes is a free platform specifically built to support UK schools and sports clubs to get competitive quotes from verified suppliers, all in one place.</p>
+                <p class="lead text-white">Snappy Quotes is a free platform specifically built to support UK schools and <br>sports clubs to get competitive quotes from verified suppliers, all in one place.</p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-5">
-                    <button type="button" class="btn rounded-4 bg-white px-4 py-3 me-md-2 fw-bold">Post a Job</button>
-                    <button type="button" class="btn rounded-4 border text-white py-3 px-4">Join as a Supplier</button>
+                    <button type="button" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium">Post a Job</button>
+                    <button type="button" class="btn rounded-4 border text-white px-4 fw-medium">Join as a Supplier</button>
                 </div>
 
                 <div class="row text-center text-white align-items-center mt-5">
@@ -28,7 +28,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 offset-lg-1 p-0 overflow-hidden shadow-lg">
+            <div class="col-lg-5 offset-lg-1 p-0 overflow-hidden shadow-lg">
                 {{-- <img class="rounded-lg-3" src="{{ asset('assets/images/hero-img.png') }}" alt="" width="720"> --}}
             </div>
         </div>

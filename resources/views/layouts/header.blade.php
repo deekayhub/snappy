@@ -33,7 +33,7 @@
         </ul>
 
         <!-- Buttons -->
-        <div class="d-lg-flex justify-content-center gap-lg-2">
+        <div class="d-flex justify-content-center gap-2">
 
             @auth
             <ul class="list-group">
@@ -74,7 +74,7 @@
                 <div class="dropdown">
                     <a
                         href="#"
-                        class="btn btn-outline-primary rounded-4 px-4 dropdown-toggle"
+                        class="btn btn-outline-primary rounded-4 py-2 px-4 dropdown-toggle"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         >
@@ -99,7 +99,7 @@
                 <div class="dropdown">
                     <a
                     href="#"
-                    class="btn btn-primary rounded-4 px-4 dropdown-toggle"
+                    class="btn btn-primary rounded-4 py-2 px-4 dropdown-toggle"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                     >

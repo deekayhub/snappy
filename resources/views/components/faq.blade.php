@@ -3,7 +3,7 @@
             <div class="row">
                 <div class="section-header mx-auto text-center mb-5">
                     <h2 class="h1 fw-bold text-dark">Frequently Asked Questions <span class="text-primary">(FAQs)</span></h2>
-                    <p class="fs-5 text-body-secondary">Find answers to the most common questions about posting jobs, receiving quotes and joining as a supplier.</p>
+                    <p class="text-body-secondary">Find answers to the most common questions about posting jobs, receiving quotes and joining as a supplier.</p>
                 </div>
                 <div class="col-md-9 mb-3">
                    <div class="accordion" id="faqAccordion">
@@ -59,11 +59,11 @@
                 </div>
 
                 <div class="col-md-3">
-                    <div class="card rounded-4 p-4 shadow-sm text-center">
-                        <div class="avatar-box d-inline-flex align-items-center p-2 justify-content-center mb-4">
-                            <img src="https://i.pravatar.cc/40?img=1" class="avatar">
-                            <img src="https://i.pravatar.cc/40?img=2" class="avatar ms-n2">
-                            <img src="https://i.pravatar.cc/40?img=3" class="avatar ms-n2">
+                    <div class="card rounded-4 px-4 py-5 shadow-sm text-center">
+                        <div class="avatar-box d-inline-flex align-items-center p-2 position-relative justify-content-center mb-4">
+                            <img src="https://i.pravatar.cc/40?img=1" class="avatar position-absolute" style="left: 35%;">
+                            <img src="https://i.pravatar.cc/40?img=2" class="avatar position-absolute ms-n2 z-1" style="top: -29px; width:56px; height:56px;">
+                            <img src="https://i.pravatar.cc/40?img=3" class="avatar position-absolute ms-n2" style="right: 35%;">
                         </div>
 
                         <div class="card-content">

@@ -1,3 +1,17 @@
+
+@font-face {
+    font-family: 'TimesNewRoman';
+    src: url('../fonts/times-new-roman/TimesNewRoman.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Inter';
+    src: url('../fonts/times-new-roman/Inter.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,10 +20,14 @@
 :root {
     --primary-color: #0284c7;
     --secondary-color: #0f172a;
-    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-family: 'TimesNewRoman', serif;
 
     --bs-primary: var(--primary-color);
 }
+body {
+    font-family: 'TimesNewRoman', serif;
+}
+
 
 .btn-primary {
     --bs-btn-color: #fff;
@@ -58,8 +76,14 @@ body {
 .text-primary{
     color: var(--primary-color) !important;
 }
+.bg-primary{
+    color: var(--primary-color) !important;
+}
 .text-colored{
     color: var(--secondary-color);
+}
+.btn{
+    padding: 16px 32px;
 }
 /* header section  */
 header .nav-link{
@@ -114,6 +138,11 @@ footer .social-icons li:hover{
 .features-section {
     padding: 106px 0 100px;
 }
+.features-section .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.5s;
+}
 .text-shadow {
      text-shadow: 2px 2px 0 #000000;
 }
@@ -155,17 +184,19 @@ footer .social-icons li:hover{
 }
 .how-it-works .curve-line {
     position: absolute;
-    top: 0px;
-    left: 300px;
+    top: 0;
+    left: 0;
+    right: 0;
     width: 65%;
     height: 120px;
+    margin: 0 auto;
     z-index: 1;
 }
 
 
 /* winning section action  */
 .actions-section{
-    padding: 106px 0 100px;
+    padding: 90px 0 100px;
     background-image: url('../images/winning-bg.jpg');
     background-size: cover;
     background-position: top;
@@ -246,6 +277,15 @@ footer .social-icons li:hover{
 .feature-list li {
     margin-bottom: 0.8rem;
     color: #6c757d;
+}
+.feature-list li i.bi {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background: #108bca17;
+    text-align: center;
+    border-radius: 45px;
+    line-height: 2;
 }
 
 .popular-badge {

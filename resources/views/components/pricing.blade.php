@@ -3,7 +3,7 @@
             <div class="section-header mx-auto text-center mb-5">
                 <h2 class="h1 fw-bold text-body-emphasis">Simple, <span class="text-primary">Transparent Pricing</span> for Suppliers</h2>
                 <p class="fs-5 text-body-secondary">Start with the free plan and upgrade anytime as your business grows.</p>
-            </div> 
+            </div>
 
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <!-- Basic Plan -->
@@ -31,21 +31,21 @@
                 <!-- Pro Plan -->
                 <div class="col">
                     <div class="card h-100 pricing-card shadow position-relative">
-                        
+
                         <div class="card-body p-5 bg-primary text-white rounded-4">
-                            <h5 class="card-title text-white text-uppercase">PRO PLAN <span class="badge text-bg-primary">Popular</span></h5>
+                            <h5 class="card-title text-white text-uppercase fw-bold">PRO PLAN <span class="badge bg-white border fw-light text-primary">Popular</span></h5>
                             <p>Best for suppliers wanting maximum opportunities.</p>
-                            <h1 class="display-5 mb-4 fw-bold">£39<small class="text-white fw-light">/month</small></h1>
+                            <h1 class="display-5 mb-4 fw-bold text-white">£39<small class="text-white fw-light">/month</small></h1>
                             <button class="btn btn-outline-primary border text-white btn-lg w-100 mb-4">Go Pro</button>
                             <ul class="list-unstyled feature-list text-white">
-                                <li class="text-white"><i class="bi bi-check2 text-white me-2"></i>Fully enhanced supplier profile</li>
-                                <li class="text-white"><i class="bi bi-check2 text-white me-2"></i>Instant job alerts across categories</li>
-                                <li class="text-white"><i class="bi bi-check2 text-white me-2"></i>Unlimited quote submissions</li>
-                                <li class="text-white"><i class="bi bi-check2 text-white me-2"></i>Full buyer messaging tools</li>
-                                <li class="text-white"><i class="bi bi-check2 text-white me-2"></i>Advanced analytics dashboard</li>
-                                <li class="text-white"><i class="bi bi-check2 text-white me-2"></i>High-priority listing placement</li>
-                                <li class="text-white"><i class="bi bi-check2 text-white me-2"></i>Response-time and performance insights</li>
-                                <li class="text-white"><i class="bi bi-check2 text-white me-2"></i>Priority customer support</li>
+                                <li class="text-white"><i class="bi bi-check2 text-primary bg-white me-2"></i>Fully enhanced supplier profile</li>
+                                <li class="text-white"><i class="bi bi-check2 text-primary bg-white me-2"></i>Instant job alerts across categories</li>
+                                <li class="text-white"><i class="bi bi-check2 text-primary bg-white me-2"></i>Unlimited quote submissions</li>
+                                <li class="text-white"><i class="bi bi-check2 text-primary bg-white me-2"></i>Full buyer messaging tools</li>
+                                <li class="text-white"><i class="bi bi-check2 text-primary bg-white me-2"></i>Advanced analytics dashboard</li>
+                                <li class="text-white"><i class="bi bi-check2 text-primary bg-white me-2"></i>High-priority listing placement</li>
+                                <li class="text-white"><i class="bi bi-check2 text-primary bg-white me-2"></i>Response-time and performance insights</li>
+                                <li class="text-white"><i class="bi bi-check2 text-primary bg-white me-2"></i>Priority customer support</li>
                             </ul>
                         </div>
                     </div>
