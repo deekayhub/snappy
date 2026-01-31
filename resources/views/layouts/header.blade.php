@@ -3,7 +3,7 @@
     <nav class="navbar navbar-expand-lg py-3">
 
       <!-- Logo -->
-      <a href="/" class="navbar-brand">
+      <a href="{{ route('home') }}" class="navbar-brand">
         <img src="{{ asset('assets/images/snappy-logo.png') }}" alt="snappy logo" width="150">
       </a>
 
