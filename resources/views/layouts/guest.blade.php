@@ -11,21 +11,30 @@
         <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png')}}" type="image/x-icon">
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="{{ asset('assets/css/bootstrap.min.css')}}" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
     </head>
     <body class="font-sans text-gray-900 antialiased">
+        @include('layouts.header')
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
+            {{-- <div class="text-center">
                 <a href="/">
                     <img src="{{ asset('assets/images/snappy-logo.png') }}" width="150" alt="snappy logo">
                 </a>
-            </div>
+            </div> --}}
 
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
+                <div class="row my-4">
+                    <div class="col-md-3 mx-auto py-3 border rounded">
+                        {{ $slot }}
+                    </div>
+                </div>
             </div>
         </div>
+        @include('layouts.footer')
+        <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
     </body>
 </html>

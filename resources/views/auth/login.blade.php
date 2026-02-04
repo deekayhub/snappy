@@ -2,7 +2,7 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    {{-- <form method="POST" action="{{ route('login') }}">
         @csrf
 
         <!-- Email Address -->
@@ -43,5 +43,25 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+    </form> --}}
+
+
+    <form method="POST" action="{{ route('login') }}">
+        @csrf
+        <div class="mb-3">
+            <label for="" class="form-label">Email</label>
+            <input type="email" name="email" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="" class="form-label">Password</label>
+            <input type="password" name="password" class="form-control">
+        </div>
+        {{-- <div class="mb-3">
+            <label for="" class="form-label d-flex-inline">
+                <input type="checkbox" class="form-control">
+                <span>Forgot your Password</span>
+            </label>
+        </div> --}}
+        <button type="submit" class="btn py-2 btn-primary float-end">Log In</button>
     </form>
 </x-guest-layout>
