@@ -45,23 +45,40 @@
         </div>
     </form> --}}
 
+    <div class="row my-4">
+        <div class="col-md-3 mx-auto py-3 border rounded">
+            @if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
-        <div class="mb-3">
-            <label for="" class="form-label">Email</label>
-            <input type="email" name="email" class="form-control">
+@if (session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+                <div class="mb-3">
+                    <label for="" class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="" class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control">
+                </div>
+                {{-- <div class="mb-3">
+                    <label for="" class="form-label d-flex-inline">
+                        <input type="checkbox" class="form-control">
+                        <span>Forgot your Password</span>
+                    </label>
+                </div> --}}
+                <button type="submit" class="btn py-2 btn-primary float-end">Log In</button>
+            </form>
         </div>
-        <div class="mb-3">
-            <label for="" class="form-label">Password</label>
-            <input type="password" name="password" class="form-control">
-        </div>
-        {{-- <div class="mb-3">
-            <label for="" class="form-label d-flex-inline">
-                <input type="checkbox" class="form-control">
-                <span>Forgot your Password</span>
-            </label>
-        </div> --}}
-        <button type="submit" class="btn py-2 btn-primary float-end">Log In</button>
-    </form>
+    </div>
 </x-guest-layout>

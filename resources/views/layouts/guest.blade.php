@@ -13,6 +13,7 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link href="{{ asset('assets/css/bootstrap.min.css')}}" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
         <!-- Scripts -->
@@ -28,11 +29,7 @@
             </div> --}}
 
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                <div class="row my-4">
-                    <div class="col-md-3 mx-auto py-3 border rounded">
-                        {{ $slot }}
-                    </div>
-                </div>
+                {{ $slot }}
             </div>
         </div>
         @include('layouts.footer')

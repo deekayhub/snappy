@@ -17,24 +17,57 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => Auth::user()
         ]);
     }
 
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
+    // public function update(ProfileUpdateRequest $request): RedirectResponse
+    // {
+    //     $request->user()->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+    //     if ($request->user()->isDirty('email')) {
+    //         $request->user()->email_verified_at = null;
+    //     }
+
+    //     $request->user()->save();
+
+    //     return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    // }
+
+
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+
+        // Base validation (common)
+        $rules = [
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+        ];
+
+        // Customer validation
+        $rules['organisation'] = 'required|string|max:255';
+
+        // Supplier validation
+        if ($user->role === 'supplier') {
+            $rules = array_merge($rules, [
+                'company_name' => 'required|string|max:255',
+                'address' => 'required|string',
+                'website' => 'nullable|url',
+                'review_link' => 'nullable|url',
+                'social_link' => 'nullable|url',
+            ]);
         }
 
-        $request->user()->save();
+        $validated = $request->validate($rules);
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        // Update allowed fields only
+        $user->update($validated);
+
+        return back()->with('success', 'Profile updated successfully!');
     }
 
     /**

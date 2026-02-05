@@ -48,11 +48,11 @@
                         </button>
 
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
-                            {{-- <li>
+                            <li>
                                 <a class="dropdown-item" href="{{ route('profile.edit') }}">
                                     Profile
                                 </a>
-                            </li> --}}
+                            </li>
 
                             <li><hr class="dropdown-divider"></li>
 
@@ -106,12 +106,12 @@
                     <!-- 🔑 THIS FIX -->
                     <ul class="dropdown-menu dropdown-menu-end text-center">
                         <li>
-                            <a class="dropdown-item" href="{{ route('register', ['type' => 'customer']) }}">
+                            <a class="dropdown-item" href="{{ route('register.customer') }}">
                             Customer Sign-up
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('register', ['type' => 'supplier']) }}">
+                            <a class="dropdown-item" href="{{ route('register.supplier') }}">
                             Supplier Sign-up
                             </a>
                         </li>

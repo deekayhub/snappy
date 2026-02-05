@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
     font-family: 'TimesNewRoman';
     src: url('../fonts/times-new-roman/Times New Roman.ttf') format('truetype');
     font-weight: 400;
@@ -24,8 +24,8 @@
     src: url('../fonts/times-new-roman/Times New Roman - Bold Italic.ttf') format('truetype');
     font-weight: 700;
     font-style: italic;
-}
-
+} */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap'); */
 
 
 * {
@@ -36,29 +36,35 @@
 :root {
     --primary-color: #0284c7;
     --secondary-color: #0f172a;
-    /* --font-family: 'TimesNewRoman', serif; */
+    --font-family: 'Montserrat', sans-serif;
 
     --bs-primary: var(--primary-color);
 }
 body {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-family);
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+.montserrat {
+    font-family: 'Montserrat', sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'TimesNewRoman', "Times New Roman", serif;
+    /* font-family: 'Montserrat', sans-serif; */
 }
 
 .heading {
-    font-family: 'TimesNewRoman', serif;
+    /* font-family: 'Montserrat', sans-serif; */
     font-weight: 700;
 }
 
 .heading-italic {
-    font-family: 'TimesNewRoman', serif;
+    /* font-family: 'Montserrat', sans-serif; */
     font-style: italic;
 }
 
-body,
+
 p,
 span,
 a,
@@ -67,7 +73,6 @@ button,
 input,
 textarea,
 select {
-    font-family: "Inter", sans-serif;
     font-weight: 400;
 }
 
@@ -105,12 +110,7 @@ select {
     --bs-btn-disabled-border-color: var(--primary-color);
     --bs-gradient: none;
 }
-body {
-    font-family: var(--font-family);
-    background-color: #f9f9f9;
-    color: #333;
-    line-height: 1.6;
-}
+
 @media (min-width: 1400px){
     .container{
         max-width: 1920px;
