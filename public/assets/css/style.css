@@ -25,7 +25,6 @@
     font-weight: 700;
     font-style: italic;
 } */
-/* @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap'); */
 
 
 * {
@@ -45,25 +44,34 @@ body {
     background-color: #f9f9f9;
     color: #333;
     line-height: 1.6;
+    font-family: var(--font-family);
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
 }
 .montserrat {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-family);
+}
+.inter {
+    font-family: 'Inter', sans-serif;
+}
+.secondary-color {
+    color: var(--secondary-color);
 }
 
 h1, h2, h3, h4, h5, h6 {
-    /* font-family: 'Montserrat', sans-serif; */
+    font-family: var(--font-family);
 }
 
 .heading {
-    /* font-family: 'Montserrat', sans-serif; */
+    font-family: var(--font-family);
     font-weight: 700;
 }
 
 .heading-italic {
-    /* font-family: 'Montserrat', sans-serif; */
+    font-family: var(--font-family);
     font-style: italic;
 }
-
 
 p,
 span,
@@ -73,6 +81,7 @@ button,
 input,
 textarea,
 select {
+    font-family: var(--font-family);
     font-weight: 400;
 }
 
@@ -281,6 +290,12 @@ footer .social-icons li:hover{
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+}
+.how-it-works-section{
+    padding: 75px 0 100px;
+}
+.contact-form-section{
+    padding: 75px 0 100px;
 }
 .faq-section{
     padding: 106px 0 100px;

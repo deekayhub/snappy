@@ -12,32 +12,28 @@
 
                 <div class="col-lg-4 mb-5 mb-lg-0">
                     <div class="icon-circle mx-auto mb-3">
-                        <img src="{{ asset('assets/images/Vector.svg') }}" alt="">
+                        <img src="{{ asset('assets/images/how-it-work-1.png') }}" alt="">
                     </div>
-                    <h5 class="fw-normal text-white">Tell Us What You Need</h5>
-                    <p class="text-white-50">
-                        Post a job request with quantities, requirements and any artwork files.
+                    <h5 class="fw-normal text-white fw-bold">Tell Us What You Need</h5>
+                    <p class="text-white">
+                        Post a job request with quantities, requirements and <br> any artwork files.
                     </p>
                 </div>
 
                 <div class="col-lg-4 mb-5 mb-lg-0">
                     <div class="icon-circle mx-auto mb-3">
-                        <img src="{{ asset('assets/images/Vector.svg') }}" alt="">
+                        <img src="{{ asset('assets/images/how-it-work-2.png') }}" alt="">
                     </div>
-                    <h5 class="fw-normal text-white">Get Quotes</h5>
-                    <p class="text-white-50">
-                        Receive multiple quotes from verified suppliers.
-                    </p>
+                    <h5 class="fw-normal text-white fw-bold">Suppliers Send You Quotes</h5>
+                    <p class="text-white">Verified UK suppliers review your request and <br> respond with their best price.</p>
                 </div>
 
                 <div class="col-lg-4">
                     <div class="icon-circle mx-auto mb-3">
-                        <img src="{{ asset('assets/images/Vector.svg') }}" alt="">
+                        <img src="{{ asset('assets/images/how-it-work-3.png') }}" alt="">
                     </div>
-                    <h5 class="fw-normal text-white">Start Production</h5>
-                    <p class="text-white-50">
-                        Choose the best supplier and start production instantly.
-                    </p>
+                    <h5 class="fw-normal text-white fw-bold">Compare & Choose</h5>
+                    <p class="text-white">Review quotes side-by-side, message suppliers <br> and pick the best deal.</p>
                 </div>
             </div>
 

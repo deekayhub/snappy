@@ -16,6 +16,14 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
+        <style>
+            .register-login {
+                background: url('{{ asset('assets/images/hero-img.png') }}') no-repeat center center;
+                background-size: cover;
+                background-repeat: no-repeat;
+                height: 100%;
+            }
+        </style>
         <!-- Scripts -->
         {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
     </head>
@@ -28,8 +36,10 @@
                 </a>
             </div> --}}
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
+            <div class="container py-3">
+                <div class="row align-items-center" style="min-height: 60vh;">
+                    {{ $slot }}
+                </div>
             </div>
         </div>
         @include('layouts.footer')

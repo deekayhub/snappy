@@ -5,7 +5,8 @@
     @include('components.features-3')
     @include('components.how-it-work')
 
-    @include('components.testimonial')
+    <div class="py-5"></div>
+    {{-- @include('components.testimonial') --}}
     @include('components.cta-section')
 
 

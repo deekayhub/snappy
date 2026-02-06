@@ -16,12 +16,12 @@
             </ul>
         </div>
     </section>
-    <section class="py-5 bg-light">
+    <section class=" bg-white how-it-works-section">
         <div class="container">
 
             <!-- Heading -->
             <div class="text-center mb-5">
-                <h2 class="fw-bold">How It Works</h2>
+                <h2 class="h1 fw-bold">How It Works</h2>
             </div>
 
             <div class="row g-4">
@@ -93,7 +93,7 @@
         </div>
     </section>
 
-     @include('components.testimonial')
+     {{-- @include('components.testimonial') --}}
     @include('components.cta-section')
 
     <div class="py-5"></div>

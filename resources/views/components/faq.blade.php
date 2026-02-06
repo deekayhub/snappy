@@ -3,54 +3,54 @@
             <div class="row">
                 <div class="section-header mx-auto text-center mb-5">
                     <h2 class="h1 fw-bold text-dark">Frequently Asked Questions <div class="text-primary d-inline">(FAQs)</div></h2>
-                    <p class="text-body-secondary">Find answers to the most common questions about posting jobs, receiving quotes and joining as a supplier.</p>
+                    <p class="secondary-color">Find answers to the most common questions about posting jobs, receiving quotes and joining as a supplier.</p>
                 </div>
                 <div class="col-md-9 mb-3">
                    <div class="accordion" id="faqAccordion">
                         <div class="accordion-item">
                             <h2 class="accordion-header">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1">
+                                <button class="accordion-button fw-bold secondary-color" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1">
                                     How does the platform work?
                                 </button>
                             </h2>
                             <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
+                                <div class="accordion-body secondary-color">
                                     When a customer posts a job, verified suppliers receive the request based on their categories. Suppliers then send quotes, and the customer chooses the best option.
                                 </div>
                             </div>
                         </div>
                         <div class="accordion-item">
                             <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
+                                <button class="accordion-button fw-bold secondary-color collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
                                     Is it free for customers to use?
                                 </button>
                             </h2>
                             <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
+                                <div class="accordion-body secondary-color">
                                     When a customer posts a job, verified suppliers receive the request based on their categories. Suppliers then send quotes, and the customer chooses the best option.
                                 </div>
                             </div>
                         </div>
                         <div class="accordion-item">
                             <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
+                                <button class="accordion-button fw-bold secondary-color collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
                                     How do suppliers receive leads?
                                 </button>
                             </h2>
                             <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
+                                <div class="accordion-body secondary-color">
                                     When a customer posts a job, verified suppliers receive the request based on their categories. Suppliers then send quotes, and the customer chooses the best option.
                                 </div>
                             </div>
                         </div>
                         <div class="accordion-item">
                             <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false" aria-controls="faq4">
+                                <button class="accordion-button fw-bold secondary-color collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false" aria-controls="faq4">
                                     Can I compare multiple quotes?
                                 </button>
                             </h2>
                             <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
+                                <div class="accordion-body secondary-color">
                                     When a customer posts a job, verified suppliers receive the request based on their categories. Suppliers then send quotes, and the customer chooses the best option.
                                 </div>
                             </div>
@@ -67,8 +67,8 @@
                         </div>
 
                         <div class="card-content">
-                            <h5 class="card-title">Still have questions?</h5>
-                            <p class="card-description">Can’t find the answer you’re looking for? Our friendly team is here to help  reach out anytime.</p>
+                            <h5 class="card-title secondary-color fw-bold">Still have questions?</h5>
+                            <p class="card-description secondary-color">Can’t find the answer you’re looking for? Our friendly team is here to help  reach out anytime.</p>
                             <button class="btn btn-primary w-100 rounded-4 px-4 py-3">Get in touch</button>
                         </div>
                     </div>

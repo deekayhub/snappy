@@ -19,10 +19,10 @@
     </section>
 
     @include('components.pricing')
-     @include('components.testimonial')
+     {{-- @include('components.testimonial') --}}
     @include('components.cta-section')
 
-    <div class="py-4"></div>
+    <div class="py-5"></div>
 
    @include('components.contact-section')
    @include('components.faq')

@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Contact Us')
 @section('section')
-<section class="page-header bg-primar y">
+<section class="page-header ">
     <div class="container">
-        <h1 class="text-center text-white display-4">Contact Us</h1>
+        <h2 class="h1 text-center text-white display-4">Contact Us</h2>
         <ul class="breadcrumb justify-content-center">
             <li class="breadcrumb-item">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-houses-fill" viewBox="0 0 16 16">
@@ -16,13 +16,13 @@
         </ul>
     </div>
 </section>
-<section class="py-5">
+<section class="contact-form-section">
     <div class="container">
 
         <!-- Heading -->
         <div class="row mb-5">
             <div class="col text-center">
-                <h2 class="fw-bold">Contact Us</h2>
+                <h2 class="h1 fw-bold">Contact Us</h2>
                 <p class="text-muted">
                     Have a question or need support? We’re here to help.
                 </p>
@@ -33,7 +33,7 @@
 
             <!-- Contact Information -->
             <div class="col-lg-5">
-                <div class="p-4 bg-light rounded shadow-sm h-100">
+                <div class="p-4 bg-white rounded shadow-sm h-100">
                     <h5 class="fw-semibold mb-3">Get in Touch</h5>
                     <p>
                         If you have any questions about using the platform, memberships,
@@ -93,7 +93,7 @@
     </div>
 </section>
 
-    @include('components.testimonial')
+    {{-- @include('components.testimonial') --}}
     @include('components.cta-section')
 
     <div class="py-5"></div>
