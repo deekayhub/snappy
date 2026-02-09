@@ -71,7 +71,7 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label>Review Site Link  (example, Trustpilot etc)</label>
+                            <label>Review Site Link  (eg, Trustpilot etc)</label>
                             <input type="url" name="review_link" class="form-control" placeholder="https://example.com/reviews">
                         </div>
 
