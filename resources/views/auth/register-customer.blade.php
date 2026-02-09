@@ -3,7 +3,7 @@
 <x-guest-layout>
     <div class="col-md-10 mx-auto">
         <div class="row m-0 rounded shadow">
-            <div class="col-md-6 p-0 rounded">
+            <div class="col-md-6 p-0 rounded" style="background: linear-gradient(156deg, rgba(254, 255, 254, 1) 58%, rgba(230, 238, 249, 1) 73%)">
                 <div class="register-login rounded-start"></div>
             </div>
             <div class="col-md-6 py-3  rounded bg-white">
@@ -37,29 +37,28 @@
                     <div class="row m-0">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Name</label>
-                            <input name="name" class="form-control" required>
+                            <input name="name" class="form-control" placeholder="Name" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" required>
+                            <input type="email" name="email" class="form-control" placeholder="email" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Phone (Optional)</label>
-                            <input name="phone" class="form-control">
+                            <input name="phone" class="form-control" placeholder="Phone Number">
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
                                 Organisation
                             </label>
-                            <select name="organisation" id="" class="form-select">
+                            <select name="organisation[]" id="" class="form-select select2">
                                 <option value="">Select Organisation</option>
-                                <option value="club">Club</option>
-                                <option value="team">Team</option>
-                                <option value="organisation">Organisation</option>
-                                <option value="school">School</option>
+                                @foreach ($organisation ?? [] as $item)
+                                    <option value="{{ $item->id }}">{{ strtoupper($item->name) }}</option>
+                                @endforeach 
                             </select>
                         </div>
 
@@ -70,7 +69,7 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Confirm Password</label>
-                            <input type="password" name="password_confirmation" class="form-control" required>
+                            <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password" required>
                         </div>
 
                         <div class="col-12 text-end mt-2">
@@ -83,5 +82,14 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Select organisation",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
 
 </x-guest-layout>

@@ -8,7 +8,7 @@
                 <div class="col-md-4 mb-3">
                     <div class="card position-relative border-0 shadow-sm">
                         <img src="{{asset('assets/images/Sportswear-1.png')}}" class="card-img-top" alt="...">
-                        <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">Sportsear</h4>
+                        <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">Sportswear</h4>
                     </div>
                 </div>
                 <div class="col-md-4 mb-3">
@@ -38,7 +38,7 @@
                 <div class="col-md-4 mb-3">
                     <div class="card position-relative border-0 shadow-sm">
                         <img src="{{asset('assets/images/uniforms-supplies.png')}}" class="card-img-top" alt="...">
-                        <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">Uniforms & Supplies</h4>
+                        <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">School Uniforms & Supplies</h4>
                     </div>
                 </div>
             </div>

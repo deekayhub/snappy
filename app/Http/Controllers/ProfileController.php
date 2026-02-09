@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\User;
+use App\Models\OrganisationCategory;
 
 class ProfileController extends Controller
 {
@@ -16,8 +18,11 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $organisation = OrganisationCategory::all();
+        $user = User::with('organisations')->find(Auth::id());
         return view('profile.edit', [
-            'user' => Auth::user()
+            'user' => $user,
+            'organisation' => $organisation
         ]);
     }
 
@@ -42,16 +47,13 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        // Base validation (common)
         $rules = [
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
+            'organisation' => 'required|array',
+            'organisation.*' => 'exists:organisation_categories,id',
         ];
 
-        // Customer validation
-        $rules['organisation'] = 'required|string|max:255';
-
-        // Supplier validation
         if ($user->role === 'supplier') {
             $rules = array_merge($rules, [
                 'company_name' => 'required|string|max:255',
@@ -64,11 +66,24 @@ class ProfileController extends Controller
 
         $validated = $request->validate($rules);
 
-        // Update allowed fields only
+        // update user
         $user->update($validated);
+
+        // update pivot table
+        if ($request->organisation) {
+
+            $orgData = [];
+
+            foreach ($request->organisation as $orgId) {
+                $orgData[$orgId] = ['type' => $user->role];
+            }
+
+            $user->organisations()->sync($orgData);
+        }
 
         return back()->with('success', 'Profile updated successfully!');
     }
+
 
     /**
      * Delete the user's account.

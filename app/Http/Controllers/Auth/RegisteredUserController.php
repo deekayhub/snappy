@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\OrganisationCategory;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -51,7 +52,8 @@ class RegisteredUserController extends Controller
 
     public function createCustomer()
     {
-        return view('auth.register-customer');
+        $organisation = OrganisationCategory::where('type', 'customer')->get();
+        return view('auth.register-customer', compact('organisation'));
     }
 
     public function storeCustomer(Request $request)
@@ -61,17 +63,23 @@ class RegisteredUserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8',
             'phone' => 'nullable',
-            'organisation' => 'required|string|max:255',
+            'organisation' => 'required|array',
+            'organisation.*' => 'required|string|exists:organisation_categories,id',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'organisation' => $request->organisation,
             'role' => 'customer',
             'password' => Hash::make($request->password),
         ]);
+
+        if ($request->has('organisation')) {
+            $user->organisations()->attach($request->organisation, [
+                'type' => 'customer'
+            ]);
+        }
 
         Auth::login($user);
         // return redirect()->dashboard();
@@ -81,7 +89,8 @@ class RegisteredUserController extends Controller
 
     public function createSupplier()
     {
-        return view('auth.register-supplier');
+        $organisation = OrganisationCategory::where('type', 'supplier')->get();
+        return view('auth.register-supplier', compact('organisation'));
     }
 
     public function storeSupplier(Request $request)
@@ -91,7 +100,8 @@ class RegisteredUserController extends Controller
             'company_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8',
-            'organisation' => 'required|string',
+            'organisation' => 'required|array',
+            'organisation.*' => 'required|string|exists:organisation_categories,id',
             'address' => 'required|string',
             'website' => 'nullable|url',
             'review_link' => 'nullable|url',
@@ -104,7 +114,6 @@ class RegisteredUserController extends Controller
             'company_name' => $request->company_name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'organisation' => $request->organisation,
             'address' => $request->address,
             'website' => $request->website,
             'review_link' => $request->review_link,
@@ -112,6 +121,11 @@ class RegisteredUserController extends Controller
             'role' => 'supplier',
             'password' => Hash::make($request->password),
         ]);
+        if ($request->has('organisation')) {
+            $user->organisations()->attach($request->organisation, [
+                'type' => 'supplier'
+            ]);
+        }
         Auth::login($user);
         // return redirect()->dashboard();
         return redirect(route('home', absolute: false));

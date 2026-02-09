@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="col-md-10 mx-auto">
         <div class="row m-0 rounded shadow">
-            <div class="col-md-6 p-0 rounded">
+            <div class="col-md-6 p-0 rounded"  style="background: linear-gradient(156deg, rgba(254, 255, 254, 1) 58%, rgba(230, 238, 249, 1) 73%)">
                 <div class="register-login rounded-start"></div>
             </div>
             <div class="col-md-6 py-3  rounded bg-white">
@@ -45,7 +45,7 @@
 
                         <div class="col-md-6 mb-3">
                             <label>Email</label>
-                            <input type="email" name="email" class="form-control" placeholder="Email" required>
+                            <input type="email" name="email" class="form-control" placeholder="Email" autocomplete="off" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
@@ -53,16 +53,15 @@
                             <input name="phone" class="form-control" placeholder="Phone number">
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-12 mb-3">
                             <label class="form-label">
                                 Organisation
                             </label>
-                            <select name="organisation" id="" class="form-select">
+                            <select name="organisation[]" id="" class="form-select select2" multiple>
                                 <option value="">Select Organisation</option>
-                                <option value="club">Club</option>
-                                <option value="team">Team</option>
-                                <option value="organisation">Organisation</option>
-                                <option value="school">School</option>
+                                @foreach ($organisation ?? [] as $item)
+                                    <option value="{{ $item->id }}">{{ strtoupper($item->name) }}</option>
+                                @endforeach 
                             </select>
                         </div>
 
@@ -72,7 +71,7 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label>Review Site Link</label>
+                            <label>Review Site Link  (example, Trustpilot etc)</label>
                             <input type="url" name="review_link" class="form-control" placeholder="https://example.com/reviews">
                         </div>
 
@@ -81,14 +80,14 @@
                             <input type="url" name="social_link" class="form-control" placeholder="https://facebook.com/yourpage">
                         </div>
 
-                        <div class="col-md-12 mb-3">
+                        <div class="col-md-6 mb-3">
                             <label>Address</label>
                             <textarea name="address" class="form-control" placeholder="Enter your address"></textarea>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label>Password</label>
-                            <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+                            <input type="password" name="password" class="form-control" placeholder="Enter password" autocomplete="off" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
@@ -106,5 +105,14 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Select organisation",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
 
 </x-guest-layout>
