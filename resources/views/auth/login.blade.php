@@ -70,11 +70,11 @@
                     @csrf
                     <div class="mb-3">
                         <label for="" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control">
+                        <input type="email" name="email" class="form-control" placeholder="Email">
                     </div>
                     <div class="mb-3">
                         <label for="" class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control">
+                        <input type="password" name="password" class="form-control" placeholder="Password">
                     </div>
                     {{-- <div class="mb-3">
                         <label for="" class="form-label d-flex-inline">
