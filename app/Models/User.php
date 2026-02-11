@@ -25,6 +25,8 @@ class User extends Authenticatable
         'phone',
         'organisation',
         'company_name',
+        'county',
+        'school_name',
         'address',
         'website',
         'review_link',

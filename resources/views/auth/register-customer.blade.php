@@ -3,7 +3,7 @@
 <x-guest-layout>
     <div class="col-md-10 mx-auto">
         <div class="row m-0 rounded shadow">
-            <div class="col-md-6 p-0 rounded" style="background: linear-gradient(156deg, rgba(254, 255, 254, 1) 58%, rgba(230, 238, 249, 1) 73%)">
+            <div class="col-md-6 p-0 rounded" style="background: #e4eefb47;">
                 <div class="register-login rounded-start"></div>
             </div>
             <div class="col-md-6 py-3  rounded bg-white">
@@ -62,6 +62,14 @@
                             </select>
                         </div>
 
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">County (Optional)</label>
+                            <input type="text" name="county" class="form-control" placeholder="County">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Club /School Name (Optional)</label>
+                            <input type="text" name="school_name" class="form-control" placeholder="Club /School Name">
+                        </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Password</label>
                             <input type="password" name="password" class="form-control" required>

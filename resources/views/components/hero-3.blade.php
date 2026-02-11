@@ -2,11 +2,13 @@
     <div class="container">
         <div class="row align-items-center rounded-3">
             <div class="col-lg-7">
-                <h1 class="fw-bold text-white">Instead Of Chasing Suppliers, <br>
-                    <div class="text-colored">Let Them Come To You</div>
+                <h1 class="fw-bold text-white">Stop chasing suppliers, <br>
+                    <div class="text-colored">Get quotes delivered</div>
                 </h1>
-                <p class="text-white">Post once, receive multiple quotes, pick the best deal.</p>
-                <p class="text-white">Snappy Quotes is a free platform specifically built to support UK schools and <br>sports clubs to get competitive quotes from verified suppliers, all in one place.</p>
+                <p class="text-white">Post once and receive multiple quotes from verified UK suppliers — compare and pick the right one.</p>
+                <p class="text-white">Snappy Quotes is a platform specifically built to support UK schools, sports clubs and individual<br> buyers
+to get competitive quotes from verified suppliers, all in one place.</p>
+                <p class="text-white">Free for UK schools, sports clubs and individual buyers. Fast, secure, all in one place.</p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-5">
                     <button type="button" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium">Post a Job</button>
                     <button type="button" class="btn rounded-4 border text-white px-4 fw-medium">Join as a Supplier</button>
@@ -16,17 +18,17 @@
 
                     <div class="col-md-3 mb-4 mb-md-0">
                         <i class="bi bi-patch-check fs-icon fs-1 mb-2 d-block"></i>
-                        <p class="mb-0">Verified suppliers</p>
+                        <p class="mb-0">Trusted suppliers.</p>
                     </div>
 
                     <div class="col-md-3 mb-4 mb-md-0 border-start border-end border-white border-opacity-25">
                         <i class="bi bi-shield-check fs-icon fs-1 mb-2 d-block"></i>
-                        <p class="mb-0">Secure quotes</p>
+                        <p class="mb-0">Competitive quotes.</p>
                     </div>
 
                     <div class="col-md-3">
                         <i class="bi bi-envelope-paper fs-icon fs-1 mb-2 d-block"></i>
-                        <p class="mb-0">Fast response</p>
+                        <p class="mb-0">One simple platform.</p>
                     </div>
                 </div>
             </div>

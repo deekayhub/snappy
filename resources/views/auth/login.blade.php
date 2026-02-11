@@ -47,7 +47,7 @@
 
     <div class="col-md-8 mx-auto">
         <div class="row m-0 rounded shadow">
-            <div class="col-md-6 p-0 rounded"  style="background: linear-gradient(156deg, rgba(254, 255, 254, 1) 58%, rgba(230, 238, 249, 1) 73%)">
+            <div class="col-md-6 p-0 rounded"  style="background: #e4eefb47;">
                 <div class="register-login rounded-start"></div>
             </div>
             <div class="col-md-6 py-4 rounded bg-white">

@@ -26,7 +26,7 @@ class OrganisationCategorySeeder extends Seeder
             ['name' => 'TEAM', 'type' => 'customer'],
             ['name' => 'ORGANISATION', 'type' => 'customer'],
             ['name' => 'SCHOOL', 'type' => 'customer'],
-            ['name' => 'OTHERS', 'type' => 'customer'],
+            ['name' => 'OTHER', 'type' => 'customer'],
         ]);
     }
 }

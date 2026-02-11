@@ -75,6 +75,14 @@
                                     @endforeach
                                 </select>
                             </div>
+                             <div class="col-md-6 mb-3">
+                                <label class="form-label">County</label>
+                                <input name="county" class="form-control" value="{{ old('county', $user->county) }}" required>
+                            </div>
+                             <div class="col-md-6 mb-3">
+                                <label class="form-label">Club / School Name</label>
+                                <input name="school_name" class="form-control" value="{{ old('school_name', $user->school_name) }}" required>
+                            </div>
                             @endif
                             @if($user->role === 'supplier')
                                 <div class="col-md-12 mb-3">

@@ -65,6 +65,8 @@ class RegisteredUserController extends Controller
             'phone' => 'nullable',
             'organisation' => 'required|array',
             'organisation.*' => 'required|string|exists:organisation_categories,id',
+            'county' => 'required|string',
+            'school_name' => 'required|string',
         ]);
 
         $user = User::create([
