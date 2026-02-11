@@ -65,8 +65,8 @@ class RegisteredUserController extends Controller
             'phone' => 'nullable',
             'organisation' => 'required|array',
             'organisation.*' => 'required|string|exists:organisation_categories,id',
-            'county' => 'required|string',
-            'school_name' => 'required|string',
+            'county' => 'nullable|string',
+            'school_name' => 'nullable|string',
         ]);
 
         $user = User::create([
@@ -74,6 +74,8 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'role' => 'customer',
+            'county' => $request->county,
+            'school_name' => $request->school_name,
             'password' => Hash::make($request->password),
         ]);
 

@@ -20,6 +20,7 @@ class ProfileController extends Controller
     {
         $organisation = OrganisationCategory::all();
         $user = User::with('organisations')->find(Auth::id());
+        // dd($user->toArray());
         return view('profile.edit', [
             'user' => $user,
             'organisation' => $organisation
@@ -52,6 +53,8 @@ class ProfileController extends Controller
             'phone' => 'nullable|string|max:20',
             'organisation' => 'required|array',
             'organisation.*' => 'exists:organisation_categories,id',
+            'county' => 'nullable|string',
+            'school_name' => 'nullable|string',
         ];
 
         if ($user->role === 'supplier') {
