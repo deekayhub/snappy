@@ -45,12 +45,12 @@
         </div>
     </form> --}}
 
-    <div class="col-md-8 mx-auto">
-        <div class="row m-0 rounded shadow">
-            <div class="col-md-6 p-0 rounded"  style="background: #e4eefb47;">
-                <div class="register-login rounded-start"></div>
+    <div class="col-md-8 mx-auto p-0">
+        <div class="row m-0 rounded shadow bg-white">
+            <div class="col-md-6 p-0"  style="background: #e4eefb47;">
+                <div class="register-login  "></div>
             </div>
-            <div class="col-md-6 py-4 rounded bg-white">
+            <div class="col-md-6 py-4">
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
@@ -69,12 +69,12 @@
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="mb-3">
-                        <label for="" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" placeholder="Email">
+                        <label for="" class="form-label mb-0">Email</label>
+                        <input type="email" name="email" class="form-control">
                     </div>
                     <div class="mb-3">
-                        <label for="" class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="Password">
+                        <label for="" class="form-label mb-0">Password</label>
+                        <input type="password" name="password" class="form-control">
                     </div>
                     {{-- <div class="mb-3">
                         <label for="" class="form-label d-flex-inline">

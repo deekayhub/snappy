@@ -35,27 +35,27 @@
                     @csrf
                     <div class="row m-0">
                         <div class="col-md-6 mb-3">
-                            <label>Name</label>
-                            <input name="name" class="form-control" placeholder="Enter your name" required>
+                            <label class="form-label mb-0">Name</label>
+                            <input name="name" class="form-control" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label>Company Name</label>
-                            <input name="company_name" placeholder="Company name" class="form-control">
+                            <label class="form-label mb-0">Company Name</label>
+                            <input name="company_name" class="form-control">
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label>Email</label>
-                            <input type="email" name="email" class="form-control" placeholder="Email" autocomplete="off" required>
+                            <label class="form-label mb-0">Email</label>
+                            <input type="email" name="email" class="form-control" autocomplete="off" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label>Phone</label>
-                            <input name="phone" class="form-control" placeholder="Phone number">
+                            <label class="form-label mb-0">Phone</label>
+                            <input name="phone" class="form-control">
                         </div>
 
                         <div class="col-md-12 mb-3">
-                            <label class="form-label">
+                            <label class="form-label mb-0">
                                 Organisation
                             </label>
                             <select name="organisation[]" id="" class="form-select select2" multiple>
@@ -67,33 +67,33 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label>Website</label>
-                            <input type="url" name="website" class="form-control" placeholder="https://example.com">
+                            <label class="form-label mb-0">Website</label>
+                            <input type="url" name="website" class="form-control">
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label>Review Site Link  (eg, Trustpilot etc)</label>
-                            <input type="url" name="review_link" class="form-control" placeholder="https://example.com/reviews">
+                            <label class="form-label mb-0">Review Site Link  (eg, Trustpilot etc)</label>
+                            <input type="url" name="review_link" class="form-control">
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label>Social Media Link</label>
-                            <input type="url" name="social_link" class="form-control" placeholder="https://facebook.com/yourpage">
+                            <label class="form-label mb-0">Social Media Link</label>
+                            <input type="url" name="social_link" class="form-control">
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label>Address</label>
-                            <textarea name="address" class="form-control" placeholder="Enter your address"></textarea>
+                            <label class="form-label mb-0">Address</label>
+                            <textarea name="address" class="form-control"></textarea>
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label>Password</label>
-                            <input type="password" name="password" class="form-control" placeholder="Enter password" autocomplete="off" required>
+                            <label class="form-label mb-0">Password</label>
+                            <input type="password" name="password" class="form-control" autocomplete="off" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label>Confirm Password</label>
-                            <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm password" required>
+                            <label class="form-label mb-0">Confirm Password</label>
+                            <input type="password" name="password_confirmation" class="form-control" required>
                         </div>
 
                         <div class="col-md-12 text-end">

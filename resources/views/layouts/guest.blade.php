@@ -10,15 +10,26 @@
         <!-- Fonts -->
         <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png')}}" type="image/x-icon">
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        {{-- <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" /> --}}
         <link href="{{ asset('assets/css/bootstrap.min.css')}}" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <style>
+            body {
+                font-family: 'Montserrat', sans-serif;
+            }
+            .montserrat {
+                font-family: 'Montserrat', sans-serif;
+            }
+            .form-label {
+                color: #1f2739;
+            }
             .register-login {
                 background: url('{{ asset('assets/images/hero-img.png') }}') no-repeat center center;
                 background-size: contain;
