@@ -37,6 +37,20 @@
                 height: 100%;
                 background-position: center;
             }
+            .select2-container .select2-search--inline .select2-search__field{
+                height: 24px !important;
+            }
+            .select2-container--default .select2-selection--single {
+                height: 36px;             
+                /* display: flex;
+                align-items: center;       */
+            }
+
+            .select2-container--default .select2-selection--single .select2-selection__rendered {
+                line-height: normal;   
+                padding-top: 7px;    
+            }
+
         </style>
         <!-- Scripts -->
         {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
