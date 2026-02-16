@@ -1,7 +1,11 @@
 @extends('layouts.app')
 @section('title', 'Home')
+
 @section('section')
     @include('components.hero-3')
+    @include('components.how-it-work-snappy')
+
+
     @include('components.features-3')
     @include('components.how-it-work')
 

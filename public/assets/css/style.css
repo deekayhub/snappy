@@ -129,7 +129,7 @@ select {
     color: var(--primary-color) !important;
 }
 .bg-primary{
-    color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
 }
 .text-colored{
     color: var(--secondary-color);

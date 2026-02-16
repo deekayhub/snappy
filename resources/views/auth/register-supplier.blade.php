@@ -50,7 +50,7 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label class="form-label mb-0">Phone</label>
+                            <label class="form-label mb-0">Phone (Optional)</label>
                             <input name="phone" class="form-control">
                         </div>
 
@@ -62,7 +62,7 @@
                                 <option value="">Select Organisation</option>
                                 @foreach ($organisation ?? [] as $item)
                                     <option value="{{ $item->id }}">{{ strtoupper($item->name) }}</option>
-                                @endforeach 
+                                @endforeach
                             </select>
                         </div>
 
@@ -82,7 +82,7 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label class="form-label mb-0">Address</label>
+                            <label class="form-label mb-0">Address (Optional)</label>
                             <textarea name="address" class="form-control"></textarea>
                         </div>
 
