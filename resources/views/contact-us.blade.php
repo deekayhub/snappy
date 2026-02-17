@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <div class="row g-5">
+        <div class="row g-3">
 
             <!-- Contact Information -->
             <div class="col-lg-5">
@@ -60,7 +60,7 @@
 
             <!-- Contact Form -->
             <div class="col-lg-7">
-                <div class="p-4 border rounded shadow-sm h-100">
+                <div class="p-4 border rounded shadow-sm h-100 bg-white">
                     <h5 class="fw-semibold mb-3">Send Us a Message</h5>
 
                     <form>
@@ -78,7 +78,7 @@
                                 <textarea class="form-control" rows="4" placeholder="Your Message"></textarea>
                             </div>
                             <div class="col-12">
-                                <button type="submit" class="btn btn-primary px-4">
+                                <button type="submit" class="btn btn-primary px-4 py-2">
                                     Submit
                                 </button>
                             </div>

@@ -186,7 +186,7 @@
             </div>
         </div>
     </section> --}}
-    <section class="py-6 bg-white">
+    <section class="py-6 bg-light">
         <div class="container">
 
             <!-- heading -->

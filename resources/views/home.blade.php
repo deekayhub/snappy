@@ -3,13 +3,13 @@
 
 @section('section')
     @include('components.hero-3')
-    @include('components.how-it-work-snappy')
 
 
     @include('components.features-3')
     @include('components.how-it-work')
+    @include('components.how-it-work-snappy')
 
-    <div class="py-5"></div>
+    {{-- <div class="py-5"></div> --}}
     {{-- @include('components.testimonial') --}}
     @include('components.cta-section')
 

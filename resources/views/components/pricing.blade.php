@@ -12,7 +12,7 @@
                         <div class="card-body p-5">
                             <h5 class="card-title text-muted text-uppercase">FREE PLAN (Basic)</h5>
                             <p>Perfect for new suppliers exploring the platform.</p>
-                            <h1 class="display-5 mb-4 fw-bold">£0<small class="text-muted fw-light">/month</small></h1>
+                            <h1 class="display-5 mb-4 fw-bold">£0<small class="text-muted fw-light fs-5"> / month</small></h1>
                             <button class="btn btn-outline-primary btn-lg w-100 mb-4">Get Started Free</button>
                             <ul class="list-unstyled feature-list">
                                 <li><i class="bi bi-check2 text-primary me-2"></i>Create a basic supplier profile</li>
@@ -35,7 +35,7 @@
                         <div class="card-body p-5 bg-primary text-white rounded-4">
                             <h5 class="card-title text-white text-uppercase fw-bold">PRO PLAN <span class="badge bg-white border fw-light text-primary">Popular</span></h5>
                             <p>Best for suppliers wanting maximum opportunities.</p>
-                            <h1 class="display-5 mb-4 fw-bold text-white">£39<small class="text-white fw-light">/month</small></h1>
+                            <h1 class="display-5 mb-4 fw-bold text-white">£39<small class="text-white fw-light fs-5"> / month</small></h1>
                             <button class="btn btn-outline-primary border text-white btn-lg w-100 mb-4">Go Pro</button>
                             <ul class="list-unstyled feature-list text-white">
                                 <li class="text-white"><i class="bi bi-check2 text-primary bg-white me-2"></i>Fully enhanced supplier profile</li>
@@ -57,7 +57,7 @@
                         <div class="card-body p-5">
                             <h5 class="card-title text-muted text-uppercase">STARTER PLAN</h5>
                             <p>For suppliers needing steady, consistent leads.</p>
-                            <h1 class="display-5 mb-4 fw-bold">£19<small class="text-muted fw-light">/month</small></h1>
+                            <h1 class="display-5 mb-4 fw-bold">£19<small class="text-muted fw-light fs-5"> / month</small></h1>
                             <button class="btn btn-outline-primary btn-lg w-100 mb-4">Upgrade to Starter</button>
                             <ul class="list-unstyled feature-list">
                                 <li><i class="bi bi-check2 text-primary me-2"></i>Create and customize profile</li>

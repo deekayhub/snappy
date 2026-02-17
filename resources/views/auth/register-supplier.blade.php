@@ -58,10 +58,10 @@
                             <label class="form-label mb-0">
                                 Organisation
                             </label>
-                            <select name="organisation[]" id="" class="form-select select2" multiple>
+                            <select name="organisation[]" id="" class="form-select select2 rounde-3" multiple>
                                 <option value="">Select Organisation</option>
                                 @foreach ($organisation ?? [] as $item)
-                                    <option value="{{ $item->id }}">{{ strtoupper($item->name) }}</option>
+                                    <option value="{{ $item->id }}">{{ ucwords($item->name) }}</option>
                                 @endforeach
                             </select>
                         </div>
