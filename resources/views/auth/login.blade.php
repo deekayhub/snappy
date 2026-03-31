@@ -82,6 +82,9 @@
                             <span>Forgot your Password</span>
                         </label>
                     </div> --}}
+                    <a href="{{ route('password.request') }}" class="text-decoration-none">
+                        Forgot your Password
+                    </a>
                     <button type="submit" class="btn py-2 btn-primary float-end">Log In</button>
                 </form>
             </div>
