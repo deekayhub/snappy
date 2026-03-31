@@ -41,9 +41,9 @@ Route::middleware('auth',)->group(function () {
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Route::get('/dashboard', function () {
-    //     return view('admin.dashboard');
-    // })->name('admin.dashboard');  
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');  
     Route::get('/suppliers', function () {
         return view('admin.suppliers.index');
     })->name('admin.suppliers');

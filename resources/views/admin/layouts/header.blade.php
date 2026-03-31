@@ -6,10 +6,10 @@
         </button>
         </div>
         <div>
-        <a class="navbar-brand brand-logo" href="{{ route('dashboard') }}">
+        <a class="navbar-brand brand-logo" href="{{ route('admin.dashboard') }}">
             <img src="{{ asset('assets/images/snappy-logo.png') }}" alt="logo" />
         </a>
-        <a class="navbar-brand brand-logo-mini" href="{{ route('dashboard') }}">
+        <a class="navbar-brand brand-logo-mini" href="{{ route('admin.dashboard') }}">
             <img src="{{ asset('assets/images/favicon.png') }}" alt="logo" />
         </a>
         </div>
