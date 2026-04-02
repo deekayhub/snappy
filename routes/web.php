@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Mail;
 // Route::get('/', function () {
@@ -44,9 +45,8 @@ Route::middleware('auth',)->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');  
-    Route::get('/suppliers', function () {
-        return view('admin.suppliers.index');
-    })->name('admin.suppliers');
+    Route::get('/suppliers', [SupplierController::class, 'index'])->name('admin.suppliers');
+    Route::get('/suppliers/datatable', [SupplierController::class, 'datatable'])->name('suppliers.datatable');
     Route::get('/customers', function () {
         return view('admin.customers.index');
     })->name('admin.customers');

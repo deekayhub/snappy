@@ -5,35 +5,125 @@
     <div class="row">
         <div class="col-sm-12 mb-3">
             <div class="row statistics-details d-flex align-items-center justify-content-between">
-                <div class="col-md-3">
+                <div class="col-md-3 mb-3">
                     <div class="bg-primary p-2 text-white rounded">
                         <p class="statistics-title">Active Post</p>
                         <h3 class="rate-percentage">32.53%</h3>
                         <p class="text-white d-flex"><i class="mdi mdi-menu-down"></i><span>-0.5%</span></p>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 mb-3">
                     <div class="bg-success p-2 text-white rounded">
                         <p class="statistics-title">Pending Quote</p>
                         <h3 class="rate-percentage">32.53%</h3>
                         <p class="text-white d-flex"><i class="mdi mdi-menu-down"></i><span>-0.5%</span></p>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 mb-3">
                     <div class="bg-warning p-2 text-white rounded">
                         <p class="statistics-title">Completed</p>
                         <h3 class="rate-percentage">32.53%</h3>
                         <p class="text-white d-flex"><i class="mdi mdi-menu-down"></i><span>-0.5%</span></p>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 mb-3">
                     <div class="bg-info p-2 text-white rounded">
                         <p class="statistics-title">Bounce Rate</p>
                         <h3 class="rate-percentage">32.53%</h3>
                         <p class="text-white d-flex"><i class="mdi mdi-menu-down"></i><span>-0.5%</span></p>
                     </div>
                 </div>
-                
+
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Income</h5>
+                                </div>
+
+                                <div class="col-auto">
+                                    <div class="stat text-primary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign align-middle"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 class="mt-1 mb-3">$47.482</h2>
+                            <div class="mb-0">
+                                <span class="badge badge-success">3.65%</span>
+                                <span class="text-muted">Since last week</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Orders</h5>
+                                </div>
+
+                                <div class="col-auto">
+                                    <div class="stat text-primary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-bag align-middle"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 class="mt-1 mb-3">2.542</h2>
+                            <div class="mb-0">
+                                <span class="badge badge-danger">-5.25%</span>
+                                <span class="text-muted">Since last week</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Activity</h5>
+                                </div>
+
+                                <div class="col-auto">
+                                    <div class="stat text-primary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity align-middle"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 class="mt-1 mb-3">16.300</h2>
+                            <div class="mb-0">
+                                <span class="badge badge-success">4.65%</span>
+                                <span class="text-muted">Since last week</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Revenue</h5>
+                                </div>
+
+                                <div class="col-auto">
+                                    <div class="stat text-primary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart align-middle"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 class="mt-1 mb-3">$20.120</h2>
+                            <div class="mb-0">
+                                <span class="badge badge-success">2.35%</span>
+                                <span class="text-muted">Since last week</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         </div>
@@ -118,7 +208,7 @@
                                     </td>
                                     <td>
                                     <div class="d-flex ">
-                                        <img src="assets/images/faces/face1.jpg" alt="">
+                                        <img src="{{ asset('admin/assets/images/faces/face1.jpg')}}" alt="">
                                         <div>
                                         <h6>Brandon Washington</h6>
                                         <p>Head admin</p>
@@ -153,7 +243,7 @@
                                     </td>
                                     <td>
                                     <div class="d-flex">
-                                        <img src="assets/images/faces/face2.jpg" alt="">
+                                        <img src="{{ asset('admin/assets/images/faces/face2.jpg')}}" alt="">
                                         <div>
                                         <h6>Laura Brooks</h6>
                                         <p>Head admin</p>
@@ -188,7 +278,7 @@
                                     </td>
                                     <td>
                                     <div class="d-flex">
-                                        <img src="assets/images/faces/face3.jpg" alt="">
+                                        <img src="{{ asset('admin/assets/images/faces/face3.jpg')}}" alt="">
                                         <div>
                                         <h6>Wayne Murphy</h6>
                                         <p>Head admin</p>
@@ -223,7 +313,7 @@
                                     </td>
                                     <td>
                                     <div class="d-flex">
-                                        <img src="assets/images/faces/face4.jpg" alt="">
+                                        <img src="{{ asset('admin/assets/images/faces/face4.jpg')}}" alt="">
                                         <div>
                                         <h6>Matthew Bailey</h6>
                                         <p>Head admin</p>
@@ -258,7 +348,7 @@
                                     </td>
                                     <td>
                                     <div class="d-flex">
-                                        <img src="assets/images/faces/face5.jpg" alt="">
+                                        <img src="{{ asset('admin/assets/images/faces/face5.jpg')}}" alt="">
                                         <div>
                                         <h6>Katherine Butler</h6>
                                         <p>Head admin</p>
@@ -292,7 +382,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 d-flex flex-column"> 
+        <div class="col-lg-4 d-flex flex-column">
             <div class="row flex-grow">
                 <div class="col-12 grid-margin stretch-card">
                     <div class="card card-rounded">
@@ -347,5 +437,4 @@
         </div>
     </div>
 @endsection
-           
-          
+
