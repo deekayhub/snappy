@@ -3,7 +3,6 @@
 namespace App\Support;
 
 use App\Models\PageSetting;
-use Illuminate\Support\Facades\Storage;
 
 class PageSettings
 {
@@ -19,12 +18,6 @@ class PageSettings
 
         if (is_array($stored)) {
             return array_replace_recursive($settings, $stored);
-        }
-
-        $legacy = self::legacyFileSettings();
-
-        if (is_array($legacy)) {
-            return array_replace_recursive($settings, $legacy);
         }
 
         return $settings;
@@ -117,19 +110,5 @@ class PageSettings
         }
 
         return asset($path);
-    }
-
-    private static function legacyFileSettings(): ?array
-    {
-        if (! Storage::disk('local')->exists('page-settings.json')) {
-            return null;
-        }
-
-        $stored = json_decode(
-            Storage::disk('local')->get('page-settings.json'),
-            true
-        );
-
-        return is_array($stored) ? $stored : null;
     }
 }
