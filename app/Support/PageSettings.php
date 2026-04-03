@@ -2,35 +2,39 @@
 
 namespace App\Support;
 
+use App\Models\PageSetting;
 use Illuminate\Support\Facades\Storage;
 
 class PageSettings
 {
+    private const SETTINGS_KEY = 'frontend';
+
     public static function all(): array
     {
         $settings = self::defaults();
 
-        if (! Storage::disk('local')->exists('page-settings.json')) {
-            return $settings;
+        $stored = PageSetting::query()
+            ->where('key', self::SETTINGS_KEY)
+            ->value('value');
+
+        if (is_array($stored)) {
+            return array_replace_recursive($settings, $stored);
         }
 
-        $stored = json_decode(
-            Storage::disk('local')->get('page-settings.json'),
-            true
-        );
+        $legacy = self::legacyFileSettings();
 
-        if (! is_array($stored)) {
-            return $settings;
+        if (is_array($legacy)) {
+            return array_replace_recursive($settings, $legacy);
         }
 
-        return array_replace_recursive($settings, $stored);
+        return $settings;
     }
 
     public static function save(array $settings): void
     {
-        Storage::disk('local')->put(
-            'page-settings.json',
-            json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+        PageSetting::query()->updateOrCreate(
+            ['key' => self::SETTINGS_KEY],
+            ['value' => $settings]
         );
     }
 
@@ -113,5 +117,19 @@ class PageSettings
         }
 
         return asset($path);
+    }
+
+    private static function legacyFileSettings(): ?array
+    {
+        if (! Storage::disk('local')->exists('page-settings.json')) {
+            return null;
+        }
+
+        $stored = json_decode(
+            Storage::disk('local')->get('page-settings.json'),
+            true
+        );
+
+        return is_array($stored) ? $stored : null;
     }
 }
