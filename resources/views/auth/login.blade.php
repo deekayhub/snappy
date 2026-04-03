@@ -93,15 +93,14 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    {{-- <div class="mb-3">
-                        <label for="" class="form-label d-flex-inline">
-                            <input type="checkbox" class="form-control">
-                            <span>Forgot your Password</span>
-                        </label>
-                    </div> --}}
-                    <a href="{{ route('password.request') }}" class="text-decoration-none">
-                        Forgot your Password
-                    </a>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                        <a href="{{ route('register.customer') }}" class="text-decoration-none">
+                            Create customer account
+                        </a>
+                        <a href="{{ route('password.request') }}" class="text-decoration-none">
+                            Forgot your Password
+                        </a>
+                    </div>
                     <button type="submit" class="btn py-2 btn-primary float-end">Log In</button>
                 </form>
             </div>

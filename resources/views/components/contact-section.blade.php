@@ -5,7 +5,7 @@
                     <h1 class="fw-bold lh-1 text-white">Ready to Get Quotes From Trusted Suppliers?</h1>
                     <p class="lead text-white">Post your requirements and receive multiple quotes from verified UK sports suppliers — all in one place.</p>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-5">
-                        <button type="button" class="btn rounded-4 bg-white px-4 py-3 me-md-2 fw-bold">Post a Job</button>
+                        <a href="{{ route('customer.jobs.create') }}" class="btn rounded-4 bg-white px-4 py-3 me-md-2 fw-bold">Post a Job</a>
                     </div>
                 </div>
                 <div class="col-lg-5">

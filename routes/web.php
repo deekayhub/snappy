@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerJobController;
 use App\Http\Controllers\PageSettingsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SupplierController;
@@ -27,6 +28,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/post-job', [CustomerJobController::class, 'create'])->name('customer.jobs.create');
+    Route::post('/post-job', [CustomerJobController::class, 'store'])->name('customer.jobs.store');
 
     Route::get('/dashboard', function () {
         return auth()->user()->hasAnyRole(['superadmin', 'admin'])
@@ -40,6 +43,7 @@ Route::middleware(['auth', 'role:superadmin|admin'])->prefix('admin')->name('adm
         return view('admin.dashboard');
     })->name('dashboard');
 
+    Route::get('/jobs', [CustomerJobController::class, 'index'])->name('jobs');
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers');
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
 

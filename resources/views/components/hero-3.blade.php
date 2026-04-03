@@ -10,8 +10,8 @@
 to get competitive quotes from verified suppliers, all in one place.</p>
                 <p class="text-white">Free for UK schools, sports clubs and individual buyers. Fast, secure, all in one place.</p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-5">
-                    <button type="button" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium">Post a Job</button>
-                    <button type="button" class="btn rounded-4 border text-white px-4 fw-medium">Join as a Supplier</button>
+                    <a href="{{ route('customer.jobs.create') }}" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium">Post a Job</a>
+                    <a href="{{ route('register.supplier') }}" class="btn rounded-4 border text-white px-4 fw-medium">Join as a Supplier</a>
                 </div>
 
                 <div class="row text-center text-white align-items-center mt-5">

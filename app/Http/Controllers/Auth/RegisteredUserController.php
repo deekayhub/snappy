@@ -48,7 +48,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('home', absolute: false));
+        return redirect()->intended(route('home', absolute: false));
     }
 
 
@@ -96,7 +96,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
         Auth::login($user);
 
-        return redirect(route('home', absolute: false));
+        return redirect()->intended(route('customer.jobs.create', absolute: false));
     }
 
 
@@ -150,7 +150,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
         Auth::login($user);
 
-        return redirect(route('home', absolute: false));
+        return redirect()->intended(route('home', absolute: false));
     }
 
 }

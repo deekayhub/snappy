@@ -97,6 +97,9 @@
                         </div>
 
                         <div class="col-12 text-end mt-2">
+                            <a href="{{ route('login') }}" class="btn btn-link text-decoration-none me-2">
+                                Already registered?
+                            </a>
                             <button class="btn btn-primary px-5 py-2">
                                 Register as Customer
                             </button>
