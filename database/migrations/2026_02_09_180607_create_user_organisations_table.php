@@ -11,12 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_organisations', function (Blueprint $table) {
+        Schema::create('organisation_category_user', function (Blueprint $table) {
             $table->id();
-             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('organisation_categories_id')->constrained('organisation_categories')->onDelete('cascade');
-            $table->enum('type', ['supplier','customer'])->nullable(); 
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('organisation_category_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
+
+            $table->unique(
+                ['user_id', 'organisation_category_id'],
+                'org_cat_user_unique'
+            );
         });
     }
 
@@ -25,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_organisations');
+        Schema::dropIfExists('organisation_category_user');
     }
 };

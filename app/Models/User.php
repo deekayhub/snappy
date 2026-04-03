@@ -4,13 +4,16 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -21,16 +24,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'role',
         'phone',
-        'organisation',
-        'company_name',
-        'county',
-        'school_name',
-        'address',
-        'website',
-        'review_link',
-        'social_link',
+        'is_active',
     ];
 
     /**
@@ -56,16 +51,20 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function organisations()
+    public function customerProfile(): HasOne
     {
-        return $this->belongsToMany(
-            OrganisationCategory::class,
-            'user_organisations',
-            'user_id',
-            'organisation_categories_id'
-        )->withPivot('type')->withTimestamps();
+        return $this->hasOne(CustomerProfile::class);
     }
 
+    public function supplierProfile(): HasOne
+    {
+        return $this->hasOne(SupplierProfile::class);
+    }
+
+    public function organisationCategories(): BelongsToMany
+    {
+        return $this->belongsToMany(OrganisationCategory::class)->withTimestamps();
+    }
 
 
 }

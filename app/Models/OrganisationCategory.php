@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Models\User;
 
 class OrganisationCategory extends Model
 {
@@ -14,14 +13,9 @@ class OrganisationCategory extends Model
     ];   
 
     
-    public function users()
+    public function users(): BelongsToMany
     {
-        return $this->belongsToMany(
-            User::class,
-            'user_organisations',
-            'organisation_categories_id',
-            'user_id'
-        )->withPivot('type')->withTimestamps();
+        return $this->belongsToMany(User::class)->withTimestamps();
     }
 
 

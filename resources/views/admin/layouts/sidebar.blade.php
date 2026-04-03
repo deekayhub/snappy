@@ -38,22 +38,11 @@
         </li>
         <li class="nav-item nav-category">Page Settings</li>
         <li class="nav-item">
-            <a class="nav-link" href="">
+            <a class="nav-link" href="{{ route('admin.page-settings') }}">
                 <i class="mdi mdi-home menu-icon"></i>
-                <span class="menu-title">Home Page</span>
+                <span class="menu-title">Page Setings</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="">
-                <i class="mdi mdi-card-account-details menu-icon"></i>
-                <span class="menu-title">About</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="">
-                <i class="mdi mdi-chart-box-outline menu-icon"></i>
-                <span class="menu-title">FAQ</span>
-            </a>
-        </li>
+        
     </ul>
 </nav>

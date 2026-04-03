@@ -1,46 +1,25 @@
+@php($categorySettings = \App\Support\PageSettings::all()['home_category_section'])
+
 <section class="features-section">
         <div class="container" id="featured-3">
             <div class="section-header mx-auto text-center mb-5">
-                <h2 class="h1 fw-bold text-body-emphasis">What do you need a <div class="text-primary d-inline">quote</div> for?</h2>
-                <p class="fs-5 secondary-color">Quickly connect with suppliers who specialise in your exact requirement.</p>
+                <h2 class="h1 fw-bold text-body-emphasis">
+                    {{ $categorySettings['title'] }}
+                    @if (! empty($categorySettings['highlight_text']))
+                        <div class="text-primary d-inline">{{ $categorySettings['highlight_text'] }}</div>
+                    @endif
+                </h2>
+                <p class="fs-5 secondary-color">{{ $categorySettings['description'] }}</p>
             </div>
             <div class="row">
-                <div class="col-md-4 mb-3">
-                    <div class="card position-relative border-0 shadow-sm">
-                        <img src="{{asset('assets/images/Sportswear-1.png')}}" class="card-img-top" alt="...">
-                        <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">Sportswear</h4>
+                @foreach ($categorySettings['items'] as $item)
+                    <div class="col-md-4 mb-3">
+                        <div class="card position-relative border-0 shadow-sm">
+                            <img src="{{ \App\Support\PageSettings::imageUrl($item['image'] ?? null) }}" class="card-img-top" alt="{{ $item['title'] }}">
+                            <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">{{ $item['title'] }}</h4>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card position-relative border-0 shadow-sm">
-                        <img src="{{asset('assets/images/sports-and-equipment.png')}}" class="card-img-top" alt="...">
-                        <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">Sports Equipment</h4>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card position-relative border-0 shadow-sm">
-                        <img src="{{asset('assets/images/trophies-awards.png')}}" class="card-img-top" alt="...">
-                        <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">Trophies & Awards</h4>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card position-relative border-0 shadow-sm">
-                        <img src="{{asset('assets/images/signage.png')}}" class="card-img-top" alt="...">
-                        <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">Signage</h4>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card position-relative border-0 shadow-sm">
-                        <img src="{{asset('assets/images/gifts-promotions.png')}}" class="card-img-top" alt="...">
-                        <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">Gifts & Promotional Items</h4>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card position-relative border-0 shadow-sm">
-                        <img src="{{asset('assets/images/uniforms-supplies.png')}}" class="card-img-top" alt="...">
-                        <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">School Uniforms & Supplies</h4>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>

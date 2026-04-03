@@ -70,11 +70,28 @@
                     @csrf
                     <div class="mb-3">
                         <label for="" class="form-label mb-0">Email</label>
-                        <input type="email" name="email" class="form-control">
+                        <input
+                            type="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            class="form-control @error('email') is-invalid @enderror"
+                            autocomplete="username"
+                        >
+                        @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3">
                         <label for="" class="form-label mb-0">Password</label>
-                        <input type="password" name="password" class="form-control">
+                        <input
+                            type="password"
+                            name="password"
+                            class="form-control @error('password') is-invalid @enderror"
+                            autocomplete="current-password"
+                        >
+                        @error('password')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     {{-- <div class="mb-3">
                         <label for="" class="form-label d-flex-inline">

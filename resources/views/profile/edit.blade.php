@@ -54,46 +54,46 @@
                                 <input name="phone" class="form-control"
                                     value="{{ old('phone', $user->phone) }}">
                             </div>
-                            @if($user->role === 'supplier')
+                            @if($user->hasRole('supplier'))
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Company Name</label>
                                     <input name="company_name" class="form-control"
-                                        value="{{ old('company_name', $user->company_name) }}" required>
+                                        value="{{ old('company_name', optional($user->supplierProfile)->company_name) }}" required>
                                 </div>
                             @endif
-                            @if($user->role === 'customer')
+                            @if($user->hasRole('customer'))
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">
                                     Organisation
                                 </label>
-                                <select name="organisation[]" id="" value="{{ old('organisation', $user->organisation) }}" class="form-select select2" required>
+                                <select name="customer_organisation[]" id="" class="form-select select2" required>
                                     <option value="">Select Organisation</option>
                                     @foreach ($organisation ?? [] as $item)
                                         @if($item->type === 'customer')
-                                        <option value="{{ $item->id }}" {{ in_array($item->id, old('organisation', $user->organisations->pluck('id')->toArray())) ? 'selected' : '' }}>{{ strtoupper($item->name) }}</option>
+                                        <option value="{{ $item->id }}" {{ in_array($item->id, old('customer_organisation', $user->organisationCategories->where('type', 'customer')->pluck('id')->toArray())) ? 'selected' : '' }}>{{ strtoupper($item->name) }}</option>
                                         @endif
                                     @endforeach
                                 </select>
                             </div>
                              <div class="col-md-6 mb-3">
                                 <label class="form-label">County</label>
-                                <input name="county" class="form-control" value="{{ old('county', $user->county) }}" required>
+                                <input name="county" class="form-control" value="{{ old('county', optional($user->customerProfile)->county) }}" required>
                             </div>
                              <div class="col-md-6 mb-3">
                                 <label class="form-label">Club / School Name</label>
-                                <input name="school_name" class="form-control" value="{{ old('school_name', $user->school_name) }}" required>
+                                <input name="school_name" class="form-control" value="{{ old('school_name', optional($user->customerProfile)->school_name) }}" required>
                             </div>
                             @endif
-                            @if($user->role === 'supplier')
+                            @if($user->hasRole('supplier'))
                                 <div class="col-md-12 mb-3">
                                     <label class="form-label">
                                         Organisation
                                     </label>
-                                    <select name="organisation[]" id="" value="{{ old('organisation', $user->organisation) }}" class="form-select select2" required multiple>
+                                    <select name="supplier_organisation[]" id="" class="form-select select2" required multiple>
                                         <option value="">Select Organisation</option>
                                         @foreach ($organisation ?? [] as $item)
                                             @if($item->type === 'supplier')
-                                            <option value="{{ $item->id }}" {{ in_array($item->id, old('organisation', $user->organisations->pluck('id')->toArray())) ? 'selected' : '' }}>{{ strtoupper($item->name) }}</option>
+                                            <option value="{{ $item->id }}" {{ in_array($item->id, old('supplier_organisation', $user->organisationCategories->where('type', 'supplier')->pluck('id')->toArray())) ? 'selected' : '' }}>{{ strtoupper($item->name) }}</option>
                                             @endif
                                         @endforeach
                                     </select>
@@ -101,25 +101,25 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Address</label>
-                                    <textarea name="address" class="form-control" required>{{ old('address', $user->address) }}</textarea>
+                                    <textarea name="address" class="form-control" required>{{ old('address', optional($user->supplierProfile)->address) }}</textarea>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Website</label>
                                     <input name="website" class="form-control"
-                                        value="{{ old('website', $user->website) }}">
+                                        value="{{ old('website', optional($user->supplierProfile)->website) }}">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Review Link</label>
                                     <input name="review_link" class="form-control"
-                                        value="{{ old('review_link', $user->review_link) }}">
+                                        value="{{ old('review_link', optional($user->supplierProfile)->review_link) }}">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Social Media Link</label>
                                     <input name="social_link" class="form-control"
-                                        value="{{ old('social_link', $user->social_link) }}">
+                                        value="{{ old('social_link', optional($user->supplierProfile)->social_link) }}">
                                 </div>
 
                             @endif
@@ -179,4 +179,3 @@
     });
 </script>
 @endsection
-

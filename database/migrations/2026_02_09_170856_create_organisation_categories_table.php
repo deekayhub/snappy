@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->enum('type', ['supplier', 'customer']);
             $table->timestamps();
+
+            $table->unique(['name', 'type']);
         });
     }
 

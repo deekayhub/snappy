@@ -70,26 +70,11 @@
             @else
                 <div class="dropdown">
                     <a
-                        href="#"
+                        href="{{ route('login') }}"
                         class="btn btn-outline-primary rounded-4 py-2 px-4 dropdown-toggle"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
                         >
                         Login
-                    </a>
-
-                    <ul class="dropdown-menu dropdown-menu-end text-center">
-                        <li>
-                            <a class="dropdown-item" href="{{ route('login', ['type' => 'customer']) }}">
-                            Customer Login
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('login', ['type' => 'supplier']) }}">
-                            Supplier Login
-                            </a>
-                        </li>
-                    </ul>
+                    </a>                     
                 </div>
 
                 <!-- Sign-up -->

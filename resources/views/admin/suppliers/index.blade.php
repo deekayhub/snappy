@@ -279,7 +279,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table id="supplierTable" class="table" style="width:100%">
+                        <table id="supplierTable" class="table table-bordered w-100">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -287,8 +287,9 @@
                                     <th>Email</th>
                                     <th>Phone</th>
                                     <th>Company</th>
+                                    <th>Categories</th>
                                     <th>Address</th>
-                                    <th>County</th>
+                                    <th>Website</th>
                                     <th>Date Added</th>
                                     <th>Status</th>
                                     <th>Actions</th>
@@ -339,14 +340,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="organisation">Organisation</label>
+                                <label for="organisation">Categories</label>
                                 <input type="text" class="form-control" id="organisation" name="organisation">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="county">County</label>
-                                <input type="text" class="form-control" id="county" name="county">
+                                <label for="website">Website</label>
+                                <input type="url" class="form-control" id="website" name="website">
                             </div>
                         </div>
                     </div>
@@ -372,6 +373,7 @@
             processing: true,
             serverSide: true,
             responsive: true,
+            scrollX: true,
             ajax: {
                 url: "{{ route('admin.suppliers') }}",
                 type: 'GET'
@@ -382,8 +384,9 @@
                 { data: 'email', name: 'email' },
                 { data: 'phone', name: 'phone' },
                 { data: 'company_name', name: 'company_name' },
+                { data: 'organisation_names', name: 'organisation_names', orderable: false },
                 { data: 'address', name: 'address' },
-                { data: 'county', name: 'county' },
+                { data: 'website', name: 'website' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'status', name: 'status', orderable: false, searchable: false },
                 { data: 'action', name: 'action', orderable: false, searchable: false }

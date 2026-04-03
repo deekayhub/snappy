@@ -1,9 +1,13 @@
 @extends('layouts.app')
 @section('title', 'FAQ')
+@php($faqPageSettings = \App\Support\PageSettings::all()['faq_page'])
 @section('section')
 <section class="page-header bg-primar y">
     <div class="container">
-        <h1 class="text-center text-white display-4">FAQ</h1>
+        <h1 class="text-center text-white display-4">{{ $faqPageSettings['banner_title'] }}</h1>
+        @if (! empty($faqPageSettings['banner_description']))
+            <p class="text-center text-white mb-0 mt-3">{{ $faqPageSettings['banner_description'] }}</p>
+        @endif
         <ul class="breadcrumb justify-content-center">
             <li class="breadcrumb-item">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-houses-fill" viewBox="0 0 16 16">

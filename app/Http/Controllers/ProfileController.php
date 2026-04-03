@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\OrganisationCategory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
-use App\Models\User;
-use App\Models\OrganisationCategory;
 
 class ProfileController extends Controller
 {
@@ -18,9 +18,9 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        $organisation = OrganisationCategory::all();
-        $user = User::with('organisations')->find(Auth::id());
-        // dd($user->toArray());
+        $organisation = OrganisationCategory::orderBy('type')->orderBy('name')->get();
+        $user = $request->user()->load(['customerProfile', 'supplierProfile', 'organisationCategories']);
+
         return view('profile.edit', [
             'user' => $user,
             'organisation' => $organisation
@@ -50,15 +50,28 @@ class ProfileController extends Controller
 
         $rules = [
             'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'organisation' => 'required|array',
-            'organisation.*' => 'exists:organisation_categories,id',
-            'county' => 'nullable|string',
-            'school_name' => 'nullable|string',
+            'phone' => 'nullable|string|max:30',
         ];
 
-        if ($user->role === 'supplier') {
+        if ($user->hasRole('customer')) {
             $rules = array_merge($rules, [
+                'customer_organisation' => 'required|array|min:1',
+                'customer_organisation.*' => [
+                    'integer',
+                    Rule::exists('organisation_categories', 'id')->where('type', 'customer'),
+                ],
+                'county' => 'nullable|string|max:255',
+                'school_name' => 'nullable|string|max:255',
+            ]);
+        }
+
+        if ($user->hasRole('supplier')) {
+            $rules = array_merge($rules, [
+                'supplier_organisation' => 'required|array|min:1',
+                'supplier_organisation.*' => [
+                    'integer',
+                    Rule::exists('organisation_categories', 'id')->where('type', 'supplier'),
+                ],
                 'company_name' => 'required|string|max:255',
                 'address' => 'required|string',
                 'website' => 'nullable|url',
@@ -69,22 +82,51 @@ class ProfileController extends Controller
 
         $validated = $request->validate($rules);
 
-        // update user
-        $user->update($validated);
+        DB::transaction(function () use ($user, $validated) {
+            $user->update([
+                'name' => $validated['name'],
+                'phone' => $validated['phone'] ?? null,
+            ]);
 
-        // update pivot table
-        if ($request->organisation) {
+            if ($user->hasRole('customer')) {
+                $user->customerProfile()->updateOrCreate([], [
+                    'county' => $validated['county'] ?? null,
+                    'school_name' => $validated['school_name'] ?? null,
+                ]);
 
-            $orgData = [];
-
-            foreach ($request->organisation as $orgId) {
-                $orgData[$orgId] = ['type' => $user->role];
+                $this->syncOrganisationCategories($user, 'customer', $validated['customer_organisation'] ?? []);
             }
 
-            $user->organisations()->sync($orgData);
-        }
+            if ($user->hasRole('supplier')) {
+                $user->supplierProfile()->updateOrCreate([], [
+                    'company_name' => $validated['company_name'],
+                    'address' => $validated['address'],
+                    'website' => $validated['website'] ?? null,
+                    'review_link' => $validated['review_link'] ?? null,
+                    'social_link' => $validated['social_link'] ?? null,
+                ]);
+
+                $this->syncOrganisationCategories($user, 'supplier', $validated['supplier_organisation'] ?? []);
+            }
+        });
 
         return back()->with('success', 'Profile updated successfully!');
+    }
+
+    protected function syncOrganisationCategories($user, string $type, array $selectedIds): void
+    {
+        $typeCategoryIds = OrganisationCategory::where('type', $type)->pluck('id');
+        $existingTypeIds = $user->organisationCategories()
+            ->whereIn('organisation_categories.id', $typeCategoryIds)
+            ->pluck('organisation_categories.id');
+
+        $idsToDetach = $existingTypeIds->diff($selectedIds)->all();
+
+        if (! empty($idsToDetach)) {
+            $user->organisationCategories()->detach($idsToDetach);
+        }
+
+        $user->organisationCategories()->syncWithoutDetaching($selectedIds);
     }
 
 

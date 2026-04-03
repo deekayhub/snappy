@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserOrganisation extends Model
 {
+    protected $table = 'organisation_category_user';
+
     protected $fillable = [
         'user_id',
         'organisation_category_id',
-        'type'
     ];
 
     public function user()
@@ -21,7 +22,7 @@ class UserOrganisation extends Model
     {
         return $this->belongsTo(
             OrganisationCategory::class,
-            'organisation_categories_id'
+            'organisation_category_id'
         );
     }
 }

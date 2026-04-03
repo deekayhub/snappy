@@ -1,21 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\PageSettingsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use Illuminate\Support\Facades\Mail;
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-// Route::get('/test-mail', function () {
-//     Mail::raw('This is a test email from Laravel 🚀', function ($message) {
-//         $message->to('deekay843424@gmail.com') // 👈 change this
-//                 ->subject('Test Email from Laravel');
-//     });
-
-//     return 'Test email sent successfully!';
-// });
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('home');
@@ -32,41 +22,50 @@ Route::get('/faq', function () {
 Route::get('/contact-us', function () {
     return view('contact-us');
 })->name('contact-us');
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-})->middleware(['auth'])->name('dashboard');
 
-Route::middleware('auth',)->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');  
-    Route::get('/suppliers', [SupplierController::class, 'index'])->name('admin.suppliers');
-    Route::get('/suppliers/datatable', [SupplierController::class, 'datatable'])->name('suppliers.datatable');
-    Route::get('/customers', function () {
-        return view('admin.customers.index');
-    })->name('admin.customers');
-    Route::get('/invoices', function () {
-        return view('admin.invoices.index');
-    })->name('admin.invoices');
-    Route::get('/reports', function () {
-        return view('admin.reports.index');
-    })->name('admin.reports');
+        return auth()->user()->hasAnyRole(['superadmin', 'admin'])
+            ? redirect()->route('admin.dashboard')
+            : redirect()->route('home');
+    })->name('dashboard');
 });
 
+Route::middleware(['auth', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
 
+    Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers');
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
 
-Route::get('/register/customer', [RegisteredUserController::class, 'createCustomer'])
-    ->name('register.customer');
+    Route::get('/invoices', function () {
+        return view('admin.invoices.index');
+    })->name('invoices');
 
-Route::get('/register/supplier', [RegisteredUserController::class, 'createSupplier'])
-    ->name('register.supplier');
+    Route::get('/reports', function () {
+        return view('admin.reports.index');
+    })->name('reports');
 
-Route::post('/register/customer', [RegisteredUserController::class, 'storeCustomer']);
-Route::post('/register/supplier', [RegisteredUserController::class, 'storeSupplier']);
+    Route::get('/page-settings', [PageSettingsController::class, 'index'])
+        ->name('page-settings');
+    Route::post('/page-settings', [PageSettingsController::class, 'update'])
+        ->name('page-settings.update');
+});
+
+Route::middleware('guest')->group(function () {
+    Route::get('/register/customer', [RegisteredUserController::class, 'createCustomer'])
+        ->name('register.customer');
+
+    Route::get('/register/supplier', [RegisteredUserController::class, 'createSupplier'])
+        ->name('register.supplier');
+
+    Route::post('/register/customer', [RegisteredUserController::class, 'storeCustomer']);
+    Route::post('/register/supplier', [RegisteredUserController::class, 'storeSupplier']);
+});
 
 require __DIR__.'/auth.php';

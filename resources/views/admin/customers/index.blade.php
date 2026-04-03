@@ -276,7 +276,7 @@
                                 <i class="mdi mdi-magnify text-muted"></i>
                                 <input type="text" id="supplierSearch" placeholder="Search customers, company, county...">
                             </label>
-                            <button type="button" class="btn btn-outline-primary" id="refreshSupplierTable">
+                            <button type="button" class="btn btn-outline-primary rounded-3" id="refreshSupplierTable">
                                 <i class="mdi mdi-refresh mr-1"></i> Refresh
                             </button>
                         </div>
@@ -290,8 +290,8 @@
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Phone</th>
-                                    <th>Company</th>
-                                    <th>Address</th>
+                                    <th>Categories</th>
+                                    <th>School</th>
                                     <th>County</th>
                                     <th>Date Added</th>
                                     <th>Status</th>
@@ -337,13 +337,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="company_name">Company Name</label>
-                        <input type="text" class="form-control" id="company_name" name="company_name">
+                        <label for="school_name">School / Club Name</label>
+                        <input type="text" class="form-control" id="school_name" name="school_name">
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="organisation">Organisation</label>
+                                <label for="organisation">Categories</label>
                                 <input type="text" class="form-control" id="organisation" name="organisation">
                             </div>
                         </div>
@@ -376,8 +376,9 @@
             processing: true,
             serverSide: true,
             responsive: true,
+            scrollX: true,
             ajax: {
-                url: "{{ route('admin.suppliers') }}",
+                url: "{{ route('admin.customers') }}",
                 type: 'GET'
             },
             columns: [
@@ -385,8 +386,8 @@
                 { data: 'name', name: 'name' },
                 { data: 'email', name: 'email' },
                 { data: 'phone', name: 'phone' },
-                { data: 'company_name', name: 'company_name' },
-                { data: 'address', name: 'address' },
+                { data: 'organisation_names', name: 'organisation_names', orderable: false },
+                { data: 'school_name', name: 'school_name' },
                 { data: 'county', name: 'county' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'status', name: 'status', orderable: false, searchable: false },
