@@ -29,9 +29,12 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = $request->user();
-        $defaultRoute = $user->hasAnyRole(['superadmin', 'admin'])
-            ? route('admin.dashboard', absolute: false)
-            : route('home', absolute: false);
+        $defaultRoute = match (true) {
+            $user->hasAnyRole(['superadmin', 'admin']) => route('admin.dashboard', absolute: false),
+            $user->hasRole('supplier') => route('supplier-panel.dashboard', absolute: false),
+            $user->hasRole('customer') => route('profile.edit', absolute: false),
+            default => route('home', absolute: false),
+        };
 
         return redirect()->intended($defaultRoute);
     }

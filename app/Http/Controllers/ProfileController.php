@@ -16,14 +16,33 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): View
+    public function edit(Request $request): View|RedirectResponse
     {
         $organisation = OrganisationCategory::orderBy('type')->orderBy('name')->get();
         $user = $request->user()->load(['customerProfile', 'supplierProfile', 'organisationCategories']);
 
+        if ($user->hasAnyRole(['superadmin', 'admin'])) {
+            return redirect()->route('admin.profile');
+        }
+
+        if ($user->hasRole('supplier')) {
+            return redirect()->route('supplier-panel.profile');
+        }
+
         return view('profile.edit', [
             'user' => $user,
-            'organisation' => $organisation
+            'organisation' => $organisation,
+        ]);
+    }
+
+    public function adminEdit(Request $request): View
+    {
+        $organisation = OrganisationCategory::orderBy('type')->orderBy('name')->get();
+        $user = $request->user()->load(['customerProfile', 'supplierProfile', 'organisationCategories']);
+
+        return view('admin.profile.index', [
+            'user' => $user,
+            'organisation' => $organisation,
         ]);
     }
 
@@ -44,7 +63,7 @@ class ProfileController extends Controller
     // }
 
 
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
         $user = Auth::user();
 

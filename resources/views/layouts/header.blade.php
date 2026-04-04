@@ -49,7 +49,7 @@
 
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
                             <li>
-                                <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                <a class="dropdown-item" href="{{ Auth::user()->hasAnyRole(['superadmin', 'admin']) ? route('admin.profile') : (Auth::user()->hasRole('supplier') ? route('supplier-panel.profile') : route('profile.edit')) }}">
                                     Profile
                                 </a>
                             </li>

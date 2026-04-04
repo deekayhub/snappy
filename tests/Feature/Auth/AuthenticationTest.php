@@ -2,8 +2,10 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\OrganisationCategory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -19,7 +21,11 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_authenticate_using_the_login_screen(): void
     {
+        Role::create(['name' => 'customer', 'guard_name' => 'web']);
+        $category = OrganisationCategory::create(['name' => 'TEAM', 'type' => 'customer']);
         $user = User::factory()->create();
+        $user->assignRole('customer');
+        $user->organisationCategories()->attach($category);
 
         $response = $this->post('/login', [
             'email' => $user->email,
@@ -27,7 +33,28 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect(route('profile.edit', absolute: false));
+    }
+
+    public function test_supplier_users_are_redirected_to_the_supplier_panel_after_login(): void
+    {
+        Role::create(['name' => 'supplier', 'guard_name' => 'web']);
+        $category = OrganisationCategory::create(['name' => 'SPORTSWEAR', 'type' => 'supplier']);
+        $user = User::factory()->create();
+        $user->assignRole('supplier');
+        $user->supplierProfile()->create([
+            'company_name' => 'Snappy Supplier',
+            'address' => 'Test address',
+        ]);
+        $user->organisationCategories()->attach($category);
+
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect(route('supplier-panel.dashboard', absolute: false));
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void

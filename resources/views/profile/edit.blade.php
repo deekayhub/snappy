@@ -1,179 +1,154 @@
 
 @extends('layouts.app')
-@section('title', 'Profile')
+@section('title', 'My Profile')
+
+@php
+    $customerOrganisationIds = old('customer_organisation', $user->organisationCategories->where('type', 'customer')->pluck('id')->toArray());
+@endphp
 
 @section('section')
-<div class="container">
-    <div class="row justify-content-center my-4">
-        <div class="col-lg-8">
-
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h5 class="mb-0">My Profile</h5>
-                </div>
-
-                <div class="card-body">
-
-                    @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                    {{-- @dump($user->toArray()) --}}
-
-                    <form method="POST" action="{{ route('profile.update') }}">
-                        @csrf
-
-                        <div class="row my-3">
-                            <!-- Name -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Name</label>
-                                <input name="name" class="form-control"
-                                    value="{{ old('name', $user->name) }}" required>
-                            </div>
-
-                            <!-- Email (Read Only) -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Email</label>
-                                <input class="form-control" value="{{ $user->email }}" disabled>
-                                <small class="text-muted">Email cannot be changed</small>
-                            </div>
-
-                            <!-- Phone -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Phone</label>
-                                <input name="phone" class="form-control"
-                                    value="{{ old('phone', $user->phone) }}">
-                            </div>
-                            @if($user->hasRole('supplier'))
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Company Name</label>
-                                    <input name="company_name" class="form-control"
-                                        value="{{ old('company_name', optional($user->supplierProfile)->company_name) }}" required>
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="p-4 p-lg-5 rounded-5 border shadow-sm" style="background: linear-gradient(135deg, #f3faf8, #fff8ee);">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-8">
+                        <span class="badge rounded-pill text-bg-light px-3 py-2">Customer account</span>
+                        <h1 class="mt-3 mb-2">Manage your profile and password</h1>
+                        <p class="text-secondary mb-0">Keep your contact details up to date and change your password from one modern account screen.</p>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="bg-white border rounded-4 p-3 h-100">
+                                    <div class="small text-secondary">County</div>
+                                    <div class="fw-semibold">{{ $user->customerProfile?->county ?: 'Not set' }}</div>
                                 </div>
-                            @endif
-                            @if($user->hasRole('customer'))
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">
-                                    Organisation
-                                </label>
-                                <select name="customer_organisation[]" id="" class="form-select select2" required>
-                                    <option value="">Select Organisation</option>
-                                    @foreach ($organisation ?? [] as $item)
-                                        @if($item->type === 'customer')
-                                        <option value="{{ $item->id }}" {{ in_array($item->id, old('customer_organisation', $user->organisationCategories->where('type', 'customer')->pluck('id')->toArray())) ? 'selected' : '' }}>{{ strtoupper($item->name) }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
                             </div>
-                             <div class="col-md-6 mb-3">
-                                <label class="form-label">County</label>
-                                <input name="county" class="form-control" value="{{ old('county', optional($user->customerProfile)->county) }}" required>
+                            <div class="col-6">
+                                <div class="bg-white border rounded-4 p-3 h-100">
+                                    <div class="small text-secondary">Organisation</div>
+                                    <div class="fw-semibold">{{ count($customerOrganisationIds) }}</div>
+                                </div>
                             </div>
-                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Club / School Name</label>
-                                <input name="school_name" class="form-control" value="{{ old('school_name', optional($user->customerProfile)->school_name) }}" required>
-                            </div>
-                            @endif
-                            @if($user->hasRole('supplier'))
-                                <div class="col-md-12 mb-3">
-                                    <label class="form-label">
-                                        Organisation
-                                    </label>
-                                    <select name="supplier_organisation[]" id="" class="form-select select2" required multiple>
-                                        <option value="">Select Organisation</option>
-                                        @foreach ($organisation ?? [] as $item)
-                                            @if($item->type === 'supplier')
-                                            <option value="{{ $item->id }}" {{ in_array($item->id, old('supplier_organisation', $user->organisationCategories->where('type', 'supplier')->pluck('id')->toArray())) ? 'selected' : '' }}>{{ strtoupper($item->name) }}</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Address</label>
-                                    <textarea name="address" class="form-control" required>{{ old('address', optional($user->supplierProfile)->address) }}</textarea>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Website</label>
-                                    <input name="website" class="form-control"
-                                        value="{{ old('website', optional($user->supplierProfile)->website) }}">
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Review Link</label>
-                                    <input name="review_link" class="form-control"
-                                        value="{{ old('review_link', optional($user->supplierProfile)->review_link) }}">
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Social Media Link</label>
-                                    <input name="social_link" class="form-control"
-                                        value="{{ old('social_link', optional($user->supplierProfile)->social_link) }}">
-                                </div>
-
-                            @endif
                         </div>
-
-                        <div class="col-md-12 text-end">
-                            <button class="btn btn-primary py-2 px-4">
-                                Update Profile
-                            </button>
-                        </div>
-
-                    </form>
-                </div>
-            </div>
-
-            {{-- <div class="row">
-                <div class="col-md-4 border-right shadow">
-                    <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold">Edogaru</span><span class="text-black-50">edogaru@mail.com.my</span><span> </span></div>
-                </div>
-                <div class="col-md-8 border-right shadow">
-                    <div class="p-3 py-5">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="text-right">Profile Settings</h4>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="first name" value=""></div>
-                            <div class="col-md-6"><label class="labels">Surname</label><input type="text" class="form-control" value="" placeholder="surname"></div>
-                        
-                            <div class="col-md-6"><label class="labels">Mobile Number</label><input type="text" class="form-control" placeholder="enter phone number" value=""></div>
-                            <div class="col-md-6"><label class="labels">Address Line 1</label><input type="text" class="form-control" placeholder="enter address line 1" value=""></div>
-                            <div class="col-md-6"><label class="labels">Address Line 2</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-                            <div class="col-md-6"><label class="labels">Postcode</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-                            <div class="col-md-6"><label class="labels">State</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-                            <div class="col-md-6"><label class="labels">Area</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-                            <div class="col-md-6"><label class="labels">Email ID</label><input type="text" class="form-control" placeholder="enter email id" value=""></div>
-                            <div class="col-md-6"><label class="labels">Education</label><input type="text" class="form-control" placeholder="education" value=""></div>
-                        
-                            <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value=""></div>
-                            <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" value="" placeholder="state"></div>
-                        </div>
-                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Save Profile</button></div>
                     </div>
                 </div>
-                
-            </div> --}}
+            </div>
+        </div>
 
+        @if (session('success'))
+            <div class="col-12">
+                <div class="alert alert-success rounded-4 border-0 shadow-sm">{{ session('success') }}</div>
+            </div>
+        @endif
+
+        @if (session('status') === 'password-updated')
+            <div class="col-12">
+                <div class="alert alert-success rounded-4 border-0 shadow-sm">Password updated successfully.</div>
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="col-12">
+                <div class="alert alert-danger rounded-4 border-0 shadow-sm">
+                    <ul class="mb-0 ps-3">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
+        <div class="col-lg-7">
+            <div class="bg-white border rounded-5 shadow-sm p-4 p-lg-5 h-100">
+                <h3 class="mb-2">Profile details</h3>
+                <p class="text-secondary mb-4">Update the information connected to your customer account.</p>
+
+                <form method="POST" action="{{ route('profile.update') }}">
+                    @csrf
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Full name</label>
+                            <input name="name" class="form-control rounded-4 py-3" value="{{ old('name', $user->name) }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Email address</label>
+                            <input class="form-control rounded-4 py-3 bg-light" value="{{ $user->email }}" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Phone number</label>
+                            <input name="phone" class="form-control rounded-4 py-3" value="{{ old('phone', $user->phone) }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Organisation type</label>
+                            <select name="customer_organisation[]" class="form-select rounded-4 py-3 select2-single" required>
+                                <option value="">Select organisation</option>
+                                @foreach ($organisation as $item)
+                                    @if ($item->type === 'customer')
+                                        <option value="{{ $item->id }}" {{ in_array($item->id, $customerOrganisationIds) ? 'selected' : '' }}>{{ strtoupper($item->name) }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">County</label>
+                            <input name="county" class="form-control rounded-4 py-3" value="{{ old('county', optional($user->customerProfile)->county) }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Club / School name</label>
+                            <input name="school_name" class="form-control rounded-4 py-3" value="{{ old('school_name', optional($user->customerProfile)->school_name) }}">
+                        </div>
+                        <div class="col-12 pt-2">
+                            <button class="btn btn-primary rounded-4 px-4 py-3">Save profile changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="bg-white border rounded-5 shadow-sm p-4 p-lg-5 h-100">
+                <h3 class="mb-2">Change password</h3>
+                <p class="text-secondary mb-4">Use a fresh strong password to keep your account secure.</p>
+
+                <form method="POST" action="{{ route('password.update') }}">
+                    @csrf
+                    @method('PUT')
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Current password</label>
+                            <input type="password" name="current_password" class="form-control rounded-4 py-3" required>
+                            @error('current_password', 'updatePassword')
+                                <div class="text-danger small mt-2">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">New password</label>
+                            <input type="password" name="password" class="form-control rounded-4 py-3" required>
+                            @error('password', 'updatePassword')
+                                <div class="text-danger small mt-2">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Confirm new password</label>
+                            <input type="password" name="password_confirmation" class="form-control rounded-4 py-3" required>
+                        </div>
+                        <div class="col-12 pt-2">
+                            <button class="btn btn-dark rounded-4 w-100 py-3">Update password</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 <script>
-    $(document).ready(function() {
-        $('.select2').select2({
-            placeholder: "Select organisation",
-            allowClear: true,
+    $(document).ready(function () {
+        $('.select2-single').select2({
+            placeholder: 'Select organisation',
+            allowClear: false,
             width: '100%'
         });
     });

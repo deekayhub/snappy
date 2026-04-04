@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\OrganisationCategoryController;
+use App\Http\Controllers\Admin\QuoteManagementController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerJobController;
 use App\Http\Controllers\PageSettingsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SupplierPanelController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,15 +29,18 @@ Route::get('/contact-us', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::match(['post', 'patch'], '/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/post-job', [CustomerJobController::class, 'create'])->name('customer.jobs.create');
     Route::post('/post-job', [CustomerJobController::class, 'store'])->name('customer.jobs.store');
 
     Route::get('/dashboard', function () {
-        return auth()->user()->hasAnyRole(['superadmin', 'admin'])
-            ? redirect()->route('admin.dashboard')
-            : redirect()->route('home');
+        return match (true) {
+            auth()->user()->hasAnyRole(['superadmin', 'admin']) => redirect()->route('admin.dashboard'),
+            auth()->user()->hasRole('supplier') => redirect()->route('supplier-panel.dashboard'),
+            auth()->user()->hasRole('customer') => redirect()->route('profile.edit'),
+            default => redirect()->route('home'),
+        };
     })->name('dashboard');
 });
 
@@ -55,10 +61,28 @@ Route::middleware(['auth', 'role:superadmin|admin'])->prefix('admin')->name('adm
         return view('admin.reports.index');
     })->name('reports');
 
+    Route::get('/quotes', [QuoteManagementController::class, 'index'])->name('quotes');
+    Route::get('/categories', [OrganisationCategoryController::class, 'index'])->name('categories');
+    Route::post('/categories', [OrganisationCategoryController::class, 'store'])->name('categories.store');
+    Route::put('/categories/{category}', [OrganisationCategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [OrganisationCategoryController::class, 'destroy'])->name('categories.destroy');
+
     Route::get('/page-settings', [PageSettingsController::class, 'index'])
         ->name('page-settings');
     Route::post('/page-settings', [PageSettingsController::class, 'update'])
         ->name('page-settings.update');
+});
+
+Route::middleware(['auth', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'adminEdit'])->name('profile');
+});
+
+Route::middleware(['auth', 'role:supplier'])->prefix('supplier-panel')->name('supplier-panel.')->group(function () {
+    Route::get('/dashboard', [SupplierPanelController::class, 'dashboard'])->name('dashboard');
+    Route::get('/jobs', [SupplierPanelController::class, 'jobs'])->name('jobs');
+    Route::get('/reports', [SupplierPanelController::class, 'reports'])->name('reports');
+    Route::get('/activity', [SupplierPanelController::class, 'activity'])->name('activity');
+    Route::get('/profile', [SupplierPanelController::class, 'profile'])->name('profile');
 });
 
 Route::middleware('guest')->group(function () {
