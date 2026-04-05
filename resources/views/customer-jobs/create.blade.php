@@ -58,7 +58,13 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label mb-1">Category</label>
-                                    <input type="text" name="category" value="{{ old('category') }}" class="form-control @error('category') is-invalid @enderror" placeholder="Sportswear, signage, trophies">
+                                    {{-- <input type="text" name="category" value="{{ old('category') }}" class="form-control @error('category') is-invalid @enderror" placeholder="Sportswear, signage, trophies"> --}}
+                                    <select name="category" id="" class="form-select">
+                                        <option value="">Select Category</option>
+                                        @foreach ($categories as $cat)
+                                            <option value="{{ $cat->name }}">{{ $cat->name }}</option>
+                                        @endforeach
+                                    </select>
                                     @error('category')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -90,7 +96,7 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label mb-1">Needed By</label>
-                                    <input type="date" name="needed_by" value="{{ old('needed_by') }}" class="form-control @error('needed_by') is-invalid @enderror">
+                                    <input type="date" id="needed_by" name="needed_by" value="{{ old('needed_by') }}" class="form-control @error('needed_by') is-invalid @enderror">
                                     @error('needed_by')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -115,3 +121,15 @@
         </div>
     </section>
 @endsection
+@push('script')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const neededByInput = document.getElementById('needed_by');
+            if (neededByInput) {
+                const today = new Date().toISOString().split('T')[0];
+                neededByInput.setAttribute('min', today);
+            }
+        });
+    </script>
+    
+@endpush

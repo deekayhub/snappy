@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CustomerJob;
+use App\Models\OrganisationCategory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -17,8 +18,8 @@ class CustomerJobController extends Controller
                 ->route('home')
                 ->with('error', 'Only customer accounts can post a job.');
         }
-
-        return view('customer-jobs.create');
+        $categories = OrganisationCategory::where('type', 'supplier')->get();
+        return view('customer-jobs.create', compact('categories'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -36,7 +37,7 @@ class CustomerJobController extends Controller
             'location' => ['nullable', 'string', 'max:255'],
             'budget' => ['nullable', 'numeric', 'min:0'],
             'needed_by' => ['nullable', 'date', 'after_or_equal:today'],
-            'description' => ['required', 'string', 'min:20'],
+            'description' => ['required', 'string', 'min:0'],
         ]);
 
         $request->user()->customerJobs()->create($validated);

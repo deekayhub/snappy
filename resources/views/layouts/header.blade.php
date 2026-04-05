@@ -78,7 +78,7 @@
                 <div class="dropdown">
                     <a
                         href="{{ route('login') }}"
-                        class="btn btn-outline-primary rounded-4 py-2 px-4 dropdown-toggle"
+                        class="btn btn-outline-primary rounded-4 py-2 px-4"
                         >
                         Login
                     </a>                     

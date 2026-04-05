@@ -121,7 +121,7 @@
 <script>
     $(function () {
         $('.supplier-organisations').select2({
-            theme: 'bootstrap-5',
+            // theme: 'bootstrap-5',
             
             placeholder: 'Select supplier categories',
             width: '100%'

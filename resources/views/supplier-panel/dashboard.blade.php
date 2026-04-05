@@ -82,7 +82,7 @@
                                             <div class="small text-muted">{{ $job->category ?: 'General' }} • {{ $job->location ?: 'Location not specified' }}</div>
                                         </div>
                                         <div class="text-lg-end">
-                                            <div class="fw-semibold">{{ $job->budget ? 'GBP '.number_format((float) $job->budget, 2) : 'Budget on request' }}</div>
+                                            <div class="fw-semibold">{{ $job->budget ? '$ '.number_format((float) $job->budget, 2) : 'Budget on request' }}</div>
                                             <div class="small text-muted mb-3">Needed by {{ $job->needed_by?->format('d M Y') ?? 'TBC' }}</div>
                                             <a href="{{ route('supplier-panel.jobs') }}" class="btn btn-primary rounded-4">Open quote form</a>
                                         </div>

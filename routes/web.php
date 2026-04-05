@@ -30,7 +30,7 @@ Route::get('/contact-us', function () {
     return view('contact-us');
 })->name('contact-us');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'verified')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::match(['post', 'patch'], '/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -49,13 +49,12 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 });
 
-Route::middleware(['auth', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/jobs', [CustomerJobController::class, 'index'])->name('jobs');
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers');
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
-
     Route::get('/invoices', function () {
         return view('admin.invoices.index');
     })->name('invoices');
@@ -76,11 +75,11 @@ Route::middleware(['auth', 'role:superadmin|admin'])->prefix('admin')->name('adm
         ->name('page-settings.update');
 });
 
-Route::middleware(['auth', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/profile', [ProfileController::class, 'adminEdit'])->name('profile');
 });
 
-Route::middleware(['auth', 'role:supplier'])->prefix('supplier-panel')->name('supplier-panel.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:supplier'])->prefix('supplier-panel')->name('supplier-panel.')->group(function () {
     Route::get('/dashboard', [SupplierPanelController::class, 'dashboard'])->name('dashboard');
     Route::get('/jobs', [SupplierPanelController::class, 'jobs'])->name('jobs');
     Route::get('/reports', [SupplierPanelController::class, 'reports'])->name('reports');
