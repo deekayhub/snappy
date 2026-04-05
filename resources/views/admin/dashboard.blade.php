@@ -154,8 +154,7 @@
                                 <div class="table-responsive  mt-1">
                                 <table class="table w-100 select-table">
                                     <thead>
-                                    <tr>
-                                        
+                                    <tr>                                        
                                         <th>Customer</th>
                                         <th>Title</th>
                                         <th>Category</th>
@@ -163,7 +162,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($jobs->take(10) as $job )
+                                        @forelse ($jobs->take(10) as $job )
                                             <tr>                                        
                                                 <td>
                                                     <div>
@@ -179,8 +178,12 @@
                                                 <td>
                                                 <div class="badge badge-opacity-success">{{ $job->status }}</div>
                                                 </td>
-                                            </tr>                                            
-                                        @endforeach                                    
+                                            </tr>  
+                                        @empty    
+                                            <tr>
+                                                <td colspan="4" class="text-center">No quotes found.</td>
+                                            </tr>                                      
+                                        @endforelse                                    
                                     </tbody>
                                 </table>
                                 </div>
