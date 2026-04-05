@@ -16,6 +16,7 @@
                         <span class="badge rounded-pill text-bg-light px-3 py-2">Customer account</span>
                         <h1 class="mt-3 mb-2">Manage your profile and password</h1>
                         <p class="text-secondary mb-0">Keep your contact details up to date and change your password from one modern account screen.</p>
+                        <a href="{{ route('customer.quotes.index') }}" class="btn btn-outline-dark rounded-4 mt-3 px-4 py-2">Open quote inbox</a>
                     </div>
                     <div class="col-lg-4">
                         <div class="row g-3">
@@ -71,19 +72,19 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Full name</label>
-                            <input name="name" class="form-control rounded-4 py-3" value="{{ old('name', $user->name) }}" required>
+                            <input name="name" class="form-control rounded-3" value="{{ old('name', $user->name) }}" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Email address</label>
-                            <input class="form-control rounded-4 py-3 bg-light" value="{{ $user->email }}" disabled>
+                            <input class="form-control rounded-3 bg-light" value="{{ $user->email }}" disabled>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Phone number</label>
-                            <input name="phone" class="form-control rounded-4 py-3" value="{{ old('phone', $user->phone) }}">
+                            <input name="phone" class="form-control rounded-3" value="{{ old('phone', $user->phone) }}">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Organisation type</label>
-                            <select name="customer_organisation[]" class="form-select rounded-4 py-3 select2-single" required>
+                            <select name="customer_organisation[]" class="form-select rounded-3 select2-single" required>
                                 <option value="">Select organisation</option>
                                 @foreach ($organisation as $item)
                                     @if ($item->type === 'customer')
@@ -94,14 +95,14 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">County</label>
-                            <input name="county" class="form-control rounded-4 py-3" value="{{ old('county', optional($user->customerProfile)->county) }}">
+                            <input name="county" class="form-control rounded-3" value="{{ old('county', optional($user->customerProfile)->county) }}">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Club / School name</label>
-                            <input name="school_name" class="form-control rounded-4 py-3" value="{{ old('school_name', optional($user->customerProfile)->school_name) }}">
+                            <input name="school_name" class="form-control rounded-3" value="{{ old('school_name', optional($user->customerProfile)->school_name) }}">
                         </div>
                         <div class="col-12 pt-2">
-                            <button class="btn btn-primary rounded-4 px-4 py-3">Save profile changes</button>
+                            <button class="btn btn-primary rounded-3">Save profile changes</button>
                         </div>
                     </div>
                 </form>
@@ -119,24 +120,24 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <label class="form-label fw-semibold">Current password</label>
-                            <input type="password" name="current_password" class="form-control rounded-4 py-3" required>
+                            <input type="password" name="current_password" class="form-control rounded-3" required>
                             @error('current_password', 'updatePassword')
                                 <div class="text-danger small mt-2">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-12">
                             <label class="form-label fw-semibold">New password</label>
-                            <input type="password" name="password" class="form-control rounded-4 py-3" required>
+                            <input type="password" name="password" class="form-control rounded-3" required>
                             @error('password', 'updatePassword')
                                 <div class="text-danger small mt-2">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-12">
                             <label class="form-label fw-semibold">Confirm new password</label>
-                            <input type="password" name="password_confirmation" class="form-control rounded-4 py-3" required>
+                            <input type="password" name="password_confirmation" class="form-control rounded-3" required>
                         </div>
                         <div class="col-12 pt-2">
-                            <button class="btn btn-dark rounded-4 w-100 py-3">Update password</button>
+                            <button class="btn btn-dark rounded-3 w-100">Update password</button>
                         </div>
                     </div>
                 </form>
@@ -147,6 +148,7 @@
 <script>
     $(document).ready(function () {
         $('.select2-single').select2({
+            theme: 'bootstrap-5',
             placeholder: 'Select organisation',
             allowClear: false,
             width: '100%'

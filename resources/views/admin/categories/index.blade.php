@@ -8,22 +8,24 @@
     @endif
 
     <div class="row g-4">
-        <div class="col-lg-4">
+        <div class="col-lg-12">
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body p-4">
                     <h4 class="mb-3">Create category</h4>
                     <form method="POST" action="{{ route('admin.categories.store') }}">
                         @csrf
-                        <div class="mb-3">
-                            <label class="form-label">Category name</label>
-                            <input type="text" name="name" class="form-control rounded-4" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Type</label>
-                            <select name="type" class="form-select rounded-4" required>
-                                <option value="supplier">Supplier</option>
-                                <option value="customer">Customer</option>
-                            </select>
+                        <div class="row">
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Category name</label>
+                                <input type="text" name="name" class="form-control rounded-4" required>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Type</label>
+                                <select name="type" class="form-select rounded-4" required>
+                                    <option value="supplier">Supplier</option>
+                                    <option value="customer">Customer</option>
+                                </select>
+                            </div>
                         </div>
                         <button class="btn btn-primary rounded-4">Save category</button>
                     </form>
@@ -31,7 +33,7 @@
             </div>
         </div>
 
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body p-4">
                     <h4 class="mb-4">Manage categories</h4>

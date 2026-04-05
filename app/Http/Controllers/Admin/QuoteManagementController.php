@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CustomerJob;
+use App\Models\Quote;
 use Illuminate\View\View;
 
 class QuoteManagementController extends Controller
@@ -11,13 +12,17 @@ class QuoteManagementController extends Controller
     public function index(): View
     {
         $stats = [
-            'jobs_available_for_quotes' => CustomerJob::count(),
-            'active_jobs' => CustomerJob::where('status', 'open')->count(),
-            'ending_soon' => CustomerJob::whereDate('needed_by', '>=', now()->toDateString())
-                ->whereDate('needed_by', '<=', now()->addDays(3)->toDateString())
-                ->count(),
+            'total_quotes' => Quote::count(),
+            'submitted_quotes' => Quote::where('status', 'submitted')->count(),
+            'accepted_quotes' => Quote::where('status', 'accepted')->count(),
+            'jobs_with_quotes' => CustomerJob::has('quotes')->count(),
         ];
 
-        return view('admin.quotes.index', compact('stats'));
+        $quotes = Quote::query()
+            ->with(['job.user', 'supplier.supplierProfile'])
+            ->latest()
+            ->get();
+
+        return view('admin.quotes.index', compact('stats', 'quotes'));
     }
 }

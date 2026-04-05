@@ -198,15 +198,15 @@
                 <div class="card-body p-4 p-lg-5">
                     <div class="row align-items-center">
                         <div class="col-lg-8 mb-4 mb-lg-0">
-                            <span class="badge badge-light text-primary px-3 py-2 mb-3">Supplier Directory</span>
+                            <span class="badge badge-primary rounded-4 px-3 py-2 mb-3">Supplier Directory</span>
                             <h2 class="mb-2 text-white">Manage supplier records with a cleaner, faster admin workspace.</h2>
                             <p class="mb-0 text-white-50">Track contacts, companies, and onboarding details from one polished table view.</p>
                         </div>
-                        <div class="col-lg-4 text-lg-right">
+                        {{-- <div class="col-lg-4 text-lg-right">
                             <button type="button" class="btn btn-light" data-toggle="modal" data-target="#supplierModal">
                                 <i class="mdi mdi-plus mr-1"></i> Add New Supplier
                             </button>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -265,14 +265,14 @@
                     <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between supplier-toolbar-gap mb-4">
                         <div>
                             <h4 class="card-title mb-1">All Suppliers</h4>
-                            <p class="text-muted mb-0">A searchable, server-side table for supplier operations.</p>
+                            {{-- <p class="text-muted mb-0">A searchable, server-side table for supplier operations.</p> --}}
                         </div>
                         <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center supplier-toolbar-gap">
                             <label class="supplier-search-chip mb-0">
                                 <i class="mdi mdi-magnify text-muted"></i>
                                 <input type="text" id="supplierSearch" placeholder="Search suppliers, company, county...">
                             </label>
-                            <button type="button" class="btn btn-outline-primary" id="refreshSupplierTable">
+                            <button type="button" class="btn btn-outline-primary rounded-4" id="refreshSupplierTable">
                                 <i class="mdi mdi-refresh mr-1"></i> Refresh
                             </button>
                         </div>

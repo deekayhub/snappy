@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrganisationCategoryController;
 use App\Http\Controllers\Admin\QuoteManagementController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -7,9 +8,11 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerJobController;
 use App\Http\Controllers\PageSettingsController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SupplierPanelController;
+use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SupplierPanelController;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', function () {
     return view('home');
@@ -33,6 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/post-job', [CustomerJobController::class, 'create'])->name('customer.jobs.create');
     Route::post('/post-job', [CustomerJobController::class, 'store'])->name('customer.jobs.store');
+    Route::get('/customer/quotes', [QuoteController::class, 'customerIndex'])->name('customer.quotes.index');
+    Route::patch('/customer/quotes/{quote}/status', [QuoteController::class, 'updateStatus'])->name('customer.quotes.status');
 
     Route::get('/dashboard', function () {
         return match (true) {
@@ -45,9 +50,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/jobs', [CustomerJobController::class, 'index'])->name('jobs');
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers');
@@ -83,6 +86,7 @@ Route::middleware(['auth', 'role:supplier'])->prefix('supplier-panel')->name('su
     Route::get('/reports', [SupplierPanelController::class, 'reports'])->name('reports');
     Route::get('/activity', [SupplierPanelController::class, 'activity'])->name('activity');
     Route::get('/profile', [SupplierPanelController::class, 'profile'])->name('profile');
+    Route::post('/jobs/{job}/quotes', [QuoteController::class, 'store'])->name('quotes.store');
 });
 
 Route::middleware('guest')->group(function () {

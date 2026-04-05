@@ -53,6 +53,13 @@
                                     Profile
                                 </a>
                             </li>
+                            @if (Auth::user()->hasRole('customer'))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('customer.quotes.index') }}">
+                                        My Quotes
+                                    </a>
+                                </li>
+                            @endif
 
                             <li><hr class="dropdown-divider"></li>
 

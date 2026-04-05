@@ -13,6 +13,12 @@ class SupplierPanelController extends Controller
     {
         $user = $request->user()->load(['supplierProfile', 'organisationCategories']);
         $jobs = CustomerJob::query()->latest()->take(6)->get();
+        $recentQuotes = $request->user()
+            ->supplierQuotes()
+            ->with('job')
+            ->latest()
+            ->take(5)
+            ->get();
 
         $stats = [
             'available_jobs' => CustomerJob::count(),
@@ -24,14 +30,16 @@ class SupplierPanelController extends Controller
                 $query->where('status', '!=', 'open')
                     ->orWhereDate('needed_by', '<', now()->toDateString());
             })->count(),
+            'submitted_quotes' => $request->user()->supplierQuotes()->count(),
         ];
 
-        return view('supplier-panel.dashboard', compact('user', 'stats', 'jobs'));
+        return view('supplier-panel.dashboard', compact('user', 'stats', 'jobs', 'recentQuotes'));
     }
 
     public function jobs(Request $request): View
     {
-        $query = CustomerJob::query()->with('user:id,name,email');
+        $query = CustomerJob::query()
+            ->with(['user:id,name,email', 'quotes' => fn ($quoteQuery) => $quoteQuery->where('supplier_user_id', $request->user()->id)]);
 
         if ($request->filled('search')) {
             $search = $request->string('search')->toString();
@@ -80,8 +88,14 @@ class SupplierPanelController extends Controller
     public function activity(): View
     {
         $recentJobs = CustomerJob::query()->with('user:id,name')->latest()->take(10)->get();
+        $recentQuotes = auth()->user()
+            ->supplierQuotes()
+            ->with('job')
+            ->latest()
+            ->take(10)
+            ->get();
 
-        return view('supplier-panel.activity.index', compact('recentJobs'));
+        return view('supplier-panel.activity.index', compact('recentJobs', 'recentQuotes'));
     }
 
     public function profile(Request $request): View

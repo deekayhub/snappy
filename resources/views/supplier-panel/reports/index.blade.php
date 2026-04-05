@@ -3,8 +3,13 @@
 
 @section('content')
 <div class="content-wrapper p-3">
+    <div class="page-header">
+        <h3 class="page-title"> 
+            Reports
+        </h3> 
+    </div>
     <div class="row g-4">
-        <div class="col-lg-6">
+        {{-- <div class="col-lg-6">
             <div class="card border-0 shadow-sm rounded-4 h-100">
                 <div class="card-body p-4">
                     <h4 class="mb-3">Demand by category</h4>
@@ -37,7 +42,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
 @endsection

@@ -42,7 +42,7 @@
             <div class="card-body p-4 p-lg-5 position-relative">
                 <div class="row g-3 align-items-center">
                     <div class="col-lg-7">
-                        <span class="badge bg-white text-primary fw-semibold mb-3">Admin Overview</span>
+                        <span class="badge bg-white text-primary rounded fw-semibold mb-3">Admin Overview</span>
                         <h2 class="fw-bold mb-2">Customer posted jobs</h2>
                         <p class="mb-0 text-white-50">Every job submitted from the landing page customer flow appears here.</p>
                     </div>
@@ -114,7 +114,14 @@
                 { data: 'needed_by', name: 'needed_by' },
                 { data: 'status', name: 'status' },
                 { data: 'created_at', name: 'created_at' }
-            ]
+            ],
+            language: {
+                processing: '<div class="spinner-border text-primary" role="status" style="height:80px;"><span class="sr-only">Loading...</span></div>',
+                paginate: {
+                    previous: 'Prev',
+                    next: 'Next'
+                }
+            }
         });
     });
 </script>

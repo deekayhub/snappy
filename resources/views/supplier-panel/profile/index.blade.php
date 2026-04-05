@@ -14,7 +14,7 @@
                     <h3 class="mb-1">Supplier profile</h3>
                     <p class="text-muted mb-0">Edit the company details listed in your supplier requirements file.</p>
                 </div>
-                <span class="badge bg-light text-dark px-3 py-2">Free supplier account</span>
+                <span class="badge bg-light text-dark px-3 py-2 rounded-4">Free supplier account</span>
             </div>
 
             @if (session('success'))
@@ -42,31 +42,31 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Name</label>
-                                <input type="text" name="name" class="form-control form-control-lg rounded-4" value="{{ old('name', $user->name) }}" required>
+                                <input type="text" name="name" class="form-control  rounded-4" value="{{ old('name', $user->name) }}" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Email</label>
-                                <input type="text" class="form-control form-control-lg rounded-4 bg-light" value="{{ $user->email }}" disabled>
+                                <input type="text" class="form-control  rounded-4 bg-light" value="{{ $user->email }}" disabled>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Phone no.</label>
-                                <input type="text" name="phone" class="form-control form-control-lg rounded-4" value="{{ old('phone', $user->phone) }}">
+                                <input type="text" name="phone" class="form-control  rounded-4" value="{{ old('phone', $user->phone) }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Company name</label>
-                                <input type="text" name="company_name" class="form-control form-control-lg rounded-4" value="{{ old('company_name', $user->supplierProfile?->company_name) }}" required>
+                                <input type="text" name="company_name" class="form-control  rounded-4" value="{{ old('company_name', $user->supplierProfile?->company_name) }}" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Website address</label>
-                                <input type="url" name="website" class="form-control form-control-lg rounded-4" value="{{ old('website', $user->supplierProfile?->website) }}">
+                                <input type="url" name="website" class="form-control  rounded-4" value="{{ old('website', $user->supplierProfile?->website) }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Social link</label>
-                                <input type="url" name="social_link" class="form-control form-control-lg rounded-4" value="{{ old('social_link', $user->supplierProfile?->social_link) }}">
+                                <input type="url" name="social_link" class="form-control  rounded-4" value="{{ old('social_link', $user->supplierProfile?->social_link) }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Review site link</label>
-                                <input type="url" name="review_link" class="form-control form-control-lg rounded-4" value="{{ old('review_link', $user->supplierProfile?->review_link) }}">
+                                <input type="url" name="review_link" class="form-control  rounded-4" value="{{ old('review_link', $user->supplierProfile?->review_link) }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Which service do you provide?</label>
@@ -81,7 +81,7 @@
                                 <textarea name="address" rows="4" class="form-control rounded-4" required>{{ old('address', $user->supplierProfile?->address) }}</textarea>
                             </div>
                             <div class="col-12 pt-2">
-                                <button class="btn btn-primary btn-lg rounded-4 px-4">Save supplier profile</button>
+                                <button class="btn btn-primary rounded-4 px-4">Save supplier profile</button>
                             </div>
                         </div>
                     </form>
@@ -121,6 +121,8 @@
 <script>
     $(function () {
         $('.supplier-organisations').select2({
+            theme: 'bootstrap-5',
+            
             placeholder: 'Select supplier categories',
             width: '100%'
         });

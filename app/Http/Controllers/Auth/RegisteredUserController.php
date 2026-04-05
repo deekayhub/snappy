@@ -65,7 +65,7 @@ class RegisteredUserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8',
             'phone' => 'nullable|string|max:30',
-            'organisation' => 'required|array',
+            'organisation' => 'required',
             'organisation.*' => [
                 'required',
                 'integer',
@@ -73,6 +73,9 @@ class RegisteredUserController extends Controller
             ],
             'county' => 'nullable|string',
             'school_name' => 'nullable|string',
+        ],[
+            'organisation.required' => 'Please select organisation.',
+            'organisation.*.exists' => 'The selected organisation category is invalid.',
         ]);
 
         $user = DB::transaction(function () use ($validated) {
@@ -124,6 +127,9 @@ class RegisteredUserController extends Controller
             'website' => 'nullable|url',
             'review_link' => 'nullable|url',
             'social_link' => 'nullable|url',
+        ],[
+            'organisation.required' => 'Please select at least one organisation.',
+            'organisation.*.exists' => 'The selected organisation category is invalid.',
         ]);
 
         $user = DB::transaction(function () use ($validated) {

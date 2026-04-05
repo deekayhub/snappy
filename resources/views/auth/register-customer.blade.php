@@ -52,7 +52,7 @@
                             <label class="form-label mb-0">
                                 Organisation
                             </label>
-                            <select name="organisation[]" id="" class="form-select select2 @error('organisation') is-invalid @enderror @error('organisation.*') is-invalid @enderror">
+                            <select name="organisation" id="" class="form-select select2 @error('organisation') is-invalid @enderror @error('organisation.*') is-invalid @enderror">
                                 <option value="">Select Organisation</option>
                                 @foreach ($organisation ?? [] as $item)
                                     <option value="{{ $item->id }}" @selected(collect(old('organisation', []))->contains((string) $item->id) || collect(old('organisation', []))->contains($item->id))>{{ ucwords($item->name) }}</option>

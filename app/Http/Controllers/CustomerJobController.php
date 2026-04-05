@@ -57,7 +57,7 @@ class CustomerJobController extends Controller
                 ->addIndexColumn()
                 ->addColumn('customer_name', fn (CustomerJob $job) => $job->user?->name ?? '-')
                 ->addColumn('customer_email', fn (CustomerJob $job) => $job->user?->email ?? '-')
-                ->editColumn('budget', fn (CustomerJob $job) => $job->budget ? 'GBP '.number_format((float) $job->budget, 2) : '-')
+                ->editColumn('budget', fn (CustomerJob $job) => $job->budget ? '$ '.number_format((float) $job->budget, 2) : '-')
                 ->editColumn('needed_by', fn (CustomerJob $job) => $job->needed_by?->format('d M Y') ?? '-')
                 ->editColumn('status', fn (CustomerJob $job) => '<span class="supplier-status-badge">'.e(ucfirst($job->status)).'</span>')
                 ->editColumn('created_at', fn (CustomerJob $job) => $job->created_at?->format('d M Y') ?? '-')

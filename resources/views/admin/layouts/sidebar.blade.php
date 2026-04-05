@@ -1,11 +1,11 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.profile') }}">
                 <i class="mdi mdi-account-circle menu-icon"></i>
                 <span class="menu-title">My Profile</span>
             </a>
-        </li>
+        </li> --}}
         @if(auth()->user()->hasAnyRole(['superadmin', 'admin']))
         <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.dashboard') }}">

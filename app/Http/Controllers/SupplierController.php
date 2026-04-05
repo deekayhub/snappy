@@ -53,7 +53,7 @@ class SupplierController extends Controller
                     $btn .= '<button type="button" class="supplier-action-btn edit" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil"></i></button>';
                     $btn .= '<button type="button" class="supplier-action-btn delete" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-trash-can-outline"></i></button>';
                     $btn .= '</div>';
-                    return $btn;
+                    return '';
                 })
                 ->addColumn('status', function ($row) {
                     return '<span class="supplier-status-badge">Active</span>';

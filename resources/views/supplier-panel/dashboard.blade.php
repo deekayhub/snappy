@@ -27,9 +27,9 @@
                 </div>
                 <div class="col-lg-4">
                     <div class="bg-white bg-opacity-10 rounded-4 p-3">
-                        <div class="small text-white-50 mb-2">Membership</div>
-                        <div class="h4 mb-1">Free Supplier</div>
-                        <div class="text-white-50 small">Quote submission is shown as locked until paid membership rules are added.</div>
+                        <div class="small text-white-50 mb-2">Quote activity</div>
+                        <div class="h4 mb-1">{{ $stats['submitted_quotes'] }} quotes sent</div>
+                        <div class="text-white-50 small">Your supplier account can now submit and update quotes directly from the job board.</div>
                     </div>
                 </div>
             </div>
@@ -48,6 +48,9 @@
         </div>
         <div class="col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100"><div class="card-body"><div class="text-muted small">Ended</div><div class="display-6 fw-bold text-danger">{{ $stats['ended_jobs'] }}</div></div></div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-4 h-100"><div class="card-body"><div class="text-muted small">Your Quotes</div><div class="display-6 fw-bold text-primary">{{ $stats['submitted_quotes'] }}</div></div></div>
         </div>
     </div>
 
@@ -81,7 +84,7 @@
                                         <div class="text-lg-end">
                                             <div class="fw-semibold">{{ $job->budget ? 'GBP '.number_format((float) $job->budget, 2) : 'Budget on request' }}</div>
                                             <div class="small text-muted mb-3">Needed by {{ $job->needed_by?->format('d M Y') ?? 'TBC' }}</div>
-                                            <button class="btn btn-secondary rounded-4" disabled>Quote Locked on Free Plan</button>
+                                            <a href="{{ route('supplier-panel.jobs') }}" class="btn btn-primary rounded-4">Open quote form</a>
                                         </div>
                                     </div>
                                 </div>
@@ -111,8 +114,17 @@
             </div>
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body p-4">
-                    <h4 class="mb-2">Quotes area</h4>
-                    <p class="text-muted mb-0">Past quote history is reserved here. A real quote database still needs to be added before quote records can be stored and managed.</p>
+                    <h4 class="mb-3">Recent quotes</h4>
+                    @forelse ($recentQuotes as $quote)
+                        <div class="border rounded-4 p-3 mb-3">
+                            <div class="small text-muted">{{ $quote->created_at?->format('d M Y h:i A') }}</div>
+                            <div class="fw-semibold">{{ $quote->job?->title ?: 'Job removed' }}</div>
+                            <div class="small text-muted text-uppercase">{{ $quote->status }}</div>
+                            <div class="fw-bold mt-1">GBP {{ number_format((float) $quote->total_price, 2) }}</div>
+                        </div>
+                    @empty
+                        <p class="text-muted mb-0">You have not submitted any quotes yet.</p>
+                    @endforelse
                 </div>
             </div>
         </div>
