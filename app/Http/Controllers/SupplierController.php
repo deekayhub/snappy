@@ -48,12 +48,12 @@ class SupplierController extends Controller
                 ->editColumn('organisation_names', fn ($row) => $row->organisation_names ?: '-')
                 ->editColumn('address', fn ($row) => $row->address ?: '-')
                 ->editColumn('website', fn ($row) => $row->website ?: '-')
-                ->addColumn('action', function ($row) {
+                ->addColumn('action', function ($row) { 
                     $btn = '<div class="supplier-actions">';
-                    $btn .= '<button type="button" class="supplier-action-btn edit" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil"></i></button>';
-                    $btn .= '<button type="button" class="supplier-action-btn delete" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-trash-can-outline"></i></button>';
+                    $btn .= '<button type="button" class="supplier-action-btn edit" data-id="' . $row->id . '" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil"></i></button>';
+                    $btn .= '<button type="button" class="supplier-action-btn delete" data-id="' . $row->id . '" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-trash-can-outline"></i></button>';
                     $btn .= '</div>';
-                    return '';
+                    return $btn;
                 })
                 ->addColumn('status', function ($row) {
                     return '<span class="supplier-status-badge">Active</span>';
@@ -67,4 +67,20 @@ class SupplierController extends Controller
 
         return view('admin.suppliers.index');
     }
+
+    public function supplierDestroy($id)
+    {
+        $user = User::with('organisationCategories')->findOrFail($id); 
+
+        DB::transaction(function () use ($user) {
+            $user->supplierProfile()->delete();
+            $user->organisationCategories()->detach();
+            $user->delete();
+        });
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+    
 }

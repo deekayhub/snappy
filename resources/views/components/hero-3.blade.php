@@ -10,7 +10,15 @@
 to get competitive quotes from verified suppliers, all in one place.</p>
                 <p class="text-white">Free for UK schools, sports clubs and individual buyers. Fast, secure, all in one place.</p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-5">
-                    <a href="{{ route('customer.jobs.create') }}" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium">Post a Job</a>
+                    @auth
+                        @if (auth()->user()->hasRole('customer'))
+                            <a href="{{ route('customer.jobs.create') }}" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium">Post a Quote Request</a>
+                        @else
+                            <a href="{{ route('dashboard') }}" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium">Go to Dashboard</a>
+                        @endif
+                    @else
+                        <a href="{{ route('register.customer') }}" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium">Post a Quote Request</a>
+                    @endauth
                     <a href="{{ route('register.supplier') }}" class="btn rounded-4 border text-white px-4 fw-medium">Join as a Supplier</a>
                 </div>
 

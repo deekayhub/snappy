@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
         $defaultRoute = match (true) {
             $user->hasAnyRole(['superadmin', 'admin']) => route('admin.dashboard', absolute: false),
             $user->hasRole('supplier') => route('supplier-panel.dashboard', absolute: false),
-            $user->hasRole('customer') => route('profile.edit', absolute: false),
+            $user->hasRole('customer') => route('customer-panel.dashboard', absolute: false),
             default => route('home', absolute: false),
         };
 

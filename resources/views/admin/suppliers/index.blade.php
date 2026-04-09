@@ -421,6 +421,64 @@
         });
 
         $('[data-toggle="tooltip"]').tooltip();
+
+            $('#supplierTable tbody').on('click', '.supplier-action-btn.edit', function() {
+                var supplierId = $(this).data('id');
+                alert('Edit functionality for supplier ID ' + supplierId + ' will be implemented soon');
+            });
+
+            $('#supplierTable tbody').on('click', '.supplier-action-btn.delete', function () {
+                let supplierId = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Deleting...',
+                            text: 'Please wait',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        $.ajax({
+                            url: "{{ route('admin.suppliers.destroy', ':id') }}".replace(':id', supplierId),
+                            type: 'DELETE',
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function (response) {
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: 'Supplier deleted successfully.',
+                                    timer: 3000,
+                                    showConfirmButton: false
+                                });
+                                table.ajax.reload(null, false);
+                            },
+                            error: function (xhr) {
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Something went wrong.',
+                                });
+                            }
+                        });
+
+                    }
+                });
+            });
+
     });
 </script>
 @endpush

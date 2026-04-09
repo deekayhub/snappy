@@ -4,6 +4,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}"> 
     <title>
             {{ config('app.name', 'Snappy') }}
             @hasSection('title')
@@ -28,6 +29,34 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
     
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}"> 
+    <style>
+      @media (min-width: 992px) {
+        .page-body-wrapper .sidebar {
+          position: fixed;
+          top: 70px;
+          left: 0;
+          bottom: 0;
+          width: 244px;
+          overflow-y: auto;
+          z-index: 1000;
+        }
+
+        .page-body-wrapper .main-panel {
+          margin-left: 244px;
+          width: calc(100% - 244px);
+          min-height: calc(100vh - 70px);
+        }
+
+        .sidebar-icon-only .page-body-wrapper .sidebar {
+          width: 70px;
+        }
+
+        .sidebar-icon-only .page-body-wrapper .main-panel {
+          margin-left: 70px;
+          width: calc(100% - 70px);
+        }
+      }
+    </style>
     @stack('styles')
   </head>
   <body class="with-welcome-text">
@@ -54,6 +83,7 @@
     <script src="{{ asset('admin/assets/vendors/select2/select2.min.js') }}"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
      @stack('scripts')
   </body>
 </html>

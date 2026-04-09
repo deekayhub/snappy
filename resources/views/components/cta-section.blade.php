@@ -6,7 +6,15 @@
                     <h4 class="fw-bold text-white mb-4">Let’s Build Your Next Winning Partnership</h4>
                     <p class="text-white">Thousands of clubs and suppliers already use our platform — join them today.</p>
                         <div class="d-md-flex justify-content-center flex- wrap gap-3">
-                        <a href="{{ route('customer.jobs.create') }}" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium w-100 mb-3">Post a Job</a>
+                        @auth
+                            @if (auth()->user()->hasRole('customer'))
+                                <a href="{{ route('customer.jobs.create') }}" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium w-100 mb-3">Post a Quote Request</a>
+                            @else
+                                <a href="{{ route('dashboard') }}" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium w-100 mb-3">Go to Dashboard</a>
+                            @endif
+                        @else
+                            <a href="{{ route('register.customer') }}" class="btn rounded-4 bg-white px-4 me-md-2 fw-medium w-100 mb-3">Post a Quote Request</a>
+                        @endauth
                         <a href="{{ route('register.supplier') }}" class="btn rounded-4 border text-white px-4 w-100 mb-3">Join as a Supplier</a>
                     </div>
             </div>

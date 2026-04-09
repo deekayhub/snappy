@@ -45,11 +45,11 @@ class CustomerController extends Controller
                 ->editColumn('organisation_names', fn ($row) => $row->organisation_names ?: '-')
                 ->editColumn('school_name', fn ($row) => $row->school_name ?: '-')
                 ->editColumn('county', fn ($row) => $row->county ?: '-')
-                ->addColumn('status', fn () => '<span class="supplier-status-badge">Active</span>')
-                ->addColumn('action', function () {
-                    $btn = '<div class="supplier-actions">';
-                    $btn .= '<button type="button" class="supplier-action-btn edit" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil"></i></button>';
-                    $btn .= '<button type="button" class="supplier-action-btn delete" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-trash-can-outline"></i></button>';
+                ->addColumn('status', fn () => '<span class="customer-status-badge">Active</span>')
+                ->addColumn('action', function ($row) {
+                    $btn = '<div class="customer-actions">';
+                    $btn .= '<button type="button" class="customer-action-btn edit" data-id="' . $row->id . '" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil"></i></button>';
+                    $btn .= '<button type="button" class="customer-action-btn delete" data-id="' . $row->id . '" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-trash-can-outline"></i></button>';
                     $btn .= '</div>';
 
                     return $btn;
@@ -60,5 +60,20 @@ class CustomerController extends Controller
         }
 
         return view('admin.customers.index');
+    }
+
+    public function customerDestroy($id)
+    {
+        $user = User::with('organisationCategories')->findOrFail($id); 
+
+        DB::transaction(function () use ($user) {
+            $user->customerProfile()->delete();
+            $user->organisationCategories()->detach();
+            $user->delete();
+        });
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

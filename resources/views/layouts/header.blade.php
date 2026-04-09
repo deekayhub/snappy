@@ -49,17 +49,10 @@
 
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
                             <li>
-                                <a class="dropdown-item" href="{{ Auth::user()->hasAnyRole(['superadmin', 'admin']) ? route('admin.profile') : (Auth::user()->hasRole('supplier') ? route('supplier-panel.profile') : route('profile.edit')) }}">
-                                    Profile
+                                <a class="dropdown-item" href="{{ route('dashboard') }}">
+                                    Dashboard
                                 </a>
                             </li>
-                            @if (Auth::user()->hasRole('customer'))
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('customer.quotes.index') }}">
-                                        My Quotes
-                                    </a>
-                                </li>
-                            @endif
 
                             <li><hr class="dropdown-divider"></li>
 

@@ -38,7 +38,7 @@
                             <div class="small text-muted">{{ $quote->created_at?->format('d M Y h:i A') }}</div>
                             <div class="fw-semibold">{{ $quote->job?->title ?: 'Job removed' }}</div>
                             <div class="small text-muted mb-1 text-uppercase">{{ $quote->status }}</div>
-                            <div class="small text-muted">Total quoted: GBP {{ number_format((float) $quote->total_price, 2) }}</div>
+                            <div class="small text-muted">Total quoted: € {{ number_format((float) $quote->total_price, 2) }}</div>
                         </div>
                     @empty
                         <div class="text-muted">You have not sent any quotes yet.</div>

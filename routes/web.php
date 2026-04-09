@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\QuoteManagementController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerJobController;
+use App\Http\Controllers\CustomerPanelController;
 use App\Http\Controllers\PageSettingsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuoteController;
@@ -34,19 +35,22 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::match(['post', 'patch'], '/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/post-job', [CustomerJobController::class, 'create'])->name('customer.jobs.create');
-    Route::post('/post-job', [CustomerJobController::class, 'store'])->name('customer.jobs.store');
-    Route::get('/customer/quotes', [QuoteController::class, 'customerIndex'])->name('customer.quotes.index');
-    Route::patch('/customer/quotes/{quote}/status', [QuoteController::class, 'updateStatus'])->name('customer.quotes.status');
 
     Route::get('/dashboard', function () {
         return match (true) {
             auth()->user()->hasAnyRole(['superadmin', 'admin']) => redirect()->route('admin.dashboard'),
             auth()->user()->hasRole('supplier') => redirect()->route('supplier-panel.dashboard'),
-            auth()->user()->hasRole('customer') => redirect()->route('profile.edit'),
+            auth()->user()->hasRole('customer') => redirect()->route('customer-panel.dashboard'),
             default => redirect()->route('home'),
         };
     })->name('dashboard');
+});
+
+Route::middleware(['auth', 'verified', 'role:customer'])->group(function () {
+    Route::get('/post-job', [CustomerJobController::class, 'create'])->name('customer.jobs.create');
+    Route::post('/post-job', [CustomerJobController::class, 'store'])->name('customer.jobs.store');
+    Route::get('/customer/quotes', [CustomerPanelController::class, 'quotes'])->name('customer.quotes.index');
+    Route::patch('/customer/quotes/{quote}/status', [QuoteController::class, 'updateStatus'])->name('customer.quotes.status');
 });
 
 Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -54,7 +58,9 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
 
     Route::get('/jobs', [CustomerJobController::class, 'index'])->name('jobs');
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers');
+    Route::delete('/suppliers/{id}', [SupplierController::class, 'supplierDestroy'])->name('suppliers.destroy');
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
+    Route::delete('/customers/{id}', [CustomerController::class, 'customerDestroy'])->name('customers.destroy');
     Route::get('/invoices', function () {
         return view('admin.invoices.index');
     })->name('invoices');
@@ -86,6 +92,12 @@ Route::middleware(['auth', 'verified', 'role:supplier'])->prefix('supplier-panel
     Route::get('/activity', [SupplierPanelController::class, 'activity'])->name('activity');
     Route::get('/profile', [SupplierPanelController::class, 'profile'])->name('profile');
     Route::post('/jobs/{job}/quotes', [QuoteController::class, 'store'])->name('quotes.store');
+});
+
+Route::middleware(['auth', 'verified', 'role:customer'])->prefix('customer-panel')->name('customer-panel.')->group(function () {
+    Route::get('/dashboard', [CustomerPanelController::class, 'dashboard'])->name('dashboard');
+    Route::get('/jobs', [CustomerPanelController::class, 'jobs'])->name('jobs');
+    Route::get('/quotes', [CustomerPanelController::class, 'quotes'])->name('quotes');
 });
 
 Route::middleware('guest')->group(function () {

@@ -17,8 +17,6 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/vendors/typicons/typicons.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/vendors/simple-line-icons/css/simple-line-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/vendors/css/vendor.bundle.base.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/assets/vendors/select2/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
     <style>
         @media (min-width: 992px) {
@@ -52,16 +50,15 @@
   </head>
   <body class="with-welcome-text">
     <div class="container-scroller">
-      @include('supplier-panel.layouts.header')
+      @include('customer-panel.layouts.header')
       <div class="container-fluid page-body-wrapper">
-        @include('supplier-panel.layouts.sidebar')
+        @include('customer-panel.layouts.sidebar')
         <div class="main-panel">
             @yield('content')
         </div>
       </div>
     </div>
     <script src="{{ asset('admin/assets/vendors/js/vendor.bundle.base.js') }}"></script>
-    <script src="{{ asset('admin/assets/vendors/select2/select2.min.js') }}"></script>
     <script src="{{ asset('admin/assets/js/off-canvas.js') }}"></script>
     <script src="{{ asset('admin/assets/js/template.js') }}"></script>
     <script src="{{ asset('admin/assets/js/settings.js') }}"></script>

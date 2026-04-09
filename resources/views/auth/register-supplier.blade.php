@@ -76,7 +76,7 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label mb-0">Website</label>
-                            <input type="url" name="website" value="{{ old('website') }}" class="form-control @error('website') is-invalid @enderror">
+                            <input type="text" name="website" value="{{ old('website') }}" class="form-control @error('website') is-invalid @enderror">
                             @error('website')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -84,7 +84,7 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label mb-0">Review Site Link  (eg, Trustpilot etc)</label>
-                            <input type="url" name="review_link" value="{{ old('review_link') }}" class="form-control @error('review_link') is-invalid @enderror">
+                            <input type="text" name="review_link" value="{{ old('review_link') }}" class="form-control @error('review_link') is-invalid @enderror">
                             @error('review_link')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -92,7 +92,7 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label mb-0">Social Media Link</label>
-                            <input type="url" name="social_link" value="{{ old('social_link') }}" class="form-control @error('social_link') is-invalid @enderror">
+                            <input type="text" name="social_link" value="{{ old('social_link') }}" class="form-control @error('social_link') is-invalid @enderror">
                             @error('social_link')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

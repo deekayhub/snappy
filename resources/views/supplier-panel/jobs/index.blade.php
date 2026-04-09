@@ -60,7 +60,7 @@
                         <div class="small text-muted mb-2">Organisation: {{ $job->organisation_name ?: 'Not provided' }}</div>
                         <div class="small text-muted mb-2">Location: {{ $job->location ?: 'Not provided' }}</div>
                         <div class="small text-muted mb-3">Needed by: {{ $job->needed_by?->format('d M Y') ?? 'TBC' }}</div>
-                        <div class="fw-semibold mb-3">{{ $job->budget ? '$ '.number_format((float) $job->budget, 2) : 'Budget not shared' }}</div>
+                        <div class="fw-semibold mb-3">{{ $job->budget ? '€ '.number_format((float) $job->budget, 2) : 'Budget not shared' }}</div>
                         <div class="alert alert-light border rounded-4 small mb-3">{{ $meta[2] }}</div>
                         @if ($existingQuote)
                             <div class="small text-success mb-3">Your quote is already submitted for this job.</div>
@@ -87,7 +87,7 @@
                             <div class="row g-3 mb-3">
                                 <div class="col-md-4"><div class="border rounded-4 p-3 h-100"><div class="small text-muted">Category</div><div class="fw-semibold">{{ $job->category ?: 'General' }}</div></div></div>
                                 <div class="col-md-4"><div class="border rounded-4 p-3 h-100"><div class="small text-muted">Location</div><div class="fw-semibold">{{ $job->location ?: 'Not provided' }}</div></div></div>
-                                <div class="col-md-4"><div class="border rounded-4 p-3 h-100"><div class="small text-muted">Budget</div><div class="fw-semibold">{{ $job->budget ? '$ '.number_format((float) $job->budget, 2) : 'Not shared' }}</div></div></div>
+                                <div class="col-md-4"><div class="border rounded-4 p-3 h-100"><div class="small text-muted">Budget</div><div class="fw-semibold">{{ $job->budget ? '€ '.number_format((float) $job->budget, 2) : 'Not shared' }}</div></div></div>
                             </div>
                             <p class="mb-0">{{ $job->description }}</p>
                         </div>

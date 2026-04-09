@@ -109,8 +109,32 @@ class RegisteredUserController extends Controller
         return view('auth.register-supplier', compact('organisation'));
     }
 
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'website' => $this->formatUrl($this->website),
+            'review_link' => $this->formatUrl($this->review_link),
+            'social_link' => $this->formatUrl($this->social_link),
+        ]);
+    }
+
+    private function formatUrl($url)
+    {
+        if (!$url) return null;
+
+        if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
+            return 'https://' . $url;
+        }
+
+        return $url;
+    }
     public function storeSupplier(Request $request)
     {
+        $request->merge([
+            'website' => $this->formatUrl($request->website),
+            'review_link' => $this->formatUrl($request->review_link),
+            'social_link' => $this->formatUrl($request->social_link),
+        ]);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'company_name' => 'required|string|max:255',
