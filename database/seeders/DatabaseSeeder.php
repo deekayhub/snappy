@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             RolesAndPermissionsSeeder::class,
             OrganisationCategorySeeder::class,
             DefaultUsersSeeder::class,
+            DemoUsersSeeder::class,
+            DemoCustomerJobsSeeder::class,
         ]);
     }
 }
