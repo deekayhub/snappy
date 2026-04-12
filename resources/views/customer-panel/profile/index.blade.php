@@ -14,7 +14,6 @@
                     <h3 class="mb-1">Customer profile</h3>
                     <p class="text-muted mb-0">Edit the company details listed in your supplier requirements file.</p>
                 </div>
-                <span class="badge bg-light text-dark px-3 py-2 rounded-4">Free supplier account</span>
             </div>
 
             <div class="row g-4">
