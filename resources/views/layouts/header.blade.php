@@ -18,9 +18,14 @@
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('supplier') ? 'active' : '' }}" href="{{ route('supplier') }}">Suppliers</a>
-            </li>
+            
+            @role('supplier')
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('supplier') ? 'active' : '' }}" href="{{ route('supplier') }}">
+                        Suppliers
+                    </a>
+                </li>
+            @endrole
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('how-it-work') ? 'active' : '' }}" href="{{ route('how-it-work') }}">How it Works</a>
             </li>

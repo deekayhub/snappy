@@ -15,25 +15,7 @@
                     <p class="text-muted mb-0">Edit the company details listed in your supplier requirements file.</p>
                 </div>
                 <span class="badge bg-light text-dark px-3 py-2 rounded-4">Free supplier account</span>
-            </div>
-
-            @if (session('success'))
-                <div class="alert alert-success rounded-4">{{ session('success') }}</div>
-            @endif
-
-            @if (session('status') === 'password-updated')
-                <div class="alert alert-success rounded-4">Password updated successfully.</div>
-            @endif
-
-            @if ($errors->any())
-                <div class="alert alert-danger rounded-4">
-                    <ul class="mb-0 ps-3">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+            </div> 
 
             <div class="row g-4">
                 <div class="col-xl-8">

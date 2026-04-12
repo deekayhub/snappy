@@ -15,9 +15,7 @@
 
 @section('content')
 <div class="content-wrapper p-3">
-    @if (session('success'))
-        <div class="alert alert-success rounded-4">{{ session('success') }}</div>
-    @endif
+     
 
     <div class="card border-0 shadow-sm rounded-4 mb-4">
         <div class="card-body p-4">

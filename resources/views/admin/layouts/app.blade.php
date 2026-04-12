@@ -61,6 +61,7 @@
   </head>
   <body class="with-welcome-text">
     <div class="container-scroller"> 
+    @include('layouts.toast')
       @include('admin.layouts.header')
       <div class="container-fluid page-body-wrapper">
         @include('admin.layouts.sidebar')

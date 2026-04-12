@@ -43,9 +43,9 @@
         <div class="col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100"><div class="card-body"><div class="text-muted small">Active Jobs</div><div class="display-6 fw-bold text-success">{{ $stats['active_jobs'] }}</div></div></div>
         </div>
-        <div class="col-md-6 col-xl-3">
+        {{-- <div class="col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100"><div class="card-body"><div class="text-muted small">Ending Soon</div><div class="display-6 fw-bold text-warning">{{ $stats['ending_soon'] }}</div></div></div>
-        </div>
+        </div> --}}
         <div class="col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100"><div class="card-body"><div class="text-muted small">Ended</div><div class="display-6 fw-bold text-danger">{{ $stats['ended_jobs'] }}</div></div></div>
         </div>

@@ -20,7 +20,7 @@ Route::get('/', function () {
 })->name('home');
 Route::get('/supplier', function () {
     return view('supplier');
-})->name('supplier');
+})->middleware(['auth', 'role:supplier'])->name('supplier');
 Route::get('/how-it-work', function () {
     return view('how-it-work');
 })->name('how-it-work');
@@ -98,6 +98,7 @@ Route::middleware(['auth', 'verified', 'role:customer'])->prefix('customer-panel
     Route::get('/dashboard', [CustomerPanelController::class, 'dashboard'])->name('dashboard');
     Route::get('/jobs', [CustomerPanelController::class, 'jobs'])->name('jobs');
     Route::get('/quotes', [CustomerPanelController::class, 'quotes'])->name('quotes');
+    Route::get('/profile', [CustomerPanelController::class, 'profile'])->name('profile');
 });
 
 Route::middleware('guest')->group(function () {

@@ -50,6 +50,7 @@
   </head>
   <body class="with-welcome-text">
     <div class="container-scroller">
+    @include('layouts.toast')
       @include('customer-panel.layouts.header')
       <div class="container-fluid page-body-wrapper">
         @include('customer-panel.layouts.sidebar')

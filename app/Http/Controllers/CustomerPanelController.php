@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Quote;
+use App\Models\OrganisationCategory;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -49,8 +50,8 @@ class CustomerPanelController extends Controller
             ->withCount('quotes')
             ->latest()
             ->paginate(10);
-
-        return view('customer-panel.jobs.index', compact('jobs'));
+        $categories = OrganisationCategory::where('type', 'supplier')->get();
+        return view('customer-panel.jobs.index', compact('jobs', 'categories'));
     }
 
     public function quotes(Request $request): View
@@ -64,7 +65,20 @@ class CustomerPanelController extends Controller
             ])
             ->latest()
             ->get();
+            
 
         return view('customer-panel.quotes.index', compact('jobs'));
+    }
+
+    public function profile(Request $request): View
+    {
+        $organisation = OrganisationCategory::query()
+            ->orderBy('name')
+            ->get();
+
+        $user = $request->user()->load(['customerProfile', 'organisationCategories']);
+        // dd($organisation->toArray());
+
+        return view('customer-panel.profile.index', compact('user', 'organisation'));
     }
 }

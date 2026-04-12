@@ -1,5 +1,5 @@
-<nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
-    <div class="text-center navbar-brand-wrapper border-bottom d-flex align-items-center justify-content-start">
+<nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row" >
+    <div class="text-center navbar-brand-wrapper border-bottom d-flex align-items-center justify-content-start" style="height: 80px;">
         <div class="me-3">
             <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
                 <span class="icon-menu"></span>
@@ -14,7 +14,7 @@
             </a>
         </div>
     </div>
-    <div class="navbar-menu-wrapper d-flex align-items-top border-bottom">
+    <div class="navbar-menu-wrapper d-flex align-items-top border-bottom" style="height: 80px;">
         <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown d-none d-lg-block user-dropdown">
                 <a class="nav-link dropdown-toggle border rounded-pill px-3" id="SupplierUserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">

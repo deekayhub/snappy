@@ -75,7 +75,7 @@
         <div class="card job-table-card">
             <div class="card-body p-4">
                 <div class="table-responsive">
-                    <table class="table border table-bordered table-hover align-middle mb-0 w-100" id="jobs-table">
+                    <table class="table table-bordered align-middle mb-0 w-100" id="jobs-table">
                         <thead>
                             <tr>
                                 <th>#</th>

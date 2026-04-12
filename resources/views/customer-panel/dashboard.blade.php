@@ -12,7 +12,7 @@
                     <p class="mb-0 text-white-50">Everything you need in one panel: post jobs, track quote activity, and follow up with suppliers from a single screen.</p>
                 </div>
                 <div class="col-lg-4">
-                    <a href="{{ route('customer.jobs.create') }}" class="btn btn-light rounded-4 w-100 py-3">Post New Quote Request</a>
+                    {{-- <a href="{{ route('customer.jobs.create') }}" class="btn btn-light rounded-4 w-100 py-3">Post New Quote Request</a> --}}
                 </div>
             </div>
         </div>

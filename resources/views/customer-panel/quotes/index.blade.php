@@ -9,15 +9,13 @@
             <h2 class="mt-2 mb-1">Supplier quotes for your jobs</h2>
             <p class="text-muted mb-0">Compare prices, update quote status, and email suppliers from one screen.</p>
         </div>
-        <a href="{{ route('customer.jobs.create') }}" class="btn btn-primary rounded-4">Post New Quote Request</a>
-    </div>
-
-    @if (session('success'))
-        <div class="alert alert-success rounded-4">{{ session('success') }}</div>
-    @endif
+        {{-- <a href="{{ route('customer.jobs.create') }}" class="btn btn-primary rounded-4">Post New Quote Request</a> --}}
+    </div> 
 
     @forelse ($jobs as $job)
-        @php($supplierCount = $job->quotes->pluck('supplier_user_id')->filter()->unique()->count())
+        @php
+            $supplierCount = $job->quotes->pluck('supplier_user_id')->filter()->unique()->count();
+        @endphp
         <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-body p-4">
                 <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-3 mb-4">
@@ -28,7 +26,7 @@
                     </div>
                     <div class="d-flex gap-2 flex-wrap">
                         <span class="badge bg-primary-subtle text-primary px-3 py-2">{{ $job->quotes->count() }} quotes</span>
-                        <span class="badge bg-success-subtle text-success px-3 py-2">{{ $supplierCount }} suppliers quoted</span>
+                        <span class="badge bg-success-subtle text-success px-3 py-2">{{ $supplierCount ?? '' }} suppliers quoted</span>
                     </div>
                 </div>
 

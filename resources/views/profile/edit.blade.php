@@ -10,13 +10,13 @@
 <div class="container py-5">
     <div class="row g-4">
         <div class="col-12">
-            <div class="p-4 p-lg-5 rounded-5 border shadow-sm" style="background: linear-gradient(135deg, #f3faf8, #fff8ee);">
+            <div class="p-4 p-lg-5 rounded-5 border shadow-sm" style="background: linear-gradient(155deg, rgba(15, 23, 42, 1) 34%, rgba(2, 132, 199, 1) 77%);">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-8">
                         <span class="badge rounded-pill text-bg-light px-3 py-2">Customer account</span>
-                        <h1 class="mt-3 mb-2">Manage your profile and password</h1>
-                        <p class="text-secondary mb-0">Keep your contact details up to date and change your password from one modern account screen.</p>
-                        <a href="{{ route('customer.quotes.index') }}" class="btn btn-outline-dark rounded-4 mt-3 px-4 py-2">Open quote inbox</a>
+                        <h1 class="mt-3 mb-2 text-white">Manage your profile and password</h1>
+                        <p class="text-white mb-0">Keep your contact details up to date and change your password from one modern account screen.</p>
+                        <a href="{{ route('customer.quotes.index') }}" class="btn btn-outline-primary rounded-4 mt-3 px-4 py-2">Open quote inbox</a>
                     </div>
                     <div class="col-lg-4">
                         <div class="row g-3">
@@ -102,7 +102,7 @@
                             <input name="school_name" class="form-control rounded-3" value="{{ old('school_name', optional($user->customerProfile)->school_name) }}">
                         </div>
                         <div class="col-12 pt-2">
-                            <button class="btn btn-primary rounded-3">Save profile changes</button>
+                            <button class="btn btn-primary rounded-3 py-2">Save profile changes</button>
                         </div>
                     </div>
                 </form>
@@ -137,7 +137,7 @@
                             <input type="password" name="password_confirmation" class="form-control rounded-3" required>
                         </div>
                         <div class="col-12 pt-2">
-                            <button class="btn btn-dark rounded-3 w-100">Update password</button>
+                            <button class="btn btn-dark rounded-3 w-100 py-2">Update password</button>
                         </div>
                     </div>
                 </form>

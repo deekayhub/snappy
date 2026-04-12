@@ -1,5 +1,5 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
-    <ul class="nav">
+    <ul class="nav pt-3">
         <li class="nav-item">
             <a class="nav-link" href="{{ route('supplier-panel.dashboard') }}">
                 <i class="mdi mdi-view-dashboard menu-icon"></i>

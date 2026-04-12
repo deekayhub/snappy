@@ -42,8 +42,7 @@ class CustomerJobController extends Controller
 
         $request->user()->customerJobs()->create($validated);
 
-        return redirect()
-            ->route('customer.jobs.create')
+        return back()
             ->with('success', 'Your job has been posted successfully.');
     }
 
