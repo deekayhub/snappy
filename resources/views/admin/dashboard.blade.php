@@ -21,7 +21,9 @@
                             </div>
                             <h2 class="mt-1 mb-3">{{ $jobs->count() ?? '0' }}</h2>
                             <div class="mb-0">
-                                <span class="badge badge-success">0%</span>
+                                <span class="badge {{ $jobPercentage >= 0 ? 'badge-success' : 'badge-danger' }}">
+                                    {{ number_format($jobPercentage, 1) }}%
+                                </span>
                                 <span class="text-muted">Since last week</span>
                             </div>
                         </div>
@@ -65,7 +67,9 @@
                             </div>
                             <h2 class="mt-1 mb-3">{{ $supplierCount ?? '0' }}</h2>
                             <div class="mb-0">
-                                <span class="badge badge-success">0%</span>
+                                <span class="badge {{ $supplierPercentage >= 0 ? 'badge-success' : 'badge-danger' }}">
+                                    {{ number_format($supplierPercentage, 1) }}%
+                                </span>
                                 <span class="text-muted">Since last week</span>
                             </div>
                         </div>
@@ -87,7 +91,9 @@
                             </div>
                             <h2 class="mt-1 mb-3">{{ $customerCount ?? '0' }}</h2>
                             <div class="mb-0">
-                                <span class="badge badge-success">0%</span>
+                                <span class="badge {{ $customerPercentage >= 0 ? 'badge-success' : 'badge-danger' }}">
+                                    {{ number_format($customerPercentage, 1) }}%
+                                </span>
                                 <span class="text-muted">Since last week</span>
                             </div>
                         </div>
