@@ -76,7 +76,7 @@
                             <div class="small text-muted mb-2">{{ $quote->supplier?->supplierProfile?->company_name ?: $quote->supplier?->name }}</div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="badge bg-light text-dark text-uppercase">{{ $quote->status }}</span>
-                                <span class="fw-bold">€ {{ number_format((float) $quote->total_price, 2) }}</span>
+                                <span class="fw-bold">£ {{ number_format((float) $quote->total_price, 2) }}</span>
                             </div>
                         </div>
                     @empty
@@ -88,3 +88,4 @@
     </div>
 </div>
 @endsection
+

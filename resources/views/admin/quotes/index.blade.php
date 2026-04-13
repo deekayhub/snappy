@@ -88,7 +88,7 @@
                                     <div class="fw-semibold">{{ $quote->job?->user?->name ?: '-' }}</div>
                                     <div class="small text-muted">{{ $quote->job?->user?->email ?: '-' }}</div>
                                 </td>
-                                <td class="fw-bold">€ {{ number_format((float) $quote->total_price, 2) }}</td>
+                                <td class="fw-bold">£ {{ number_format((float) $quote->total_price, 2) }}</td>
                                 <td><span class="badge bg-light text-dark text-uppercase">{{ $quote->status }}</span></td>
                                 <td>{{ $quote->sent_at?->format('d M Y h:i A') ?: '-' }}</td>
                             </tr>
@@ -104,3 +104,4 @@
     </div>
 </div>
 @endsection
+

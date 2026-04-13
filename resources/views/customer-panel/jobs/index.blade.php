@@ -24,7 +24,7 @@
                     <div class="text-lg-end">
                         <span class="badge bg-{{ $job->status === 'open' ? 'success' : 'secondary' }}">{{ ucfirst($job->status) }}</span>
                         <div class="small text-muted mt-2">Needed by: {{ $job->needed_by?->format('d M Y') ?? 'Not set' }}</div>
-                        <div class="small text-muted">Budget: {{ $job->budget ? '€ '.number_format((float) $job->budget, 2) : 'Not shared' }}</div>
+                        <div class="small text-muted">Budget: {{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Not shared' }}</div>
                         <div class="fw-semibold mt-2">{{ $job->quotes_count }} supplier quotes</div>
                     </div>
                 </div>

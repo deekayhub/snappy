@@ -52,25 +52,25 @@
                                     <div class="col-6">
                                         <div class="border rounded-4 p-2 h-100">
                                             <div class="small text-muted">Job price</div>
-                                            <div class="fw-semibold">€ {{ number_format((float) $quote->price_for_job, 2) }}</div>
+                                            <div class="fw-semibold">£ {{ number_format((float) $quote->price_for_job, 2) }}</div>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="border rounded-4 p-2 h-100">
                                             <div class="small text-muted">Delivery</div>
-                                            <div class="fw-semibold">€ {{ number_format((float) $quote->delivery_cost, 2) }}</div>
+                                            <div class="fw-semibold">£ {{ number_format((float) $quote->delivery_cost, 2) }}</div>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="border rounded-4 p-2 h-100">
                                             <div class="small text-muted">Discount</div>
-                                            <div class="fw-semibold">€ {{ number_format((float) $quote->discount_offered, 2) }}</div>
+                                            <div class="fw-semibold">£ {{ number_format((float) $quote->discount_offered, 2) }}</div>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="border rounded-4 p-2 h-100 bg-light">
                                             <div class="small text-muted">Total</div>
-                                            <div class="fw-bold">€ {{ number_format((float) $quote->total_price, 2) }}</div>
+                                            <div class="fw-bold">£ {{ number_format((float) $quote->total_price, 2) }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -114,3 +114,4 @@
     @endforelse
 </div>
 @endsection
+
