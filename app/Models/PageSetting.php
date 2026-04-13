@@ -1,20 +1,3 @@
 <?php
+// Page settings feature removed.
 
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-class PageSetting extends Model
-{
-    protected $fillable = [
-        'key',
-        'value',
-    ];
-
-    protected function casts(): array
-    {
-        return [
-            'value' => 'array',
-        ];
-    }
-}

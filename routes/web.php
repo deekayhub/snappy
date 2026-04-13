@@ -7,7 +7,6 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerJobController;
 use App\Http\Controllers\CustomerPanelController;
-use App\Http\Controllers\PageSettingsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\SupplierController;
@@ -75,10 +74,6 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
     Route::put('/categories/{category}', [OrganisationCategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{category}', [OrganisationCategoryController::class, 'destroy'])->name('categories.destroy');
 
-    Route::get('/page-settings', [PageSettingsController::class, 'index'])
-        ->name('page-settings');
-    Route::post('/page-settings', [PageSettingsController::class, 'update'])
-        ->name('page-settings.update');
 });
 
 Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {

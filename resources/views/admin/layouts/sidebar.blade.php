@@ -55,13 +55,6 @@
                 <span class="menu-title">Categories</span>
             </a>
         </li>
-        <li class="nav-item nav-category">Page Settings</li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.page-settings') }}">
-                <i class="mdi mdi-home menu-icon"></i>
-                <span class="menu-title">Page Setings</span>
-            </a>
-        </li>
         @endif
     </ul>
 </nav>
