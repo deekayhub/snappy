@@ -50,7 +50,7 @@
                                     <div class="small text-muted">{{ $job->category ?: 'General' }} | {{ $job->location ?: 'No location set' }}</div>
                                 </div>
                                 <div class="text-end">
-                                    <span class="badge bg-light text-dark">{{ $job->quotes_count }} quotes</span>
+                                    <span class="badge bg-light text-dark rounded">{{ $job->quotes_count }} quotes</span>
                                     <div class="small text-muted mt-1">{{ $job->created_at?->format('d M Y') }}</div>
                                 </div>
                             </div>
@@ -75,7 +75,7 @@
                             <div class="fw-semibold">{{ $quote->job?->title ?: 'Job removed' }}</div>
                             <div class="small text-muted mb-2">{{ $quote->supplier?->supplierProfile?->company_name ?: $quote->supplier?->name }}</div>
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge bg-light text-dark text-uppercase">{{ $quote->status }}</span>
+                                <span class="badge bg-light text-dark text-uppercase rounded">{{ $quote->status }}</span>
                                 <span class="fw-bold">£ {{ number_format((float) $quote->total_price, 2) }}</span>
                             </div>
                         </div>

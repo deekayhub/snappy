@@ -41,6 +41,22 @@
                                 </div>
                                 <h5 class="mb-1">{{ $quote->supplier?->supplierProfile?->company_name ?: $quote->supplier?->name }}</h5>
                                 <div class="small text-muted mb-2">{{ $quote->supplier?->email }}</div>
+                                @php
+                                    $avgRating = $quote->supplier?->supplier_average_rating ? round((float) $quote->supplier->supplier_average_rating, 1) : null;
+                                    $ratingCount = (int) ($quote->supplier?->supplier_ratings_count ?? 0);
+                                @endphp
+                                <div class="small mb-2">
+                                    @if ($avgRating)
+                                        <span class="text-warning">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <i class="fa {{ $i <= round($avgRating) ? 'fa-star' : 'fa-star-o' }}"></i>
+                                            @endfor
+                                        </span>
+                                        <span class="text-muted">{{ $avgRating }}/5 ({{ $ratingCount }} ratings)</span>
+                                    @else
+                                        <span class="text-muted">No ratings yet</span>
+                                    @endif
+                                </div>
                                 <p class="mb-0 text-secondary">{{ $quote->notes ?: 'No extra notes were provided with this quote.' }}</p>
                             </div>
                             <div class="col-lg-4">
@@ -92,7 +108,47 @@
                                 <input type="hidden" name="status" value="submitted">
                                 <button class="btn btn-outline-secondary rounded-4">Mark pending</button>
                             </form>
+                            @if (in_array($quote->status, ['accepted', 'completed']))
+                                <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="status" value="completed">
+                                    <button class="btn btn-outline-dark rounded-4">Mark completed</button>
+                                </form>
+                            @endif
                         </div>
+
+                        @if ($quote->status === 'completed')
+                            <div class="border rounded-4 p-3 mt-3 bg-light">
+                                <div class="fw-semibold mb-2">Rate this supplier</div>
+                                <form method="POST" action="{{ route('customer.quotes.rating', $quote) }}" class="row g-2 align-items-end">
+                                    @csrf
+                                    <div class="col-md-3">
+                                        <label class="form-label small text-muted">Stars</label>
+                                        <select name="customer_rating" class="form-select rounded-4" required>
+                                            <option value="">Select</option>
+                                            @for ($i = 5; $i >= 1; $i--)
+                                                <option value="{{ $i }}" @selected((int) old('customer_rating', $quote->customer_rating) === $i)>{{ $i }} Star{{ $i > 1 ? 's' : '' }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <label class="form-label small text-muted">Review (optional)</label>
+                                        <input
+                                            type="text"
+                                            name="customer_review"
+                                            class="form-control rounded-4"
+                                            maxlength="1000"
+                                            value="{{ old('customer_review', $quote->customer_review) }}"
+                                            placeholder="Share your experience with this supplier"
+                                        >
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-primary rounded-4 w-100">{{ $quote->customer_rating ? 'Update' : 'Submit' }}</button>
+                                    </div>
+                                </form>
+                            </div>
+                        @endif
                     </div>
                 @empty
                     <div class="alert alert-light border rounded-4 mb-0">No supplier quotes have been submitted for this job yet.</div>

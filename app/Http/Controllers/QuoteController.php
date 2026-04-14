@@ -61,7 +61,13 @@ class QuoteController extends Controller
 
         $jobs = $request->user()
             ->customerJobs()
-            ->with(['quotes.supplier.supplierProfile'])
+            ->with([
+                'quotes.supplier' => fn ($supplierQuery) => $supplierQuery
+                    ->select('id', 'name', 'email')
+                    ->withAvg('ratedSupplierQuotes as supplier_average_rating', 'customer_rating')
+                    ->withCount('ratedSupplierQuotes as supplier_ratings_count'),
+                'quotes.supplier.supplierProfile:id,user_id,company_name',
+            ])
             ->latest()
             ->get();
 
@@ -77,13 +83,43 @@ class QuoteController extends Controller
         }
 
         $validated = $request->validate([
-            'status' => ['required', 'in:accepted,rejected,submitted'],
+            'status' => ['required', 'in:accepted,rejected,submitted,completed'],
         ]);
+
+        if ($validated['status'] === 'completed' && ! in_array($quote->status, ['accepted', 'completed'], true)) {
+            return back()->with('error', 'Only accepted quotes can be marked as completed.');
+        }
 
         $quote->update([
             'status' => $validated['status'],
         ]);
 
         return back()->with('success', 'Quote status updated successfully.');
+    }
+
+    public function rateSupplier(Request $request, Quote $quote): RedirectResponse
+    {
+        if (! $request->user()?->hasRole('customer') || $quote->job?->user_id !== $request->user()->id) {
+            return redirect()
+                ->route('home')
+                ->with('error', 'You are not allowed to rate this supplier.');
+        }
+
+        if ($quote->status !== 'completed') {
+            return back()->with('error', 'You can rate a supplier only after marking the quote as completed.');
+        }
+
+        $validated = $request->validate([
+            'customer_rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'customer_review' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $quote->update([
+            'customer_rating' => $validated['customer_rating'],
+            'customer_review' => $validated['customer_review'] ?? null,
+            'rated_at' => now(),
+        ]);
+
+        return back()->with('success', 'Supplier rating saved successfully.');
     }
 }

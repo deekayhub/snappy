@@ -16,6 +16,9 @@ class Quote extends Model
         'total_price',
         'notes',
         'status',
+        'customer_rating',
+        'customer_review',
+        'rated_at',
         'sent_at',
     ];
 
@@ -26,6 +29,8 @@ class Quote extends Model
             'discount_offered' => 'decimal:2',
             'price_for_job' => 'decimal:2',
             'total_price' => 'decimal:2',
+            'customer_rating' => 'integer',
+            'rated_at' => 'datetime',
             'sent_at' => 'datetime',
         ];
     }

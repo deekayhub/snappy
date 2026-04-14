@@ -50,6 +50,7 @@ Route::middleware(['auth', 'verified', 'role:customer'])->group(function () {
     Route::post('/post-job', [CustomerJobController::class, 'store'])->name('customer.jobs.store');
     Route::get('/customer/quotes', [CustomerPanelController::class, 'quotes'])->name('customer.quotes.index');
     Route::patch('/customer/quotes/{quote}/status', [QuoteController::class, 'updateStatus'])->name('customer.quotes.status');
+    Route::post('/customer/quotes/{quote}/rating', [QuoteController::class, 'rateSupplier'])->name('customer.quotes.rating');
 });
 
 Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {

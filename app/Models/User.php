@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Laravel\Cashier\Billable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -75,6 +76,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function supplierQuotes(): HasMany
     {
         return $this->hasMany(Quote::class, 'supplier_user_id');
+    }
+
+    public function ratedSupplierQuotes(): HasMany
+    {
+        return $this->hasMany(Quote::class, 'supplier_user_id')->whereNotNull('customer_rating');
     }
 
 

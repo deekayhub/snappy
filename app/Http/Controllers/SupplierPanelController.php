@@ -20,6 +20,17 @@ class SupplierPanelController extends Controller
             ->take(5)
             ->get();
 
+        $ratingSummary = $request->user()
+            ->supplierQuotes()
+            ->whereNotNull('customer_rating')
+            ->selectRaw('AVG(customer_rating) as average_rating, COUNT(customer_rating) as ratings_count')
+            ->first();
+        $supplierAverageRating = $ratingSummary?->average_rating
+            ? round((float) $ratingSummary->average_rating, 1)
+            : null;
+        $supplierRatingsCount = (int) ($ratingSummary?->ratings_count ?? 0);
+            // dd($ratingSummary->toArray());
+
         $stats = [
             'available_jobs' => CustomerJob::count(),
             'active_jobs' => CustomerJob::where('status', 'open')->count(),
@@ -33,7 +44,7 @@ class SupplierPanelController extends Controller
             'submitted_quotes' => $request->user()->supplierQuotes()->count(),
         ];
 
-        return view('supplier-panel.dashboard', compact('user', 'stats', 'jobs', 'recentQuotes'));
+        return view('supplier-panel.dashboard', compact('user', 'stats', 'jobs', 'recentQuotes', 'supplierAverageRating', 'supplierRatingsCount'));
     }
 
     public function jobs(Request $request): View
@@ -51,6 +62,9 @@ class SupplierPanelController extends Controller
                     ->orWhere('location', 'like', "%{$search}%");
             });
         }
+        if ($request->filled('category')) {
+            $query->where('category', $request->string('category')->toString());
+        }
 
         $sort = $request->string('sort', 'newest')->toString();
         match ($sort) {
@@ -62,8 +76,9 @@ class SupplierPanelController extends Controller
         };
 
         $jobs = $query->paginate(9)->withQueryString();
+        $categories = OrganisationCategory::query()->where('type', 'supplier')->orderBy('name')->get();
 
-        return view('supplier-panel.jobs.index', compact('jobs', 'sort'));
+        return view('supplier-panel.jobs.index', compact('jobs', 'sort', 'categories'));
     }
 
     public function reports(): View

@@ -10,10 +10,17 @@ class SupplierProfile extends Model
     protected $fillable = [
         'user_id',
         'company_name',
+        'company_logo',
         'address',
+        'company_description',
         'website',
         'review_link',
         'social_link',
+        'social_links',
+    ];
+
+    protected $casts = [
+        'social_links' => 'array',
     ];
 
     public function user(): BelongsTo

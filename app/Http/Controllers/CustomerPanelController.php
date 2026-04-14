@@ -60,7 +60,10 @@ class CustomerPanelController extends Controller
             ->customerJobs()
             ->with([
                 'quotes' => fn ($quoteQuery) => $quoteQuery->latest(),
-                'quotes.supplier:id,name,email',
+                'quotes.supplier' => fn ($supplierQuery) => $supplierQuery
+                    ->select('id', 'name', 'email')
+                    ->withAvg('ratedSupplierQuotes as supplier_average_rating', 'customer_rating')
+                    ->withCount('ratedSupplierQuotes as supplier_ratings_count'),
                 'quotes.supplier.supplierProfile:id,user_id,company_name',
             ])
             ->latest()

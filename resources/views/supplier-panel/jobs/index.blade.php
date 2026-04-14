@@ -6,8 +6,8 @@
         if ($job->status !== 'open' || ($job->needed_by && $job->needed_by->isPast())) {
             return ['Ended', 'danger', 'Job listing ended'];
         }
-        if ($job->needed_by && $job->needed_by->isBefore(now()->addDays(4))) {
-            return ['Ending Soon', 'warning', 'Job listing ending soon'];
+        if ($job->needed_by && $job->needed_by->isBefore(now()->addDays(1))) {
+            return ['Ending Soon', 'warning', 'Job ending soon'];
         }
         return ['Active', 'success', 'Job active'];
     };
@@ -20,10 +20,22 @@
     <div class="card border-0 shadow-sm rounded-4 mb-4">
         <div class="card-body p-4">
             <form method="GET" class="row g-3 align-items-end">
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <label class="form-label">Search jobs</label>
                     <input type="text" name="search" value="{{ request('search') }}" class="form-control rounded-4" placeholder="Search title, category, organisation, location">
                 </div>
+                <div class="col-md-3">
+                    <label class="form-label">Category</label>
+                    <select name="category" class="form-select rounded-4">
+                        <option value="">All Categories</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->name }}" @selected($category->name === request('category'))>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                 
                 <div class="col-md-3">
                     <label class="form-label">Sort</label>
                     <select name="sort" class="form-select rounded-4">
@@ -36,6 +48,9 @@
                 </div>
                 <div class="col-md-1">
                     <button class="btn btn-primary rounded-4 w-100">Go</button>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-secondary rounded-4 w-100" onclick="removeParams()"><i class="fa fa-undo"></i></button>
                 </div>
             </form>
         </div>
@@ -54,12 +69,26 @@
                         </div>
                         <h4 class="mb-2">{{ $job->title }}</h4>
                         <p class="text-muted mb-3">{{ \Illuminate\Support\Str::limit($job->description, 140) }}</p>
-                        <div class="small text-muted mb-2">Category: {{ $job->category ?: 'General' }}</div>
-                        <div class="small text-muted mb-2">Organisation: {{ $job->organisation_name ?: 'Not provided' }}</div>
-                        <div class="small text-muted mb-2">Location: {{ $job->location ?: 'Not provided' }}</div>
-                        <div class="small text-muted mb-3">Needed by: {{ $job->needed_by?->format('d M Y') ?? 'TBC' }}</div>
+                        <div class="alert alert-light rounded p-2 mb-3">
+                            <div class="small text-muted mb-2">Category: <strong class="text-capitalize">{{ $job->category ?: 'General' }}</strong></div>
+                            <div class="small text-muted mb-2">Organisation: {{ $job->organisation_name ?: 'Not provided' }}</div>
+                            <div class="small text-muted mb-2">Location: {{ $job->location ?: 'Not provided' }}</div>
+                            <div class="small text-muted mb-3">Needed by: {{ $job->needed_by?->format('d M Y') ?? 'TBC' }}</div>
+                        </div>
                         <div class="fw-semibold mb-3">{{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Budget not shared' }}</div>
-                        <div class="alert alert-light border rounded-4 small mb-3">{{ $meta[2] }}</div>
+                        <div class="alert alert-light border rounded-4 small mb-3">
+                            <div class="d-flex justify-content-between flex-wrap align-items-center">
+                                {{ $meta[2] }} 
+                                @if ($meta[0] === 'Ending Soon' && $job->needed_by)
+                                    <div class="text-danger fw-semibold mt-1 js-ending-soon-countdown"
+                                        data-end-at="{{ $job->needed_by->copy()->endOfDay()->toIso8601String() }}"
+                                    >
+                                        Time left: --
+                                    </div>
+                                @endif
+
+                            </div>
+                        </div>
                         @if ($existingQuote)
                             <div class="small text-success mb-3">Your quote is already submitted for this job.</div>
                         @endif
@@ -110,17 +139,21 @@
                             @csrf
                             <div class="modal-body">
                                 <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <label class="form-label">Delivery cost</label>
-                                        <input type="number" name="delivery_cost" step="0.01" min="0" class="form-control rounded-4" value="{{ old('delivery_cost', optional($existingQuote)->delivery_cost) }}">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Price for job</label>
+                                        <input type="number" name="price_for_job" step="0.01" min="0" class="form-control rounded-4" value="{{ old('price_for_job', optional($existingQuote)->price_for_job) }}" required>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label">Discount offered</label>
                                         <input type="number" name="discount_offered" step="0.01" min="0" class="form-control rounded-4" value="{{ old('discount_offered', optional($existingQuote)->discount_offered) }}">
                                     </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label">Price for job</label>
-                                        <input type="number" name="price_for_job" step="0.01" min="0" class="form-control rounded-4" value="{{ old('price_for_job', optional($existingQuote)->price_for_job) }}" required>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Delivery cost</label>
+                                        <input type="number" name="delivery_cost" step="0.01" min="0" class="form-control rounded-4" value="{{ old('delivery_cost', optional($existingQuote)->delivery_cost) }}">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Total</label>
+                                        <input type="number" name="total" step="0.01" min="0" class="form-control rounded-4" value="{{ old('total', optional($existingQuote)->total_price) }}" readonly>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">Notes</label>
@@ -149,3 +182,80 @@
 </div>
 @endsection
 
+@push('scripts')
+<script>
+    function removeParams() {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('search');
+        url.searchParams.delete('category');
+        url.searchParams.delete('sort');
+        // window.history.replaceState({}, document.title, url.pathname + url.search);
+        window.location.href = url.pathname + url.search;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const priceInput = document.querySelector('input[name="price_for_job"]');
+        const discountInput = document.querySelector('input[name="discount_offered"]');
+        const deliveryInput = document.querySelector('input[name="delivery_cost"]');
+        const totalInput = document.querySelector('input[name="total"]');
+
+        function calculateTotal() {
+            let price = parseFloat(priceInput.value) || 0;
+            let discount = parseFloat(discountInput.value) || 0;
+            let delivery = parseFloat(deliveryInput.value) || 0;
+
+            let total = price - discount + delivery;
+
+            if (total < 0) total = 0;
+
+            totalInput.value = total.toFixed(2);
+        }
+        calculateTotal();
+
+        totalInput.value = "0.00";
+
+        priceInput.addEventListener("input", calculateTotal);
+        discountInput.addEventListener("input", calculateTotal);
+        deliveryInput.addEventListener("input", calculateTotal);
+    });
+    (function () {
+        function formatTimeLeft(diffMs) {
+            if (diffMs <= 0) {
+                return 'Ended';
+            }
+
+            var totalSeconds = Math.floor(diffMs / 1000);
+            var days = Math.floor(totalSeconds / 86400);
+            var hours = Math.floor((totalSeconds % 86400) / 3600);
+            var minutes = Math.floor((totalSeconds % 3600) / 60);
+            var seconds = totalSeconds % 60;
+
+            return days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+        }
+
+        var timers = Array.prototype.slice.call(document.querySelectorAll('.js-ending-soon-countdown'));
+        if (!timers.length) {
+            return;
+        }
+
+        function tick() {
+            var now = Date.now();
+
+            timers.forEach(function (el) {
+                var endAt = Date.parse(el.dataset.endAt);
+                if (Number.isNaN(endAt)) {
+                    el.textContent = 'Time left: --';
+                    return;
+                }
+
+                var left = endAt - now;
+                el.textContent = 'Time left: ' + formatTimeLeft(left);
+            });
+        }
+
+        tick();
+        setInterval(tick, 1000);
+    })();
+</script>
+@endpush

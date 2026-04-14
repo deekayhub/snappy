@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -96,12 +97,24 @@ class ProfileController extends Controller
                 'website' => 'nullable|url',
                 'review_link' => 'nullable|url',
                 'social_link' => 'nullable|url',
+                'company_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+                'company_description' => 'nullable|string|max:5000',
+                'social_links' => 'nullable|array',
+                'social_links.*.platform' => 'required_with:social_links.*.url|string|in:facebook,instagram,youtube,linkedin,x,tiktok,other',
+                'social_links.*.url' => 'nullable|url',
             ]);
         }
 
+        $request->merge([
+            'website' => $this->formatUrl($request->input('website')),
+            'review_link' => $this->formatUrl($request->input('review_link')),
+            'social_link' => $this->formatUrl($request->input('social_link')),
+            'social_links' => $this->normalizeSupplierSocialLinks($request->input('social_links')),
+        ]);
+
         $validated = $request->validate($rules);
 
-        DB::transaction(function () use ($user, $validated) {
+        DB::transaction(function () use ($user, $validated, $request) {
             $user->update([
                 'name' => $validated['name'],
                 'phone' => $validated['phone'] ?? null,
@@ -117,12 +130,30 @@ class ProfileController extends Controller
             }
 
             if ($user->hasRole('supplier')) {
+                $profile = $user->supplierProfile;
+                $companyLogoPath = $profile?->company_logo;
+
+                if ($request->hasFile('company_logo')) {
+                    if ($companyLogoPath) {
+                        Storage::disk('public')->delete($companyLogoPath);
+                    }
+                    $companyLogoPath = $request->file('company_logo')->store('supplier-logos', 'public');
+                }
+
+                $socialLinks = $validated['social_links'] ?? [];
+                $firstSocialLink = ! empty($socialLinks)
+                    ? ($socialLinks[0]['url'] ?? null)
+                    : ($validated['social_link'] ?? null);
+
                 $user->supplierProfile()->updateOrCreate([], [
                     'company_name' => $validated['company_name'],
+                    'company_logo' => $companyLogoPath,
                     'address' => $validated['address'],
+                    'company_description' => $validated['company_description'] ?? null,
                     'website' => $validated['website'] ?? null,
                     'review_link' => $validated['review_link'] ?? null,
-                    'social_link' => $validated['social_link'] ?? null,
+                    'social_link' => $firstSocialLink,
+                    'social_links' => ! empty($socialLinks) ? $socialLinks : null,
                 ]);
 
                 $this->syncOrganisationCategories($user, 'supplier', $validated['supplier_organisation'] ?? []);
@@ -146,6 +177,48 @@ class ProfileController extends Controller
         }
 
         $user->organisationCategories()->syncWithoutDetaching($selectedIds);
+    }
+
+    private function formatUrl(?string $url): ?string
+    {
+        if (! $url) {
+            return null;
+        }
+
+        if (! preg_match('~^(?:f|ht)tps?://~i', $url)) {
+            return 'https://'.$url;
+        }
+
+        return $url;
+    }
+
+    private function normalizeSupplierSocialLinks($links): array
+    {
+        if (! is_array($links)) {
+            return [];
+        }
+
+        $normalized = [];
+
+        foreach ($links as $link) {
+            if (! is_array($link)) {
+                continue;
+            }
+
+            $platform = isset($link['platform']) ? trim((string) $link['platform']) : '';
+            $url = isset($link['url']) ? $this->formatUrl(trim((string) $link['url'])) : null;
+
+            if (! $url) {
+                continue;
+            }
+
+            $normalized[] = [
+                'platform' => $platform ?: 'other',
+                'url' => $url,
+            ];
+        }
+
+        return $normalized;
     }
 
 
