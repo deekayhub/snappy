@@ -11,9 +11,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SupplierPanelController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 
+
+Route::get('/migrate', function () {
+    Artisan::call('migrate', ['--force' => true]);
+    return 'Migrated';
+});
 Route::get('/', function () {
     return view('home');
 })->name('home');
