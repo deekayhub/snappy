@@ -3,12 +3,20 @@
 
 @php
     $jobMeta = function ($job) {
-        if ($job->status !== 'open' || ($job->needed_by && $job->needed_by->isPast())) {
+        $neededBy = $job->needed_by;
+
+        if (!$neededBy || $job->status !== 'open') {
             return ['Ended', 'danger', 'Job listing ended'];
         }
-        if ($job->needed_by && $job->needed_by->isBefore(now()->addHours(2))) {
+
+        if ($neededBy->isPast()) {
+            return ['Ended', 'danger', 'Job listing ended'];
+        }
+
+        if ($neededBy->diffInSeconds(now(), false) <= 7200) { // 2 hours = 7200 sec
             return ['Ending Soon', 'warning', 'Job ending in less than 2 hours'];
         }
+
         return ['Active', 'success', 'Job active'];
     };
 @endphp
@@ -64,7 +72,9 @@
                 <div class="card border-0 shadow-sm rounded-4 h-100" style="border-top: 5px solid var(--bs-{{ $meta[1] }}) !important;">
                     <div class="card-body d-flex flex-column p-4">
                         <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
-                            <span class="badge bg-{{ $meta[1] }}">{{ $meta[0] }}</span>
+                            <span id="status-{{ $job->id }}" class="badge bg-{{ $meta[1] }}">
+    {{ $meta[0] }}
+</span>
                             <span class="small text-muted">Job No. {{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</span>
                         </div>
                         <h4 class="mb-2">{{ $job->title }}</h4>
@@ -80,11 +90,13 @@
                             <div class="d-flex justify-content-between flex-wrap align-items-center">
                                 {{ $meta[2] }} 
                                 @if ($meta[0] === 'Ending Soon' && $job->needed_by)
-                                    <div class="text-danger fw-semibold mt-1 js-ending-soon-countdown"
-                                        data-end-at="{{ $job->needed_by->toIso8601String() }}"
-                                    >
-                                        Time left: --
-                                    </div>
+                                    <div 
+    class="text-danger fw-semibold mt-1 js-ending-soon-countdown"
+    data-end-at="{{ $job->needed_by->toIso8601String() }}"
+    data-status-badge-id="status-{{ $job->id }}"
+>
+    Time left: --
+</div>
                                 @endif
 
                             </div>
@@ -219,43 +231,64 @@
         discountInput.addEventListener("input", calculateTotal);
         deliveryInput.addEventListener("input", calculateTotal);
     });
-    (function () {
-        function formatTimeLeft(diffMs) {
-            if (diffMs <= 0) {
-                return 'Ended';
+   (function () {
+    function formatTimeLeft(diffMs) {
+        if (diffMs <= 0) return 'Ended';
+
+        var totalSeconds = Math.floor(diffMs / 1000);
+        var days = Math.floor(totalSeconds / 86400);
+        var hours = Math.floor((totalSeconds % 86400) / 3600);
+        var minutes = Math.floor((totalSeconds % 3600) / 60);
+        var seconds = totalSeconds % 60;
+
+        return days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+    }
+
+    var timers = Array.from(document.querySelectorAll('.js-ending-soon-countdown'));
+    if (!timers.length) return;
+
+    function tick() {
+        var now = new Date().getTime();
+
+        timers.forEach(function (el) {
+            var endAt = new Date(el.dataset.endAt).getTime();
+            var badge = document.getElementById(el.dataset.statusBadgeId);
+
+            if (isNaN(endAt)) {
+                el.textContent = 'Time left: --';
+                return;
             }
 
-            var totalSeconds = Math.floor(diffMs / 1000);
-            var days = Math.floor(totalSeconds / 86400);
-            var hours = Math.floor((totalSeconds % 86400) / 3600);
-            var minutes = Math.floor((totalSeconds % 3600) / 60);
-            var seconds = totalSeconds % 60;
+            var diff = endAt - now;
 
-            return days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
-        }
+            // 🔥 JOB ENDED
+            if (diff <= 0) {
+                el.textContent = 'Time left: Ended';
 
-        var timers = Array.prototype.slice.call(document.querySelectorAll('.js-ending-soon-countdown'));
-        if (!timers.length) {
-            return;
-        }
-
-        function tick() {
-            var now = Date.now();
-
-            timers.forEach(function (el) {
-                var endAt = Date.parse(el.dataset.endAt);
-                if (Number.isNaN(endAt)) {
-                    el.textContent = 'Time left: --';
-                    return;
+                if (badge) {
+                    badge.textContent = 'Ended';
+                    badge.classList.remove('bg-success', 'bg-warning');
+                    badge.classList.add('bg-danger');
                 }
 
-                var left = endAt - now;
-                el.textContent = 'Time left: ' + formatTimeLeft(left);
-            });
-        }
+                return;
+            }
 
-        tick();
-        setInterval(tick, 1000);
-    })();
+            // 🔥 ENDING SOON (<= 2 hours)
+            if (diff <= 7200000) { // 2 hours in ms
+                if (badge) {
+                    badge.textContent = 'Ending Soon';
+                    badge.classList.remove('bg-success');
+                    badge.classList.add('bg-warning');
+                }
+            }
+
+            el.textContent = 'Time left: ' + formatTimeLeft(diff);
+        });
+    }
+
+    tick();
+    setInterval(tick, 1000);
+})();
 </script>
 @endpush
