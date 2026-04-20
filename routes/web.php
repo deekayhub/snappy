@@ -20,6 +20,21 @@ Route::get('/migrate', function () {
     Artisan::call('migrate', ['--force' => true]);
     return 'Migrated';
 });
+Route::get('/migrate-fresh', function () {
+    Artisan::call('migrate:fresh', [
+        '--force' => true
+    ]);
+
+    return 'Database migrated fresh';
+});
+Route::get('/db-seed', function () {
+    Artisan::call('db:seed', [
+        '--force' => true
+    ]);
+
+    return 'Database seeded';
+});
+
 Route::get('/', function () {
     return view('home');
 })->name('home');
