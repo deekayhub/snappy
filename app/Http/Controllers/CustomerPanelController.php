@@ -92,7 +92,7 @@ class CustomerPanelController extends Controller
                 'organisation_name' => $job->organisation_name,
                 'location' => $job->location,
                 'budget' => $job->budget,
-                'needed_by' => $job->needed_by?->format('Y-m-d'),
+                'needed_by' => $job->needed_by?->format('Y-m-d H:i'),
                 'description' => $job->description,
             ],
         ]);
@@ -172,7 +172,7 @@ class CustomerPanelController extends Controller
             'organisation_name' => ['nullable', 'string', 'max:255'],
             'location' => ['nullable', 'string', 'max:255'],
             'budget' => ['nullable', 'numeric', 'min:0'],
-            'needed_by' => ['nullable', 'date', 'after_or_equal:today'],
+            'needed_by' => ['nullable', 'date', 'after_or_equal:now'],
             'description' => ['required', 'string'],
         ]);
     }

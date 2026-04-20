@@ -6,8 +6,8 @@
         if ($job->status !== 'open' || ($job->needed_by && $job->needed_by->isPast())) {
             return ['Ended', 'danger', 'Job listing ended'];
         }
-        if ($job->needed_by && $job->needed_by->isBefore(now()->addDays(1))) {
-            return ['Ending Soon', 'warning', 'Job ending soon'];
+        if ($job->needed_by && $job->needed_by->isBefore(now()->addHours(2))) {
+            return ['Ending Soon', 'warning', 'Job ending in less than 2 hours'];
         }
         return ['Active', 'success', 'Job active'];
     };
@@ -73,7 +73,7 @@
                             <div class="small text-muted mb-2">Category: <strong class="text-capitalize">{{ $job->category ?: 'General' }}</strong></div>
                             <div class="small text-muted mb-2">Organisation: {{ $job->organisation_name ?: 'Not provided' }}</div>
                             <div class="small text-muted mb-2">Location: {{ $job->location ?: 'Not provided' }}</div>
-                            <div class="small text-muted mb-3">Needed by: {{ $job->needed_by?->format('d M Y') ?? 'TBC' }}</div>
+                            <div class="small text-muted mb-3">Needed by: {{ $job->needed_by?->format('d M Y h:i A') ?? 'TBC' }}</div>
                         </div>
                         <div class="fw-semibold mb-3">{{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Budget not shared' }}</div>
                         <div class="alert alert-light border rounded-4 small mb-3">
@@ -81,7 +81,7 @@
                                 {{ $meta[2] }} 
                                 @if ($meta[0] === 'Ending Soon' && $job->needed_by)
                                     <div class="text-danger fw-semibold mt-1 js-ending-soon-countdown"
-                                        data-end-at="{{ $job->needed_by->copy()->endOfDay()->toIso8601String() }}"
+                                        data-end-at="{{ $job->needed_by->toIso8601String() }}"
                                     >
                                         Time left: --
                                     </div>

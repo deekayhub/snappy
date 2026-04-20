@@ -1,6 +1,37 @@
 @extends('customer-panel.layouts.app')
 @section('title', 'Supplier Quotes')
 
+@push('styles')
+<style>
+    .rating-stars {
+        display: inline-flex;
+        flex-direction: row-reverse;
+        gap: 0.35rem;
+    }
+
+    .rating-stars input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .rating-stars label {
+        margin: 0;
+        font-size: 1.4rem;
+        color: #ced4da;
+        cursor: pointer;
+        line-height: 1;
+        transition: color 0.15s ease-in-out;
+    }
+
+    .rating-stars label:hover,
+    .rating-stars label:hover ~ label,
+    .rating-stars input[type="radio"]:checked ~ label {
+        color: #f59f00;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="content-wrapper p-3">
     <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
@@ -135,12 +166,22 @@
                                     @csrf
                                     <div class="col-md-3">
                                         <label class="form-label small text-muted">Stars</label>
-                                        <select name="customer_rating" class="form-select rounded-4" required>
-                                            <option value="">Select</option>
+                                        @php($selectedRating = (int) old('customer_rating', $quote->customer_rating))
+                                        <div class="rating-stars mt-1">
                                             @for ($i = 5; $i >= 1; $i--)
-                                                <option value="{{ $i }}" @selected((int) old('customer_rating', $quote->customer_rating) === $i)>{{ $i }} Star{{ $i > 1 ? 's' : '' }}</option>
+                                                <input
+                                                    type="radio"
+                                                    name="customer_rating"
+                                                    id="customer_rating_{{ $quote->id }}_{{ $i }}"
+                                                    value="{{ $i }}"
+                                                    @checked($selectedRating === $i)
+                                                    required
+                                                >
+                                                <label for="customer_rating_{{ $quote->id }}_{{ $i }}" title="{{ $i }} Star{{ $i > 1 ? 's' : '' }}">
+                                                    <i class="fa fa-star"></i>
+                                                </label>
                                             @endfor
-                                        </select>
+                                        </div>
                                     </div>
                                     <div class="col-md-7">
                                         <label class="form-label small text-muted">Review (optional)</label>
@@ -170,4 +211,3 @@
     @endforelse
 </div>
 @endsection
-

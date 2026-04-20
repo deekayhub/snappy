@@ -36,7 +36,7 @@ class CustomerJobController extends Controller
             'organisation_name' => ['nullable', 'string', 'max:255'],
             'location' => ['nullable', 'string', 'max:255'],
             'budget' => ['nullable', 'numeric', 'min:0'],
-            'needed_by' => ['nullable', 'date', 'after_or_equal:today'],
+            'needed_by' => ['nullable', 'date', 'after_or_equal:now'],
             'description' => ['required', 'string', 'min:0'],
         ]);
 
@@ -58,7 +58,7 @@ class CustomerJobController extends Controller
                 ->addColumn('customer_name', fn (CustomerJob $job) => $job->user?->name ?? '-')
                 ->addColumn('customer_email', fn (CustomerJob $job) => $job->user?->email ?? '-')
                 ->editColumn('budget', fn (CustomerJob $job) => $job->budget ? '£ '.number_format((float) $job->budget, 2) : '-')
-                ->editColumn('needed_by', fn (CustomerJob $job) => $job->needed_by?->format('d M Y') ?? '-')
+                ->editColumn('needed_by', fn (CustomerJob $job) => $job->needed_by?->format('d M Y h:i A') ?? '-')
                 ->editColumn('status', fn (CustomerJob $job) => '<span class="supplier-status-badge">'.e(ucfirst($job->status)).'</span>')
                 ->editColumn('created_at', fn (CustomerJob $job) => $job->created_at?->format('d M Y') ?? '-')
                 ->rawColumns(['status'])
@@ -74,4 +74,3 @@ class CustomerJobController extends Controller
         return view('admin.jobs.index', compact('stats'));
     }
 }
-

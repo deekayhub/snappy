@@ -1,4 +1,4 @@
-@extends('customer-panel.layouts.app')
+﻿@extends('customer-panel.layouts.app')
 @section('title', 'My Jobs')
 
 @section('content')
@@ -35,7 +35,7 @@
                                 data-organisation_name="{{ $job->organisation_name }}"
                                 data-location="{{ $job->location }}"
                                 data-budget="{{ $job->budget }}"
-                                data-needed_by="{{ $job->needed_by?->format('Y-m-d') }}"
+                                data-needed_by="{{ $job->needed_by?->format('Y-m-d H:i') }}"
                                 data-description="{{ $job->description }}">
                                 <i class="fa fa-pencil"></i>
                             </button>
@@ -53,10 +53,10 @@
                             {{ ucfirst($job->status) }}
                         </span>
                         <div class="small text-muted mt-2">
-                            Needed by: {{ $job->needed_by?->format('d M Y') ?? 'Not set' }}
+                            Needed by: {{ $job->needed_by?->format('d M Y h:i A') ?? 'Not set' }}
                         </div>
                         <div class="small text-muted">
-                            Budget: {{ $job->budget ? '� '.number_format((float) $job->budget, 2) : 'Not shared' }}
+                            Budget: {{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Not shared' }}
                         </div>
                         <div class="fw-semibold mt-2">
                             {{ $job->quotes_count }} supplier quotes
@@ -91,7 +91,7 @@
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-1">Category</label>
-                                <select name="category" id="job_category" class="form-select">
+                                <select name="category" id="job_category" class="form-select bg-white text-dark">
                                     <option value="">Select Category</option>
                                     @foreach ($categories as $cat)
                                         <option value="{{ $cat->name }}">{{ ucfirst($cat->name) }}</option>
@@ -116,7 +116,7 @@
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-1">Needed By</label>
-                                <input type="date" id="needed_by" name="needed_by" value="{{ old('needed_by') }}" class="form-control">
+                                <input type="text" id="needed_by" autocomplete="off" placeholder="Select date and time" name="needed_by" value="{{ old('needed_by') }}" class="form-control">
                             </div>
 
                             <div class="col-12 mb-3">
@@ -153,6 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
         organisation_name: @json(old('organisation_name', auth()->user()->customerProfile?->school_name)),
         location: @json(old('location', auth()->user()->customerProfile?->county))
     };
+    let neededByPicker = null;
 
     function clearValidationErrors() {
         form.querySelectorAll('.is-invalid').forEach((el) => el.classList.remove('is-invalid'));
@@ -186,6 +187,9 @@ document.addEventListener('DOMContentLoaded', function () {
         clearValidationErrors();
         document.getElementById('job_organisation_name').value = defaultValues.organisation_name || '';
         document.getElementById('job_location').value = defaultValues.location || '';
+        if (neededByPicker) {
+            neededByPicker.setDate(new Date(), true);
+        }
     }
 
     function setEditMode(button) {
@@ -199,14 +203,25 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('job_organisation_name').value = button.dataset.organisation_name || '';
         document.getElementById('job_location').value = button.dataset.location || '';
         document.getElementById('job_budget').value = button.dataset.budget || '';
-        document.getElementById('needed_by').value = button.dataset.needed_by || '';
+        const neededByValue = button.dataset.needed_by || '';
+        if (neededByPicker) {
+            neededByPicker.setDate(neededByValue, true, 'Y-m-d H:i');
+        } else {
+            document.getElementById('needed_by').value = neededByValue;
+        }
         document.getElementById('job_description').value = button.dataset.description || '';
     }
 
     const neededByInput = document.getElementById('needed_by');
-    if (neededByInput) {
-        const today = new Date().toISOString().split('T')[0];
-        neededByInput.setAttribute('min', today);
+    if (neededByInput && typeof flatpickr !== 'undefined') {
+        neededByPicker = flatpickr('#needed_by', {
+            enableTime: true,
+            time_24hr: true,
+            dateFormat: 'Y-m-d H:i',
+            minDate: 'today',
+            disableMobile: true,
+            defaultDate: neededByInput.value || new Date()
+        });
     }
 
     createBtn.addEventListener('click', setCreateMode);
@@ -359,3 +374,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endpush
+

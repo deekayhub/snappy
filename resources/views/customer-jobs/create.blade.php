@@ -96,7 +96,7 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label mb-1">Needed By</label>
-                                    <input type="date" id="needed_by" name="needed_by" value="{{ old('needed_by') }}" class="form-control @error('needed_by') is-invalid @enderror">
+                                    <input type="datetime-local" id="needed_by" name="needed_by" value="{{ old('needed_by') }}" class="form-control @error('needed_by') is-invalid @enderror">
                                     @error('needed_by')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -126,8 +126,10 @@
         document.addEventListener('DOMContentLoaded', function () {
             const neededByInput = document.getElementById('needed_by');
             if (neededByInput) {
-                const today = new Date().toISOString().split('T')[0];
-                neededByInput.setAttribute('min', today);
+                const now = new Date();
+                const pad = (value) => String(value).padStart(2, '0');
+                const minDateTime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+                neededByInput.setAttribute('min', minDateTime);
             }
         });
     </script>
