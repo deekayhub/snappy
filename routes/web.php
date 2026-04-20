@@ -99,6 +99,10 @@ Route::middleware(['auth', 'verified', 'role:supplier'])->prefix('supplier-panel
 Route::middleware(['auth', 'verified', 'role:customer'])->prefix('customer-panel')->name('customer-panel.')->group(function () {
     Route::get('/dashboard', [CustomerPanelController::class, 'dashboard'])->name('dashboard');
     Route::get('/jobs', [CustomerPanelController::class, 'jobs'])->name('jobs');
+    Route::post('/jobs', [CustomerPanelController::class, 'store'])->name('jobs.store');
+    Route::get('/edit-job/{job}', [CustomerPanelController::class, 'editJob'])->name('jobs.edit');
+    Route::patch('/edit-job/{job}', [CustomerPanelController::class, 'updateJob'])->name('jobs.update');
+    Route::delete('/delete-job/{job}', [CustomerPanelController::class, 'destroyJob'])->name('jobs.destroy');
     Route::get('/quotes', [CustomerPanelController::class, 'quotes'])->name('quotes');
     Route::get('/profile', [CustomerPanelController::class, 'profile'])->name('profile');
 });

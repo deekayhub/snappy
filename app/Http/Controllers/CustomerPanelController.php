@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CustomerJob;
 use App\Models\Quote;
 use App\Models\OrganisationCategory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -54,6 +56,83 @@ class CustomerPanelController extends Controller
         return view('customer-panel.jobs.index', compact('jobs', 'categories'));
     }
 
+    public function store(Request $request): JsonResponse
+    {
+        if (! $request->user()?->hasRole('customer')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only customer accounts can post a job.'
+            ], 403);
+        }
+
+        $validated = $this->validateJob($request);
+        $request->user()->customerJobs()->create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Your job has been posted successfully.'
+        ]);
+    }
+
+    public function editJob(Request $request, CustomerJob $job): JsonResponse
+    {
+        if ((int) $job->user_id !== (int) $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not allowed to edit this job.'
+            ], 403);
+        }
+
+        return response()->json([
+            'success' => true,
+            'job' => [
+                'id' => $job->id,
+                'title' => $job->title,
+                'category' => $job->category,
+                'organisation_name' => $job->organisation_name,
+                'location' => $job->location,
+                'budget' => $job->budget,
+                'needed_by' => $job->needed_by?->format('Y-m-d'),
+                'description' => $job->description,
+            ],
+        ]);
+    }
+
+    public function updateJob(Request $request, CustomerJob $job): JsonResponse
+    {
+        if ((int) $job->user_id !== (int) $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not allowed to update this job.'
+            ], 403);
+        }
+
+        $validated = $this->validateJob($request);
+        $job->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Job updated successfully.'
+        ]);
+    }
+
+    public function destroyJob(Request $request, CustomerJob $job): JsonResponse
+    {
+        if ((int) $job->user_id !== (int) $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not allowed to delete this job.'
+            ], 403);
+        }
+
+        $job->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Job deleted successfully.'
+        ]);
+    }
+
     public function quotes(Request $request): View
     {
         $jobs = $request->user()
@@ -83,5 +162,18 @@ class CustomerPanelController extends Controller
         // dd($organisation->toArray());
 
         return view('customer-panel.profile.index', compact('user', 'organisation'));
+    }
+
+    private function validateJob(Request $request): array
+    {
+        return $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'category' => ['nullable', 'string', 'max:255'],
+            'organisation_name' => ['nullable', 'string', 'max:255'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'budget' => ['nullable', 'numeric', 'min:0'],
+            'needed_by' => ['nullable', 'date', 'after_or_equal:today'],
+            'description' => ['required', 'string'],
+        ]);
     }
 }
