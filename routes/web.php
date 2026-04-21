@@ -113,7 +113,7 @@ Route::middleware(['auth', 'verified', 'role:supplier'])->prefix('supplier-panel
 
 Route::middleware(['auth', 'verified', 'role:customer'])->prefix('customer-panel')->name('customer-panel.')->group(function () {
     Route::get('/dashboard', [CustomerPanelController::class, 'dashboard'])->name('dashboard');
-    // Route::get('/suppliers', [CustomerPanelController::class, 'suppliers'])->name('suppliers');
+    Route::get('/suppliers', [CustomerPanelController::class, 'suppliers'])->name('suppliers');
     Route::get('/jobs', [CustomerPanelController::class, 'jobs'])->name('jobs');
     Route::post('/jobs', [CustomerPanelController::class, 'store'])->name('jobs.store');
     Route::get('/edit-job/{job}', [CustomerPanelController::class, 'editJob'])->name('jobs.edit');
