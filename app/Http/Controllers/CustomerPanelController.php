@@ -180,27 +180,40 @@ class CustomerPanelController extends Controller
 
     public function suppliers(Request $request)
     {
-        // dd($query->get()->toArray());
         if($request->ajax()) {
             $query = User::query()
                     ->role('supplier')
-                    ->with('supplierProfile', 'supplierQuotes'); 
+                    ->where('is_active', true)
+                    ->with('supplierProfile')
+                    ->withAvg([
+                        'supplierQuotes as avg_rating' => function ($q) {
+                            $q->whereNotNull('customer_rating');
+                        }
+                    ], 'customer_rating')
+                    ->withCount([
+                        'supplierQuotes as total_reviews' => function ($q) {
+                            $q->whereNotNull('customer_rating');
+                        }
+                    ]);
+                    
+                    // return response()->json($query->get()->toArray());
 
             return datatables()->of($query)
-                ->addColumn('company_name', function (User $user) {
-                    return $user->supplierProfile?->company_name ?? 'N/A';
+                ->addIndexColumn()
+                ->addColumn('company_logo', function ($row) {
+                    if ($row->supplierProfile && $row->supplierProfile->company_logo) {
+                        $url = asset('storage/' . $row->supplierProfile->company_logo);
+                        return '<img src="'.$url.'"  style="width:50px;height:50px;object-fit:cover;border-radius:6px;" />';
+                    }
+                    return '<span class="text-muted">No Logo</span>';
                 })
-                ->addColumn('average_rating', function (User $user) {
-                    $avgRating = $user->supplierQuotes()
-                        ->whereNotNull('customer_rating')
-                        ->avg('customer_rating');
-                    return $avgRating ? round($avgRating, 1) : 'N/A';
+                ->addColumn('company_name', function ($row) {
+                    return $row->supplierProfile ? $row->supplierProfile->company_name : 'N/A';
                 })
-                ->addColumn('ratings_count', function (User $user) {
-                    return $user->supplierQuotes()
-                        ->whereNotNull('customer_rating')
-                        ->count();
+                ->addColumn('actions', function ($row) {
+                    return '<button type="button" class="supplier-action-btn view" data-id="' . $row->id . '" data-toggle="tooltip" data-placement="top" title="View"><i class="fa fa-eye"></i></button>';  
                 })
+                 ->rawColumns(['actions', 'company_logo'])
                 ->make(true);
         }
 
