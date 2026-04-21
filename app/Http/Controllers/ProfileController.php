@@ -217,7 +217,7 @@ class ProfileController extends Controller
             'review_link' => 'nullable|url',
             'social_link' => 'nullable|url',
 
-            'company_logo' => 'nullable|file|max:20480|mimetypes:image/jpeg,image/png,image/webp,image/heic,image/heif',
+            'company_logo' => 'nullable|file|max:2048|mimetypes:image/jpeg,image/png,image/webp,image/heic,image/heif',
 
             'company_description' => 'nullable|string|max:5000',
 

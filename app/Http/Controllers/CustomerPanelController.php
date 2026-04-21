@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\CustomerJob;
-use App\Models\Quote;
 use App\Models\OrganisationCategory;
+use App\Models\Quote;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -175,5 +176,34 @@ class CustomerPanelController extends Controller
             'needed_by' => ['nullable', 'date', 'after_or_equal:now'],
             'description' => ['required', 'string'],
         ]);
+    }
+
+    public function suppliers(Request $request)
+    {
+        // dd($query->get()->toArray());
+        if($request->ajax()) {
+            $query = User::query()
+                    ->role('supplier')
+                    ->with('supplierProfile', 'supplierQuotes'); 
+
+            return datatables()->of($query)
+                ->addColumn('company_name', function (User $user) {
+                    return $user->supplierProfile?->company_name ?? 'N/A';
+                })
+                ->addColumn('average_rating', function (User $user) {
+                    $avgRating = $user->supplierQuotes()
+                        ->whereNotNull('customer_rating')
+                        ->avg('customer_rating');
+                    return $avgRating ? round($avgRating, 1) : 'N/A';
+                })
+                ->addColumn('ratings_count', function (User $user) {
+                    return $user->supplierQuotes()
+                        ->whereNotNull('customer_rating')
+                        ->count();
+                })
+                ->make(true);
+        }
+
+        return view('customer-panel.supplier.index');
     }
 }
