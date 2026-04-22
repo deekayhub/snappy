@@ -6,18 +6,18 @@
         $neededBy = $job->needed_by;
 
         if (!$neededBy || $job->status !== 'open') {
-            return ['Ended', 'danger', 'Job listing ended'];
+            return ['Ended Jobs', 'danger', 'Ended jobs'];
         }
 
         if ($neededBy->isPast()) {
-            return ['Ended', 'danger', 'Job listing ended'];
+            return ['Ended Jobs', 'danger', 'Ended jobs'];
         }
 
-        if ($neededBy->diffInSeconds(now(), false) <= 7200) { // 2 hours = 7200 sec
-            return ['Ending Soon', 'warning', 'Job ending in less than 2 hours'];
+        if ($neededBy->diffInSeconds(now(), false) <= 7200) {  
+            return ['Ending Soon', 'warning', 'Job ending time left'];
         }
 
-        return ['Active', 'success', 'Job active'];
+        return ['Active Jobs', 'success', 'Active jobs'];
     };
 @endphp
 
@@ -73,8 +73,8 @@
                     <div class="card-body d-flex flex-column p-4">
                         <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
                             <span id="status-{{ $job->id }}" class="badge bg-{{ $meta[1] }}">
-    {{ $meta[0] }}
-</span>
+                                {{ $meta[0] }}
+                            </span>
                             <span class="small text-muted">Job No. {{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</span>
                         </div>
                         <h4 class="mb-2">{{ $job->title }}</h4>
@@ -88,15 +88,16 @@
                         <div class="fw-semibold mb-3">{{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Budget not shared' }}</div>
                         <div class="alert alert-light border rounded-4 small mb-3">
                             <div class="d-flex justify-content-between flex-wrap align-items-center">
-                                {{ $meta[2] }} 
-                                @if ($meta[0] === 'Ending Soon' && $job->needed_by)
+                                <span id="status-text-{{ $job->id }}" class="js-job-status-text">{{ $meta[2] }}</span>
+                                @if ($job->needed_by && $job->status === 'open' && $job->needed_by->isFuture())
                                     <div 
-    class="text-danger fw-semibold mt-1 js-ending-soon-countdown"
-    data-end-at="{{ $job->needed_by->toIso8601String() }}"
-    data-status-badge-id="status-{{ $job->id }}"
->
-    Time left: --
-</div>
+                                        class="fw-semibold mt-1 js-job-countdown {{ $meta[0] === 'Ending Soon' ? 'text-danger' : 'text-muted d-none' }}"
+                                        data-end-at="{{ $job->needed_by->toIso8601String() }}"
+                                        data-status-badge-id="status-{{ $job->id }}"
+                                        data-status-text-id="status-text-{{ $job->id }}"
+                                    >
+                                        Time left: --
+                                    </div>
                                 @endif
 
                             </div>
@@ -232,63 +233,83 @@
         deliveryInput.addEventListener("input", calculateTotal);
     });
    (function () {
-    function formatTimeLeft(diffMs) {
-        if (diffMs <= 0) return 'Ended';
+        function formatTimeLeft(diffMs) {
+            if (diffMs <= 0) return 'Ended';
 
-        var totalSeconds = Math.floor(diffMs / 1000);
-        var days = Math.floor(totalSeconds / 86400);
-        var hours = Math.floor((totalSeconds % 86400) / 3600);
-        var minutes = Math.floor((totalSeconds % 3600) / 60);
-        var seconds = totalSeconds % 60;
+            var totalSeconds = Math.floor(diffMs / 1000);
+            var days = Math.floor(totalSeconds / 86400);
+            var hours = Math.floor((totalSeconds % 86400) / 3600);
+            var minutes = Math.floor((totalSeconds % 3600) / 60);
+            var seconds = totalSeconds % 60;
 
-        return days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
-    }
+            return days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+        }
 
-    var timers = Array.from(document.querySelectorAll('.js-ending-soon-countdown'));
-    if (!timers.length) return;
+        var timers = Array.from(document.querySelectorAll('.js-job-countdown'));
+        if (!timers.length) return;
 
-    function tick() {
-        var now = new Date().getTime();
+        function tick() {
+            var now = new Date().getTime();
 
-        timers.forEach(function (el) {
-            var endAt = new Date(el.dataset.endAt).getTime();
-            var badge = document.getElementById(el.dataset.statusBadgeId);
+            timers.forEach(function (el) {
+                var endAt = new Date(el.dataset.endAt).getTime();
+                var badge = document.getElementById(el.dataset.statusBadgeId);
+                var statusText = document.getElementById(el.dataset.statusTextId);
 
-            if (isNaN(endAt)) {
+                if (isNaN(endAt)) {
+                    el.textContent = 'Time left: --';
+                    return;
+                }
+
+                var diff = endAt - now;
+
+                if (diff <= 0) {
+                    el.classList.add('d-none');
+                    el.classList.remove('text-danger');
+                    el.classList.add('text-muted');
+                    el.textContent = 'Time left: --';
+                    if (statusText) statusText.textContent = 'Ended jobs';
+
+                    if (badge) {
+                        badge.textContent = 'Ended Jobs';
+                        badge.classList.remove('bg-success', 'bg-warning', 'bg-secondary');
+                        badge.classList.add('bg-danger');
+                    }
+
+                    return;
+                }
+
+                if (diff <= 7200000) { // 2 hours in ms
+                    el.classList.remove('d-none', 'text-muted');
+                    el.classList.add('text-danger');
+                    if (statusText) statusText.textContent = '';
+
+                    if (badge) {
+                        badge.textContent = 'Ending Soon';
+                        badge.classList.remove('bg-success', 'bg-danger', 'bg-secondary');
+                        badge.classList.add('bg-warning');
+                    }
+
+                    el.textContent = 'Job ending time left: ' + formatTimeLeft(diff);
+                    return;
+                }
+
+                el.classList.add('d-none');
+                el.classList.remove('text-danger');
+                el.classList.add('text-muted');
                 el.textContent = 'Time left: --';
-                return;
-            }
-
-            var diff = endAt - now;
-
-            // 🔥 JOB ENDED
-            if (diff <= 0) {
-                el.textContent = 'Time left: Ended';
+                if (statusText) statusText.textContent = 'Active jobs';
 
                 if (badge) {
-                    badge.textContent = 'Ended';
-                    badge.classList.remove('bg-success', 'bg-warning');
-                    badge.classList.add('bg-danger');
+                    badge.textContent = 'Active Jobs';
+                    badge.classList.remove('bg-warning', 'bg-danger', 'bg-secondary');
+                    badge.classList.add('bg-success');
                 }
+            });
+        }
 
-                return;
-            }
-
-            // 🔥 ENDING SOON (<= 2 hours)
-            if (diff <= 7200000) { // 2 hours in ms
-                if (badge) {
-                    badge.textContent = 'Ending Soon';
-                    badge.classList.remove('bg-success');
-                    badge.classList.add('bg-warning');
-                }
-            }
-
-            el.textContent = 'Time left: ' + formatTimeLeft(diff);
-        });
-    }
-
-    tick();
-    setInterval(tick, 1000);
-})();
+        tick();
+        setInterval(tick, 1000);
+    })();
 </script>
 @endpush
