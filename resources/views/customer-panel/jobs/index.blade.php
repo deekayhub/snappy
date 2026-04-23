@@ -10,7 +10,6 @@
         </div>
         <button id="openCreateJobModal" type="button" class="btn btn-primary rounded-4" data-bs-toggle="modal" data-bs-target="#postjobmodal">Post New Job</button>
     </div>
-
     @forelse ($jobs as $job)
         <div class="card border-0 shadow-sm rounded-4 mb-3">
             <div class="card-body p-4">

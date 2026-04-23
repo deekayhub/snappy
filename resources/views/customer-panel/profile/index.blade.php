@@ -7,8 +7,8 @@
 
 @section('content')
 <div class="content-wrapper p-3">
-    <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4 p-lg-5">
+    {{-- <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4 p-lg-5"> --}}
             <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
                 <div>
                     <h3 class="mb-1">Customer profile</h3>
@@ -19,8 +19,8 @@
             <div class="row g-4">
                 <div class="col-lg-7">
                     <div class="bg-white border rounded-5 shadow-sm p-4 p-lg-5 h-100">
-                        <h3 class="mb-2">Profile details</h3>
-                        <p class="text-secondary mb-4">Update the information connected to your customer account.</p>
+                        {{-- <h3 class="mb-2">Profile details</h3>
+                        <p class="text-secondary mb-4">Update the information connected to your customer account.</p> --}}
 
                         <form method="POST" action="{{ route('profile.update') }}">
                             @csrf
@@ -99,8 +99,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        {{-- </div>
+    </div> --}}
 </div>
 @push('scripts')
 <script>

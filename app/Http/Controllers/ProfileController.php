@@ -203,85 +203,88 @@ class ProfileController extends Controller
 
     private function updateSupplier($user, Request $request)
     {
-        $validated = $request->validate([
-            'supplier_organisation' => 'required|array|min:1',
-            'supplier_organisation.*' => [
-                'integer',
-                Rule::exists('organisation_categories', 'id')->where('type', 'supplier'),
-            ],
+        try {
+            DB::transaction(function () use ($user, $request) {
+                $request->validate([
+                'supplier_organisation' => 'required|array|min:1',
+                'supplier_organisation.*' => [
+                    'integer',
+                    Rule::exists('organisation_categories', 'id')->where('type', 'supplier'),
+                ],
 
-            'company_name' => 'required|string|max:255',
-            'address' => 'required|string',
+                'company_name' => 'required|string|max:255',
+                'address' => 'required|string',
 
-            'website' => 'nullable|url',
-            'review_link' => 'nullable|url',
-            'social_link' => 'nullable|url',
+                'website' => 'nullable|url',
+                'review_link' => 'nullable|url',
+                'social_link' => 'nullable|url',
 
-            'company_logo' => 'nullable|file|max:2048|mimetypes:image/jpeg,image/png,image/webp,image/heic,image/heif',
+                'company_logo' => 'nullable|file|max:2048',
 
-            'company_description' => 'nullable|string|max:5000',
+                'company_description' => 'nullable|string|max:5000',
 
-            'social_links' => 'nullable|array',
-            'social_links.*.platform' => 'required_with:social_links.*.url|in:facebook,instagram,youtube,linkedin,x,tiktok,other',
-            'social_links.*.url' => 'nullable|url',
-        ], [
-            'supplier_organisation.required' => 'Please select at least one category',
-            'company_name.required' => 'Company name is required',
-            'address.required' => 'Address is required',
-            'company_logo.max' => 'Logo must be less than 2MB',
-        ]);
-
-        DB::transaction(function () use ($user, $validated, $request) {
-
-            $profile = $user->supplierProfile;
-            $companyLogoPath = $profile?->company_logo;
-
-            // ✅ Handle logo upload
-            if ($request->hasFile('company_logo')) {
-
-                if ($companyLogoPath) {
-                    Storage::disk('public')->delete($companyLogoPath);
-                }
-
-                $companyLogoPath = $request->file('company_logo')
-                    ->store('supplier-logos', 'public');
-            }
-
-            // ✅ Format URLs
-            $website = $this->formatUrl($validated['website'] ?? null);
-            $reviewLink = $this->formatUrl($validated['review_link'] ?? null);
-            $socialLink = $this->formatUrl($validated['social_link'] ?? null);
-
-            // ✅ Normalize social links
-            $socialLinks = $this->normalizeSupplierSocialLinks($validated['social_links'] ?? []);
-
-            $firstSocialLink = !empty($socialLinks)
-                ? ($socialLinks[0]['url'] ?? null)
-                : $socialLink;
-
-            // ✅ Save profile
-            $user->supplierProfile()->updateOrCreate([], [
-                'company_name' => $validated['company_name'],
-                'company_logo' => $companyLogoPath,
-                'address' => $validated['address'],
-                'company_description' => $validated['company_description'] ?? null,
-                'website' => $website,
-                'review_link' => $reviewLink,
-                'social_link' => $firstSocialLink,
-                'social_links' => !empty($socialLinks) ? $socialLinks : null,
+                'social_links' => 'nullable|array',
+                'social_links.*.platform' => 'required_with:social_links.*.url|in:facebook,instagram,youtube,linkedin,x,tiktok,other',
+                'social_links.*.url' => 'nullable|url',
+            ], [
+                'supplier_organisation.required' => 'Please select at least one category',
+                'company_name.required' => 'Company name is required',
+                'address.required' => 'Address is required',
+                'company_logo.max' => 'Logo must be less than 2MB',
             ]);
 
-            // ✅ Sync categories
-            $this->syncOrganisationCategories(
-                $user,
-                'supplier',
-                $validated['supplier_organisation']
-            );
-        });
+            DB::transaction(function () use ($user, $request) {
+
+                $profile = $user->supplierProfile;
+                $companyLogoPath = $profile?->company_logo;
+
+                if ($request->hasFile('company_logo')) {
+
+                    if ($companyLogoPath) {
+                        Storage::disk('public')->delete($companyLogoPath);
+                    }
+
+                    $companyLogoPath = $request->file('company_logo')
+                        ->store('supplier-logos', 'public');
+                }
+
+                $website = $this->formatUrl($request->website ?? null);
+                $reviewLink = $this->formatUrl($request->review_link ?? null);
+                $socialLink = $this->formatUrl($request->social_link ?? null);
+
+                $socialLinks = $this->normalizeSupplierSocialLinks($request->social_links ?? []);
+
+                $firstSocialLink = !empty($socialLinks)
+                    ? ($socialLinks[0]['url'] ?? null)
+                    : $socialLink;
+
+                $user->supplierProfile()->updateOrCreate([], [
+                    'company_name' => $request->company_name,
+                    'company_logo' => $companyLogoPath,
+                    'address' => $request->address,
+                    'company_description' => $request->company_description ?? null,
+                    'website' => $website,
+                    'review_link' => $reviewLink,
+                    'social_link' => $firstSocialLink,
+                    'social_links' => !empty($socialLinks) ? $socialLinks : null,
+                ]);
+
+                $this->syncOrganisationCategories(
+                    $user,
+                    'supplier',
+                    $request->supplier_organisation
+                );
+            });
+            });
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
+        
     }
 
     private function updateCustomer($user, Request $request)
     {
+        
         $validated = $request->validate([
             'customer_organisation' => 'required|array|min:1',
             'customer_organisation.*' => [

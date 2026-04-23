@@ -16,7 +16,7 @@
                 Register Suppliers
             </h3> 
         </div>
-        <div class="card shadow-sm mb-3">
+        {{-- <div class="card shadow-sm mb-3">
             <div class="card-body">
                 <div class="row g-2 align-items-center">
                     <div class="col-md-4">
@@ -52,7 +52,7 @@
 
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
