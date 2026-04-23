@@ -18,8 +18,14 @@ class CustomerJob extends Model
         'organisation_name',
         'location',
         'budget',
+        'delivery_in_uk',
+        'personalisation_required',
+        'personalisation_mode',
+        'supplier_target_type',
+        'supplier_target_count',
         'needed_by',
         'description',
+        'notes',
         'status',
     ];
 
@@ -27,6 +33,9 @@ class CustomerJob extends Model
     {
         return [
             'budget' => 'decimal:2',
+            'delivery_in_uk' => 'boolean',
+            'personalisation_required' => 'boolean',
+            'supplier_target_count' => 'integer',
             'needed_by' => 'datetime',
         ];
     }
@@ -39,5 +48,10 @@ class CustomerJob extends Model
     public function quotes(): HasMany
     {
         return $this->hasMany(Quote::class, 'customer_job_id');
+    }
+
+    public function jobItems(): HasMany
+    {
+        return $this->hasMany(JobItem::class, 'customer_job_id');
     }
 }
