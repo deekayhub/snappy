@@ -391,7 +391,7 @@ class CustomerPanelController extends Controller
                     return  number_format($row->avg_rating ?? 0, 1) . ' / 5 (' . ($row->total_reviews ?? 0) . ' reviews)';
                 })
                 ->addColumn('actions', function ($row) {
-                    return '<button type="button" class="supplier-action-btn view" data-id="' . $row->id . '" data-toggle="tooltip" data-placement="top" title="View"><i class="fa fa-eye"></i></button>';  
+                    return '<button type="button" class="supplier-action-btn view btn p-2" data-id="' . $row->id . '" data-toggle="tooltip" data-placement="top" title="View"><i class="fa fa-eye"></i></button>';  
                 })
                  ->rawColumns(['actions', 'company_logo'])
                 ->make(true);

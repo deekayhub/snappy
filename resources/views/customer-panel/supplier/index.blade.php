@@ -3,8 +3,8 @@
 @push('styles')
     <style>
         .supplier-action-btn.view {
-            background: rgba(37, 99, 235, 0.12);
-            color: #1d4ed8;
+            background: #0887c8;
+            color: #fff;
         }
     </style>
 @endpush
@@ -75,25 +75,13 @@
                 Button 
                 </button> --}}
 
-                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" style="width: 600px;">
                     <div class="offcanvas-header">
-                        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Offcanvas</h5>
+                        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Supplier Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body">
-                        <div>
-                        Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.
-                        </div>
-                        <div class="dropdown mt-3">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            Dropdown button
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                        </div>
+                         
                     </div>
                 </div>
             </div>
@@ -149,6 +137,12 @@
                 $('#ratingFilter').val('');
                 table.draw();
             });
+        });
+        $(document).on('click', '.supplier-action-btn.view', function () {
+            const supplierId = $(this).data('id');
+            const offCanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasExample'));
+            offCanvas.show();
+             
         });
     </script>
 
