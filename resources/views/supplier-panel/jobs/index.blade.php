@@ -34,11 +34,11 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Category</label>
-                    <select name="category" class="form-select rounded-4">
+                    <select name="category" class="form-select rounded-4 text-dark">
                         <option value="">All Categories</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->name }}" @selected($category->name === request('category'))>
-                                {{ $category->name }}
+                                {{ ucfirst($category->name) }}
                             </option>
                         @endforeach
                     </select>
@@ -46,7 +46,7 @@
                  
                 <div class="col-md-3">
                     <label class="form-label">Sort</label>
-                    <select name="sort" class="form-select rounded-4">
+                    <select name="sort" class="form-select rounded-4 text-dark">
                         <option value="newest" @selected($sort === 'newest')>Newest to oldest</option>
                         <option value="oldest" @selected($sort === 'oldest')>Oldest to newest</option>
                         <option value="ending_soon" @selected($sort === 'ending_soon')>Ending soon</option>

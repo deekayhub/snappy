@@ -7,7 +7,7 @@
             return ['Ended', 'danger'];
         }
 
-        if ($job->needed_by && $job->needed_by->isBefore(now()->addDays(4))) {
+        if ($job->needed_by && $job->needed_by->diffInSeconds(now(), false) <= 7200)  {
             return ['Ending Soon', 'warning'];
         }
 

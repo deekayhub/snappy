@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function setEditMode(job) {
         modalTitle.textContent = 'Edit Job';
         submitBtn.textContent = 'Update Job';
-        form.dataset.action = "{{ route('customer-panel.jobs.update', 'job') }}".replace('job', job.id);
+        form.dataset.action = "{{ route('customer-panel.jobs.update', ['job' => '__JOB_ID__']) }}".replace('__JOB_ID__', job.id);
         setMethodSpoof('PATCH');
         clearValidationErrors();
 

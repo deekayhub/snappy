@@ -127,6 +127,7 @@ class CustomerPanelController extends Controller
 
     public function updateJob(Request $request, CustomerJob $job): JsonResponse
     {
+        // dd($request->all());
         if ((int) $job->user_id !== (int) $request->user()->id) {
             return response()->json([
                 'success' => false,
@@ -398,5 +399,26 @@ class CustomerPanelController extends Controller
         }
 
         return view('customer-panel.supplier.index');
+    }
+
+    public function suppliersDetails($id)
+    {
+        $suppliers = User::where('is_active', true)
+                    ->with('supplierProfile')
+                    ->withAvg([
+                        'supplierQuotes as avg_rating' => function ($q) {
+                            $q->whereNotNull('customer_rating');
+                        }
+                    ], 'customer_rating')
+                    ->withCount([
+                        'supplierQuotes as total_reviews' => function ($q) {
+                            $q->whereNotNull('customer_rating');
+                        }
+                    ])
+                    ->findOrFail($id);
+                     
+                    // dd($suppliers->toArray());
+
+        return view('customer-panel.supplier.supplier-details', compact('suppliers'));
     }
 }

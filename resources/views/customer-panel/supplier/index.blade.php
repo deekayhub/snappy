@@ -81,7 +81,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body">
-                         
+                        {{-- @include('customer-panel.supplier.supplier-details') --}}
                     </div>
                 </div>
             </div>
@@ -140,9 +140,33 @@
         });
         $(document).on('click', '.supplier-action-btn.view', function () {
             const supplierId = $(this).data('id');
-            const offCanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasExample'));
+            const offcanvasElement = document.getElementById('offcanvasExample');
+            const offCanvas = new bootstrap.Offcanvas(offcanvasElement);
+
             offCanvas.show();
-             
+            $('#offcanvasExample .offcanvas-body').html(`
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3 mb-0">Loading supplier details...</p>
+                </div>
+            `);
+
+            $.ajax({
+                url: "{{ route('customer-panel.suppliers.details', ':id') }}".replace(':id', supplierId), 
+                type: 'GET',
+                success: function (response) {
+                    $('#offcanvasExample .offcanvas-body').html(response);
+                },
+                error: function (xhr) {
+                    $('#offcanvasExample .offcanvas-body').html(`
+                        <div class="alert alert-danger">
+                            Failed to load supplier details.
+                        </div>
+                    `);
+                }
+            });
         });
     </script>
 
