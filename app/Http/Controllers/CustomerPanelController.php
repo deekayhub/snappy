@@ -387,6 +387,9 @@ class CustomerPanelController extends Controller
                 ->addColumn('company_name', function ($row) {
                     return $row->supplierProfile ? $row->supplierProfile->company_name : 'N/A';
                 })
+                ->addColumn('avg_rating', function ($row) {
+                    return  number_format($row->avg_rating ?? 0, 1) . ' / 5 (' . ($row->total_reviews ?? 0) . ' reviews)';
+                })
                 ->addColumn('actions', function ($row) {
                     return '<button type="button" class="supplier-action-btn view" data-id="' . $row->id . '" data-toggle="tooltip" data-placement="top" title="View"><i class="fa fa-eye"></i></button>';  
                 })
