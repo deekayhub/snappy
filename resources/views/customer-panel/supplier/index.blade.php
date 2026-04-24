@@ -56,7 +56,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table w-100 table-bordered" id="supplierTable">
+                    <table class="table w-100 border " id="supplierTable">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -126,13 +126,7 @@
                      
                     { data: 'actions', orderable: false, searchable: false }
                 ],
-                language: {
-                    // processing: '<div class="spinner-border text-primary" role="status" style="height:80px;"><span class="sr-only">Loading...</span></div>',
-                    paginate: {
-                        previous: 'Prev',
-                        next: 'Next'
-                    }
-                }
+                
             });
 
             let delayTimer;

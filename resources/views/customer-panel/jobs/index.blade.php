@@ -106,7 +106,7 @@
 
                     <div class="modal-body pt-4">
                         <div class="row g-4">
-                            <div class="col-12">
+                            {{-- <div class="col-12">
                                 <div class="border rounded-4 p-3 bg-light">
                                     <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center">
                                         <div>
@@ -121,13 +121,13 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="col-12">
-                                <div class="border rounded-4 p-4">
+                                {{-- <div class="border rounded-4 p-4"> --}}
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div>
-                                            <div class="badge bg-primary rounded-pill mb-2">Step 1</div>
+                                            {{-- <div class="badge bg-primary rounded-pill mb-2">Step 1</div> --}}
                                             <h5 class="mb-1">What are you looking for?</h5>
                                             <p class="text-muted mb-0">Add one or more items to the same job request.</p>
                                         </div>
@@ -137,89 +137,96 @@
                                     </div>
 
                                     <div id="jobItemsContainer" class="vstack gap-3"></div>
+                                {{-- </div> --}}
+                            </div>
+                        </div>
+                        <div class="border rounded-4 p-4 mt-4">
+                            <div class="row g-4">
+    
+                                <div class="col-lg-4">
+                                    <label class="form-label mb-1">Job headline</label>
+                                    <input type="text" id="job_title" name="title" value="{{ old('title') }}" class="text-dark form-control rounded-4" placeholder="Auto-generated from your first item">
+                                    <div class="small text-muted mt-1">If left blank, we will create a title from the first item.</div>
                                 </div>
-                            </div>
-
-                            <div class="col-lg-4">
-                                <label class="form-label mb-1">Job headline</label>
-                                <input type="text" id="job_title" name="title" value="{{ old('title') }}" class="form-control rounded-4" placeholder="Auto-generated from your first item">
-                                <div class="small text-muted mt-1">If left blank, we will create a title from the first item.</div>
-                            </div>
-
-                            <div class="col-lg-4">
-                                <label class="form-label mb-1">Suggested category</label>
-                                <select name="category" id="job_category" class="form-select rounded-4">
-                                    <option value="">Select Category</option>
-                                    @foreach ($categories as $cat)
-                                        <option value="{{ $cat->name }}">{{ ucfirst($cat->name) }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="col-lg-4">
-                                <label class="form-label mb-1">Organisation name</label>
-                                <input type="text" id="job_organisation_name" name="organisation_name" value="{{ old('organisation_name', auth()->user()->customerProfile?->school_name) }}" class="form-control rounded-4">
-                            </div>
-
-                            <div class="col-lg-6">
-                                <label class="form-label mb-1">Location</label>
-                                <input type="text" id="job_location" name="location" value="{{ old('location', auth()->user()->customerProfile?->county) }}" class="form-control rounded-4">
-                            </div>
-
-                            <div class="col-lg-6">
-                                <label class="form-label mb-1">Please supply a date you need to receive this order by</label>
-                                <input type="text" id="needed_by" autocomplete="off" placeholder="Select date and time" name="needed_by" value="{{ old('needed_by') }}" class="form-control rounded-4">
-                            </div>
-
-                            <div class="col-lg-6">
-                                <label class="form-label mb-1">How many suppliers do you wish to send this job to?</label>
-                                <select name="supplier_target_type" id="supplier_target_type" class="form-select rounded-4">
-                                    <option value="all">Select all registered suppliers</option>
-                                    <option value="count">Enter a number</option>
-                                </select>
-                            </div>
-
-                            <div class="col-lg-6" id="supplier_target_count_wrap">
-                                <label class="form-label mb-1">Supplier count</label>
-                                <input type="number" min="1" step="1" id="supplier_target_count" name="supplier_target_count" value="{{ old('supplier_target_count') }}" class="form-control rounded-4" placeholder="Example: 10">
-                            </div>
-
-                            <div class="col-lg-6">
-                                <label class="form-label mb-1">Is the delivery in the UK?</label>
-                                <select name="delivery_in_uk" id="delivery_in_uk" class="form-select rounded-4">
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                </select>
-                            </div>
-
-                            <div class="col-lg-6">
-                                <label class="form-label mb-1">Do you require personalisation on these items?</label>
-                                <select name="personalisation_required" id="personalisation_required" class="form-select rounded-4">
-                                    <option value="0">No</option>
-                                    <option value="1">Yes</option>
-                                </select>
-                            </div>
-
-                            <div class="col-12" id="personalisation_mode_wrap">
-                                <div class="border rounded-4 p-3 bg-light">
-                                    <label class="form-label mb-1">If yes, is the personalisation all the same or different?</label>
-                                    <select name="personalisation_mode" id="personalisation_mode" class="form-select rounded-4">
-                                        <option value="same">All the same</option>
-                                        <option value="different">Different</option>
+    
+                                <div class="col-lg-4">
+                                    <label class="form-label mb-1">Suggested category</label>
+                                    <select name="category" id="job_category" class="form-select rounded-4 text-dark">
+                                        <option value="">Select Category</option>
+                                        @foreach ($categories as $cat)
+                                            <option value="{{ $cat->name }}">{{ ucfirst($cat->name) }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
+    
+                                <div class="col-lg-4">
+                                    <label class="form-label mb-1">Organisation name</label>
+                                    <input type="text" id="job_organisation_name" name="organisation_name" value="{{ old('organisation_name', auth()->user()->customerProfile?->school_name) }}" class="form-control rounded-4">
+                                </div>
+    
+                                <div class="col-lg-6">
+                                    <label class="form-label mb-1">Location</label>
+                                    <input type="text" id="job_location" name="location" value="{{ old('location', auth()->user()->customerProfile?->county) }}" class="form-control rounded-4">
+                                </div>
+    
+                                <div class="col-lg-6">
+                                    <label class="form-label mb-1">Please supply a date you need to receive this order by</label>
+                                    <input type="text" id="needed_by" autocomplete="off" placeholder="Select date and time" name="needed_by" value="{{ old('needed_by') }}" class="form-control rounded-4">
+                                </div>
+    
+                                <div class="col-lg-6">
+                                    <label class="form-label mb-1">How many suppliers do you wish to send this job to?</label>
+                                    <select name="supplier_target_type" id="supplier_target_type" class="form-select rounded-4 text-dark">
+                                        <option value="all">Select all registered suppliers</option>
+                                        <option value="count">Enter a number</option>
+                                    </select>
+                                </div>
+    
+                                <div class="col-lg-6" id="supplier_target_count_wrap">
+                                    <label class="form-label mb-1">Supplier count</label>
+                                    <input type="number" min="1" step="1" id="supplier_target_count" name="supplier_target_count" value="{{ old('supplier_target_count') }}" class="form-control rounded-4" placeholder="Example: 10">
+                                </div>
+    
+                                <div class="col-lg-6">
+                                    <label class="form-label mb-1">Is the delivery in the UK?</label>
+                                    <select name="delivery_in_uk" id="delivery_in_uk" class="form-select rounded-4 text-dark">
+                                        <option value="1">Yes</option>
+                                        <option value="0">No</option>
+                                    </select>
+                                </div>
+    
+                                <div class="col-lg-6">
+                                    <label class="form-label mb-1">Do you require personalisation on these items?</label>
+                                    <select name="personalisation_required" id="personalisation_required" class="form-select rounded-4 text-dark">
+                                        <option value="0">No</option>
+                                        <option value="1">Yes</option>
+                                    </select>
+                                </div>
+    
+                                <div class="col-12" id="personalisation_mode_wrap">
+                                    <div class="border rounded-4 p-3 bg-light">
+                                        <label class="form-label mb-1">If yes, is the personalisation all the same or different?</label>
+                                        <select name="personalisation_mode" id="personalisation_mode" class="form-select rounded-4 text-dark">
+                                            <option value="same">All the same</option>
+                                            <option value="different">Different</option>
+                                        </select>
+                                    </div>
+                                </div>
+    
                             </div>
-
+                            
+                        </div>
+                        <div class="row g-4 mt-2">
                             <div class="col-12">
                                 <div class="border rounded-4 p-4">
-                                    <div class="badge bg-dark rounded-pill mb-2">Step 4</div>
+                                    {{-- <div class="badge bg-dark rounded-pill mb-2">Step 4</div> --}}
                                     <h5 class="mb-1">Budget and notes</h5>
                                     <p class="text-muted mb-3">Leave the budget blank if you do not have one yet.</p>
 
                                     <div class="row g-3">
                                         <div class="col-lg-4">
                                             <label class="form-label mb-1">Budget</label>
-                                            <input type="number" min="0" step="0.01" id="job_budget" name="budget" value="{{ old('budget') }}" class="form-control rounded-4" placeholder="Leave blank if no budget">
+                                            <input type="number" min="0" step="0.01" id="job_budget" name="budget" value="{{ old('budget') }}" class="form-control rounded-4" placeholder="Not Specified">
                                         </div>
                                         <div class="col-lg-8">
                                             <label class="form-label mb-1">Notes for the supplier</label>
@@ -227,7 +234,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>                               
+
                         </div>
                     </div>
 
@@ -482,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function setEditMode(job) {
         modalTitle.textContent = 'Edit Job';
         submitBtn.textContent = 'Update Job';
-        form.dataset.action = "{{ route('customer-panel.jobs.store') }}".replace('/jobs', '/jobs/' + job.id);
+        form.dataset.action = "{{ route('customer-panel.jobs.update', 'job') }}".replace('job', job.id);
         setMethodSpoof('PATCH');
         clearValidationErrors();
 

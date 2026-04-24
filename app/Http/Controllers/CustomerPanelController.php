@@ -379,10 +379,10 @@ class CustomerPanelController extends Controller
                 ->addIndexColumn()
                 ->addColumn('company_logo', function ($row) {
                     if ($row->supplierProfile && $row->supplierProfile->company_logo) {
-                        $url = asset('storage/' . $row->supplierProfile->company_logo);
+                        $url = asset($row->supplierProfile->company_logo);
                         return '<img src="'.$url.'"  style="width:50px;height:50px;object-fit:cover;border-radius:6px;" />';
                     }
-                    return '<span class="text-muted">No Logo</span>';
+                    return '<img src="https://placehold.net/default.png"  style="width:50px;height:50px;object-fit:cover;border-radius:6px;" />';
                 })
                 ->addColumn('company_name', function ($row) {
                     return $row->supplierProfile ? $row->supplierProfile->company_name : 'N/A';

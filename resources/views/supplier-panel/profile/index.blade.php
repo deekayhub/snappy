@@ -70,7 +70,7 @@
                                 @if ($user->supplierProfile?->company_logo)
                                     <div class="mt-2">
                                         <img
-                                            src="{{ \Illuminate\Support\Facades\Storage::url($user->supplierProfile->company_logo) }}"
+                                            src="{{asset($user->supplierProfile->company_logo) }}"
                                             alt="Company logo"
                                             class="rounded-3 border"
                                             style="height: 72px; width: 72px; object-fit: cover;"

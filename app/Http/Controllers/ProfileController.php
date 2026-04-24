@@ -205,49 +205,56 @@ class ProfileController extends Controller
     {
         try {
             DB::transaction(function () use ($user, $request) {
+
                 $request->validate([
-                'supplier_organisation' => 'required|array|min:1',
-                'supplier_organisation.*' => [
-                    'integer',
-                    Rule::exists('organisation_categories', 'id')->where('type', 'supplier'),
-                ],
+                    'supplier_organisation' => 'required|array|min:1',
+                    'supplier_organisation.*' => [
+                        'integer',
+                        Rule::exists('organisation_categories', 'id')->where('type', 'supplier'),
+                    ],
 
-                'company_name' => 'required|string|max:255',
-                'address' => 'required|string',
+                    'company_name' => 'required|string|max:255',
+                    'address' => 'required|string',
 
-                'website' => 'nullable|url',
-                'review_link' => 'nullable|url',
-                'social_link' => 'nullable|url',
+                    'website' => 'nullable|url',
+                    'review_link' => 'nullable|url',
+                    'social_link' => 'nullable|url',
 
-                'company_logo' => 'nullable|file|max:2048',
+                    'company_logo' => 'nullable|file|max:20480|mimetypes:image/jpeg,image/png,image/webp,image/heic,image/heif',
 
-                'company_description' => 'nullable|string|max:5000',
+                    'company_description' => 'nullable|string|max:5000',
 
-                'social_links' => 'nullable|array',
-                'social_links.*.platform' => 'required_with:social_links.*.url|in:facebook,instagram,youtube,linkedin,x,tiktok,other',
-                'social_links.*.url' => 'nullable|url',
-            ], [
-                'supplier_organisation.required' => 'Please select at least one category',
-                'company_name.required' => 'Company name is required',
-                'address.required' => 'Address is required',
-                'company_logo.max' => 'Logo must be less than 2MB',
-            ]);
-
-            DB::transaction(function () use ($user, $request) {
+                    'social_links' => 'nullable|array',
+                    'social_links.*.platform' => 'required_with:social_links.*.url|in:facebook,instagram,youtube,linkedin,x,tiktok,other',
+                    'social_links.*.url' => 'nullable|url',
+                ], [
+                    'supplier_organisation.required' => 'Please select at least one category',
+                    'company_name.required' => 'Company name is required',
+                    'address.required' => 'Address is required',
+                    'company_logo.max' => 'Logo must be less than 2MB',
+                ]);
 
                 $profile = $user->supplierProfile;
                 $companyLogoPath = $profile?->company_logo;
 
+                // ✅ Handle file upload to public folder
                 if ($request->hasFile('company_logo')) {
 
-                    if ($companyLogoPath) {
-                        Storage::disk('public')->delete($companyLogoPath);
+                    // delete old file if exists
+                    if ($companyLogoPath && file_exists(public_path($companyLogoPath))) {
+                        unlink(public_path($companyLogoPath));
                     }
 
-                    $companyLogoPath = $request->file('company_logo')
-                        ->store('supplier-logos', 'public');
+                    $file = $request->file('company_logo');
+                    $filename = time() . '_' . $file->getClientOriginalName();
+
+                    // move file to public/supplier-logos
+                    $file->move(public_path('supplier-logos'), $filename);
+
+                    $companyLogoPath = 'supplier-logos/' . $filename;
                 }
 
+                // format links
                 $website = $this->formatUrl($request->website ?? null);
                 $reviewLink = $this->formatUrl($request->review_link ?? null);
                 $socialLink = $this->formatUrl($request->social_link ?? null);
@@ -258,6 +265,7 @@ class ProfileController extends Controller
                     ? ($socialLinks[0]['url'] ?? null)
                     : $socialLink;
 
+                // save/update profile
                 $user->supplierProfile()->updateOrCreate([], [
                     'company_name' => $request->company_name,
                     'company_logo' => $companyLogoPath,
@@ -269,17 +277,17 @@ class ProfileController extends Controller
                     'social_links' => !empty($socialLinks) ? $socialLinks : null,
                 ]);
 
+                // sync categories
                 $this->syncOrganisationCategories(
                     $user,
                     'supplier',
                     $request->supplier_organisation
                 );
             });
-            });
+
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            // dd($e->getMessage());
         }
-        
     }
 
     private function updateCustomer($user, Request $request)
