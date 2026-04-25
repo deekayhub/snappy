@@ -21,7 +21,7 @@
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label class="form-label">Type</label>
-                                <select name="type" class="form-select rounded-4" required>
+                                <select name="type" class="form-select rounded-4 text-dark" required>
                                     <option value="supplier">Supplier</option>
                                     <option value="customer">Customer</option>
                                 </select>
@@ -58,7 +58,7 @@
                                                     <input type="text" name="name" value="{{ $category->name }}" class="form-control rounded-4" required>
                                             </td>
                                             <td>
-                                                    <select name="type" class="form-select rounded-4" required>
+                                                    <select name="type" class="form-select rounded-4 text-dark" required>
                                                         <option value="supplier" @selected($category->type === 'supplier')>Supplier</option>
                                                         <option value="customer" @selected($category->type === 'customer')>Customer</option>
                                                     </select>
