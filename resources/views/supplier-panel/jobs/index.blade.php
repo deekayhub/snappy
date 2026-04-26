@@ -279,32 +279,34 @@
                     return;
                 }
 
-                if (diff <= 7200000) { // 2 hours in ms
-                    el.classList.remove('d-none', 'text-muted');
-                    el.classList.add('text-danger');
-                    if (statusText) statusText.textContent = '';
+                if (diff > 86400000) { // more than 24 hours
+                    el.classList.add('d-none');
+                    el.classList.remove('text-danger');
+                    el.classList.add('text-muted');
+                    el.textContent = 'Time left: --';
+                    if (statusText) statusText.textContent = 'Job active';
 
                     if (badge) {
-                        badge.textContent = 'Ending Soon';
-                        badge.classList.remove('bg-success', 'bg-danger', 'bg-secondary');
-                        badge.classList.add('bg-warning');
+                        badge.textContent = 'Active';
+                        badge.classList.remove('bg-warning', 'bg-danger', 'bg-secondary');
+                        badge.classList.add('bg-success');
                     }
 
-                    el.textContent = 'Job ending time left: ' + formatTimeLeft(diff);
                     return;
                 }
 
-                el.classList.add('d-none');
-                el.classList.remove('text-danger');
-                el.classList.add('text-muted');
-                el.textContent = 'Time left: --';
-                if (statusText) statusText.textContent = 'Active jobs';
+                el.classList.remove('d-none');
+                el.classList.remove('text-muted');
+                el.classList.add('text-danger');
+                if (statusText) statusText.textContent = 'Job ending soon';
 
                 if (badge) {
-                    badge.textContent = 'Active Jobs';
-                    badge.classList.remove('bg-warning', 'bg-danger', 'bg-secondary');
-                    badge.classList.add('bg-success');
+                    badge.textContent = 'Ending Soon';
+                    badge.classList.remove('bg-success', 'bg-danger', 'bg-secondary');
+                    badge.classList.add('bg-warning');
                 }
+
+                el.textContent = 'Time left: ' + formatTimeLeft(diff);
             });
         }
 

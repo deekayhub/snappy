@@ -34,12 +34,12 @@ class SupplierPanelController extends Controller
         $stats = [
             'available_jobs' => CustomerJob::count(),
             'active_jobs' => CustomerJob::where('status', 'open')->count(),
-            'ending_soon' => CustomerJob::where('needed_by', '>=', now())
-                ->where('needed_by', '<=', now()->addHours(2))
+            'ending_soon' => CustomerJob::whereDate('needed_by', '>=', now()->toDateString())
+                ->whereDate('needed_by', '<=', now()->addDays(3)->toDateString())
                 ->count(),
             'ended_jobs' => CustomerJob::where(function ($query) {
                 $query->where('status', '!=', 'open')
-                    ->orWhere('needed_by', '<', now());
+                    ->orWhereDate('needed_by', '<', now()->toDateString());
             })->count(),
             'submitted_quotes' => $request->user()->supplierQuotes()->count(),
         ];

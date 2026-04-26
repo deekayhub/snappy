@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\CustomerJob;
-use App\Models\JobItem;
 use App\Models\OrganisationCategory;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -38,27 +37,6 @@ class DemoCustomerJobsSeeder extends Seeder
                 }
 
                 $job->save();
-
-                $itemCount = random_int(1, 3);
-
-                for ($i = 0; $i < $itemCount; $i++) {
-                    JobItem::create([
-                        'customer_job_id' => $job->id,
-                        'item_name' => fake()->randomElement([
-                            'Trophies',
-                            'Medals',
-                            'Glass awards',
-                            'Sports bottles',
-                            'Team shirts',
-                            'Presentation boxes',
-                        ]),
-                        'quantity' => fake()->numberBetween(10, 250),
-                        'sku_codes' => fake()->boolean(50) ? [fake()->bothify('SKU-####')] : [],
-                        'image_paths' => [],
-                        'item_link' => fake()->boolean(30) ? fake()->url() : null,
-                        'allow_similar_quote' => fake()->boolean(50),
-                    ]);
-                }
             });
     }
 }
