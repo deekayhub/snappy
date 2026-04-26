@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryFieldController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrganisationCategoryController;
 use App\Http\Controllers\Admin\QuoteManagementController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SupplierPanelController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -95,6 +97,9 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
     Route::post('/categories', [OrganisationCategoryController::class, 'store'])->name('categories.store');
     Route::put('/categories/{category}', [OrganisationCategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{category}', [OrganisationCategoryController::class, 'destroy'])->name('categories.destroy');
+    
+    Route::get('/category-fields', [CategoryFieldController::class, 'index'])->name('categories.fields');
+    Route::post('category-fields/store', [CategoryFieldController::class, 'store'])->name('category-fields.store');
 
 });
 

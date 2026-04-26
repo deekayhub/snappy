@@ -51,4 +51,5 @@ class OrganisationCategoryController extends Controller
 
         return back()->with('success', 'Category deleted successfully.');
     }
+    
 }

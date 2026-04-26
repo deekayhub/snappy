@@ -55,6 +55,12 @@
                 <span class="menu-title">Categories</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.categories.fields') }}">
+                <i class="mdi mdi-shape-outline menu-icon"></i>
+                <span class="menu-title">Categories Fields</span>
+            </a>
+        </li>
         @endif
     </ul>
 </nav>
