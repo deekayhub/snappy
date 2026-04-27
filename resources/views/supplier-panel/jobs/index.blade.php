@@ -80,7 +80,7 @@
                         <h4 class="mb-2">{{ $job->title }}</h4>
                         <p class="text-muted mb-3">{{ \Illuminate\Support\Str::limit($job->description, 140) }}</p>
                         <div class="alert alert-light rounded p-2 mb-3">
-                            <div class="small text-muted mb-2">Category: <strong class="text-capitalize">{{ $job->category ?: 'General' }}</strong></div>
+                            <div class="small text-muted mb-2">Category: <strong class="text-capitalize">{{ $job->categoryId?->name ?? 'General' }}</strong></div>
                             <div class="small text-muted mb-2">Organisation: {{ $job->organisation_name ?: 'Not provided' }}</div>
                             <div class="small text-muted mb-2">Location: {{ $job->location ?: 'Not provided' }}</div>
                             <div class="small text-muted mb-3">Needed by: {{ $job->needed_by?->format('d M Y h:i A') ?? 'TBC' }}</div>
@@ -116,7 +116,7 @@
             <div class="modal fade" id="jobModal{{ $job->id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content rounded-4 border-0">
-                        <div class="modal-header border-0">
+                        <div class="modal-header border0">
                             <div>
                                 <div class="small text-muted">Job No. {{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</div>
                                 <h5 class="modal-title">{{ $job->title }}</h5>
@@ -125,15 +125,58 @@
                         </div>
                         <div class="modal-body">
                             <div class="row g-3 mb-3">
-                                <div class="col-md-4"><div class="border rounded-4 p-3 h-100"><div class="small text-muted">Category</div><div class="fw-semibold">{{ $job->category ?: 'General' }}</div></div></div>
-                                <div class="col-md-4"><div class="border rounded-4 p-3 h-100"><div class="small text-muted">Location</div><div class="fw-semibold">{{ $job->location ?: 'Not provided' }}</div></div></div>
-                                <div class="col-md-4"><div class="border rounded-4 p-3 h-100"><div class="small text-muted">Budget</div><div class="fw-semibold">{{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Not shared' }}</div></div></div>
+                                <div class="col-md-4">
+                                    <div class="border rounded-4 p-3 h-100">
+                                        <div class="small text-muted">Category</div><div class="fw-semibold">{{ $job->categoryId?->name ?? 'General' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="border rounded-4 p-3 h-100">
+                                        <div class="small text-muted">Location</div><div class="fw-semibold">{{ $job->location ?: 'Not provided' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="border rounded-4 p-3 h-100">
+                                        <div class="small text-muted">Budget</div><div class="fw-semibold">{{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Not shared' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="border rounded-4 p-3 h-100">
+                                        <div class="small text-muted">Description</div><div class="fw-semibold">{{ $job->description ?? ''}}</div>
+                                    </div>
+                                </div>
+                                @if($job->dynamicFieldValues->isNotEmpty())
+                                    <div class="col-md-12">
+                                        <strong>More Details</strong>
+                                    </div>
+                                    @foreach ($job->dynamicFieldValues as $fieldsValue)
+
+                                        @if($fieldsValue->categoryFields?->field_type == 'file')
+                                            
+                                            <div class="col-md-4">
+                                                <div class="border rounded-4 p-3 h-100">
+                                                    <div class="small text-muted">{{ optional($fieldsValue->categoryFields)->field_label ?? '' }}</div>
+                                                    <img src="{{ asset($fieldsValue->field_value) }}" alt="" style="max-height: 200px; object-fit: cover;">
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="col-md-4">
+                                                <div class="border rounded-4 p-3 h-100">
+                                                    <div class="small text-muted">{{ optional($fieldsValue->categoryFields)->field_label ?? '' }}</div>
+                                                    <div class="fw-semibold">{{ $fieldsValue->field_value ?? ''}}</div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        
+                                    @endforeach
+
+                                @endif
                             </div>
-                            <p class="mb-0">{{ $job->description }}</p>
+
                         </div>
-                        <div class="modal-footer border-0">
+                        {{-- <div class="modal-footer border-0">
                             <button class="btn btn-secondary rounded-4" disabled>Upgrade to quote</button>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

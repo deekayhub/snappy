@@ -122,6 +122,8 @@ Route::middleware(['auth', 'verified', 'role:customer'])->prefix('customer-panel
     Route::get('/suppliers-details/{id}', [CustomerPanelController::class, 'suppliersDetails'])->name('suppliers.details');
     Route::get('/jobs', [CustomerPanelController::class, 'jobs'])->name('jobs');
     Route::post('/jobs', [CustomerPanelController::class, 'store'])->name('jobs.store');
+    Route::get('/get-category-fields/{id}', [CustomerPanelController::class, 'getCategoryFields'])->name('get.category.fields');
+
     Route::get('/edit-job/{job}', [CustomerPanelController::class, 'editJob'])->name('jobs.edit');
     Route::patch('/edit-job/{job}', [CustomerPanelController::class, 'updateJob'])->name('jobs.update');
     Route::delete('/delete-job/{job}', [CustomerPanelController::class, 'destroyJob'])->name('jobs.destroy');

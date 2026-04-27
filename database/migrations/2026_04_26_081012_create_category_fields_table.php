@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('category_fields', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')
-                ->constrained('categories')
+                ->constrained('organisation_categories')
                 ->cascadeOnDelete();
 
             $table->string('field_label'); // Example: Material Type

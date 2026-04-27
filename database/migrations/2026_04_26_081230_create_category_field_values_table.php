@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('category_field_values', function (Blueprint $table) {
             $table->id();
-             $table->foreignId('category_id')
-                ->constrained('categories')
-                ->cascadeOnDelete();
+            $table->foreignId('job_id')
+            ->constrained('customer_jobs')
+            ->cascadeOnDelete();
+            $table->foreignId('category_id')
+            ->constrained('organisation_categories')
+            ->cascadeOnDelete();
 
             $table->foreignId('field_id')
                 ->constrained('category_fields')

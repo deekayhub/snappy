@@ -31,6 +31,11 @@ class CustomerJob extends Model
         ];
     }
 
+    public function categoryId()
+    {
+        return $this->belongsTo(OrganisationCategory::class, 'category');
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -39,5 +44,10 @@ class CustomerJob extends Model
     public function quotes(): HasMany
     {
         return $this->hasMany(Quote::class, 'customer_job_id');
+    }
+
+    public function dynamicFieldValues()
+    {
+        return $this->hasMany(CategoryFieldValue::class, 'job_id');
     }
 }

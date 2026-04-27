@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CategoryField;
 use App\Models\CustomerJob;
 use App\Models\OrganisationCategory;
 use App\Models\Quote;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class CustomerPanelController extends Controller
@@ -50,13 +52,30 @@ class CustomerPanelController extends Controller
     {
         $jobs = $request->user()
             ->customerJobs()
+            ->with(['categoryId', 'dynamicFieldValues.categoryFields',])
             ->withCount('quotes')
             ->latest()
             ->paginate(10);
+        // dd($jobs->toArray());
 
         $categories = OrganisationCategory::where('type', 'supplier')->get();
 
         return view('customer-panel.jobs.index', compact('jobs', 'categories'));
+    }
+
+    public function getCategoryFields($id)
+    {
+        $fields = CategoryField::where('category_id', $id)
+            ->where('status', 1)
+            ->orderBy('sort_order')
+            ->get();
+
+        $html = view('customer-panel.jobs.dynamic-fields', compact('fields'))->render();
+
+        return response()->json([
+            'html' => $html
+        ]);
+         
     }
 
     public function store(Request $request): JsonResponse
@@ -69,7 +88,43 @@ class CustomerPanelController extends Controller
         }
 
         $validated = $this->validateJob($request);
-        $request->user()->customerJobs()->create($validated);
+        $job = $request->user()->customerJobs()->create($validated);
+
+        if (isset($validated['dynamic_fields']) && !empty($validated['dynamic_fields']) ) {
+            foreach ($validated['dynamic_fields'] as $fieldId => $value) {
+
+                if ($request->hasFile("dynamic_fields.$fieldId")) {
+
+                    $file = $request->file("dynamic_fields.$fieldId");
+
+                    $originalName = pathinfo(
+                        $file->getClientOriginalName(),
+                        PATHINFO_FILENAME
+                    );
+                    $extension = $file->getClientOriginalExtension();
+
+                    $originalName = str_replace(' ', '_', $originalName);
+                    $fileName = $validated['category']
+                        . '_' . $job->id
+                        . '_' . time()
+                        . '_' . $originalName
+                        . '.' . $extension;
+                    $file->move(public_path('assets/jobimage'), $fileName);
+                    $value = 'assets/jobimage/' . $fileName;
+                }
+
+                if (is_array($value)) {
+                    $value = json_encode($value);
+                }
+                $job->dynamicFieldValues()->create([
+                    'job_id' => $job->id,
+                    'category_id' => $validated['category'],
+                    'field_id' => $fieldId,
+                    'user_id' => Auth::id(),
+                    'field_value'    => $value,
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => true,
@@ -176,6 +231,9 @@ class CustomerPanelController extends Controller
             'budget' => ['nullable', 'numeric', 'min:0'],
             'needed_by' => ['nullable', 'date', 'after_or_equal:today'],
             'description' => ['required', 'string'],
+            'dynamic_fields' => ['nullable', 'array'],
+            'dynamic_fields.*' => ['nullable'],
+            'dynamic_fields.*.*' => ['nullable'],
         ]);
     }
 

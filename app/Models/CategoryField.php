@@ -17,7 +17,7 @@ class CategoryField extends Model
         'status'
     ];
 
-    public function category()
+    public function categoryId()
     {
         return $this->belongsTo(OrganisationCategory::class);
     }
