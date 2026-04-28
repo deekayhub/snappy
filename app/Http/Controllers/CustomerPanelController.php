@@ -80,6 +80,7 @@ class CustomerPanelController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        // dd($request->all());
         if (! $request->user()?->hasRole('customer')) {
             return response()->json([
                 'success' => false,
@@ -88,41 +89,77 @@ class CustomerPanelController extends Controller
         }
 
         $validated = $this->validateJob($request);
-        $job = $request->user()->customerJobs()->create($validated);
+        $job = $request->user()->customerJobs()->create($validated);        
 
-        if (isset($validated['dynamic_fields']) && !empty($validated['dynamic_fields']) ) {
-            foreach ($validated['dynamic_fields'] as $fieldId => $value) {
+        if (!empty($validated['dynamic_fields'])) {
 
-                if ($request->hasFile("dynamic_fields.$fieldId")) {
+            foreach ($validated['dynamic_fields'] as $fieldId => $values) {
 
-                    $file = $request->file("dynamic_fields.$fieldId");
+                foreach ((array) $values as $item => $value) {
 
-                    $originalName = pathinfo(
-                        $file->getClientOriginalName(),
-                        PATHINFO_FILENAME
-                    );
-                    $extension = $file->getClientOriginalExtension();
+                    /*
+                    Start item_no from 1 instead of 0
+                    */
+                    $itemNo = $item + 1;
 
-                    $originalName = str_replace(' ', '_', $originalName);
-                    $fileName = $validated['category']
-                        . '_' . $job->id
-                        . '_' . time()
-                        . '_' . $originalName
-                        . '.' . $extension;
-                    $file->move(public_path('assets/jobimage'), $fileName);
-                    $value = 'assets/jobimage/' . $fileName;
+                    /*
+                    Handle File Upload for specific item
+                    */
+
+                    if ($request->hasFile("dynamic_fields.$fieldId.$item")) {
+
+                        $uploadedFiles = $request->file("dynamic_fields.$fieldId.$item");
+                        $savedFiles = [];
+
+                        foreach ((array) $uploadedFiles as $file) {
+
+                            if ($file) {
+                                $originalName = pathinfo(
+                                    $file->getClientOriginalName(),
+                                    PATHINFO_FILENAME
+                                );
+
+                                $extension = $file->getClientOriginalExtension();
+                                $originalName = str_replace(' ', '_', $originalName);
+
+                                $fileName = $validated['category']
+                                    . '_' . $job->id
+                                    . '_' . $itemNo
+                                    . '_' . time()
+                                    . '_' . $originalName
+                                    . '.' . $extension;
+
+                                $file->move(
+                                    public_path('assets/jobimage'),
+                                    $fileName
+                                );
+
+                                $savedFiles[] = 'assets/jobimage/' . $fileName;
+                            }
+                        }
+
+                        $value = $savedFiles;
+                    }
+
+                    /*
+                    Convert array values to JSON
+                    */
+                    if (is_array($value)) {
+                        $value = json_encode($value);
+                    }
+
+                    /*
+                    Save row
+                    */
+                    $job->dynamicFieldValues()->create([
+                        'job_id'      => $job->id,
+                        'category_id' => $validated['category'],
+                        'field_id'    => $fieldId,
+                        'user_id'     => Auth::id(),
+                        'item_no'     => $itemNo, // starts from 1
+                        'field_value' => $value,
+                    ]);
                 }
-
-                if (is_array($value)) {
-                    $value = json_encode($value);
-                }
-                $job->dynamicFieldValues()->create([
-                    'job_id' => $job->id,
-                    'category_id' => $validated['category'],
-                    'field_id' => $fieldId,
-                    'user_id' => Auth::id(),
-                    'field_value'    => $value,
-                ]);
             }
         }
 
@@ -232,7 +269,7 @@ class CustomerPanelController extends Controller
             'needed_by' => ['nullable', 'date', 'after_or_equal:today'],
             'description' => ['required', 'string'],
             'dynamic_fields' => ['nullable', 'array'],
-            'dynamic_fields.*' => ['nullable'],
+            'dynamic_fields.*' => ['nullable', 'array'],
             'dynamic_fields.*.*' => ['nullable'],
         ]);
     }

@@ -48,6 +48,34 @@ class CustomerJob extends Model
 
     public function dynamicFieldValues()
     {
-        return $this->hasMany(CategoryFieldValue::class, 'job_id');
+        return $this->hasMany(CategoryFieldValue::class, 'job_id')
+            ->with('categoryFields')
+            ->orderBy('item_no')
+            ->orderBy('field_id');
     }
+
+    // public function dynamicFieldValues()
+    // {
+    //     return $this->hasMany(CategoryFieldValue::class, 'job_id')
+    //         ->with('categoryFields')
+    //         ->selectRaw('
+    //             MIN(id) as id,
+    //             job_id,
+    //             category_id,
+    //             field_id,
+    //             user_id,
+    //             field_value,
+    //             created_at,
+    //             updated_at
+    //         ')
+    //         ->groupBy(
+    //             'job_id',
+    //             'category_id',
+    //             'field_id',
+    //             'user_id',
+    //             'field_value',
+    //             'created_at',
+    //             'updated_at'
+    //         );
+    // }
 }

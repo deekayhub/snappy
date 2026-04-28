@@ -148,27 +148,47 @@
                                     <div class="col-md-12">
                                         <strong>More Details</strong>
                                     </div>
-                                    @foreach ($job->dynamicFieldValues as $fieldsValue)
 
-                                        @if($fieldsValue->categoryFields?->field_type == 'file')
-                                            
-                                            <div class="col-md-4">
-                                                <div class="border rounded-4 p-3 h-100">
-                                                    <div class="small text-muted">{{ optional($fieldsValue->categoryFields)->field_label ?? '' }}</div>
-                                                    <img src="{{ asset($fieldsValue->field_value) }}" alt="" style="max-height: 200px; object-fit: cover;">
+                                    <div class="col-12">                                        
+                                        @foreach ($job->dynamicFieldValues as $itemFields)
+                                            <div class="row border rounded-4 p-2 m-0 mb-3">
+                                                <div class="col-12 mb-3">
+                                                    <div class="badge bg-secondary rounded">#Item - {{ $loop->index + 1 }}</div>
                                                 </div>
-                                            </div>
-                                        @else
-                                            <div class="col-md-4">
-                                                <div class="border rounded-4 p-3 h-100">
-                                                    <div class="small text-muted">{{ optional($fieldsValue->categoryFields)->field_label ?? '' }}</div>
-                                                    <div class="fw-semibold">{{ $fieldsValue->field_value ?? ''}}</div>
-                                                </div>
-                                            </div>
-                                        @endif
-                                        
-                                    @endforeach
+                                                @foreach ($itemFields as $fieldsValue)                   
+                                                    @if($fieldsValue['category_fields']['field_type'] == 'file')
+                                                        <div class="col-md-4 mb-3">
+                                                            <div class="border rounded-4 p-3 h-100">
+                                                                <div class="small text-muted">
+                                                                    {{ $fieldsValue['category_fields']['field_label'] }}
+                                                                </div>
 
+                                                                <img
+                                                                    src="{{ asset($fieldsValue['field_value']) }}"
+                                                                    alt=""
+                                                                    style="max-height: 200px; object-fit: cover;"
+                                                                >
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="col-md-4 mb-3">
+                                                            <div class="border rounded-4 p-3 h-100">
+                                                                <div class="small text-muted">
+                                                                    {{ $fieldsValue['category_fields']['field_label'] }}
+                                                                </div>
+
+                                                                <div class="fw-semibold">
+                                                                    {{ $fieldsValue['field_value'] }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    @endif
+
+                                                @endforeach
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 @endif
                             </div>
 

@@ -50,7 +50,7 @@ class SupplierPanelController extends Controller
     public function jobs(Request $request): View
     {
         $query = CustomerJob::query()
-            ->with(['categoryId', 'dynamicFieldValues.categoryFields', 'user:id,name,email', 'quotes' => fn ($quoteQuery) => $quoteQuery->where('supplier_user_id', $request->user()->id)]);
+            ->with(['categoryId', 'dynamicFieldValues', 'user:id,name,email', 'quotes' => fn ($quoteQuery) => $quoteQuery->where('supplier_user_id', $request->user()->id)]);
 
         if ($request->filled('search')) {
             $search = $request->string('search')->toString();
@@ -76,6 +76,28 @@ class SupplierPanelController extends Controller
         };
 
         $jobs = $query->paginate(9)->withQueryString();
+        $jobs->getCollection()->transform(function ($job) {
+
+            $grouped = $job->dynamicFieldValues
+                ->sortBy([
+                    ['item_no', 'asc'],
+                    ['field_id', 'asc']
+                ])
+                ->groupBy('item_no')
+                ->map(function ($items) {
+                    return $items->values()->toArray();
+                })
+                ->values()
+                ->toArray();
+
+            /*
+            overwrite relation
+            */
+            $job->setRelation('dynamicFieldValues', collect($grouped));
+
+            return $job;
+        });
+         
         // dd($jobs->toArray());
         $categories = OrganisationCategory::query()->where('type', 'supplier')->orderBy('name')->get();
 

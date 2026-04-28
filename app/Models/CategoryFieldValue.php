@@ -11,6 +11,7 @@ class CategoryFieldValue extends Model
         'category_id',
         'field_id',
         'user_id',
+        'item_no',
         'field_value'
     ];
 

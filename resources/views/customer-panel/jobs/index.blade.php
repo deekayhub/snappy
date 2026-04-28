@@ -165,7 +165,7 @@
                         <div class="add-more-item text-end mt-3">
                             <button 
                                 type="button" 
-                                class="btn btn-primary rounded-pill d-none" 
+                                class="btn btn-primary rounded-pill" 
                                 id="addMoreFieldBtn">
                                 <i class="fa fa-plus"></i> Add More Item
                             </button>

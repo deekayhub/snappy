@@ -1,14 +1,14 @@
 @if($fields->count())
     
     <div class="row m-0 border rounded pt-3 mb-3">
-        <div class="col-12 mb-3 d-none">
+        <div class="col-12 mb-3">
             <div class="badge bg-secondary rounded">#Item - 1</div>
         </div>
         @foreach($fields as $field)
 
             @php
                 $required = $field->is_required ? 'required' : '';
-                $fieldName = "dynamic_fields[{$field->id}]";
+                $fieldName = "dynamic_fields[{$field->id}][]";
                 $options = $field->field_options ? explode(',', $field->field_options) : [];
             @endphp
             
