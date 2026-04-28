@@ -1,6 +1,9 @@
 @if($fields->count())
-    <div class="row m-0 border rounded pt-3">
-
+    
+    <div class="row m-0 border rounded pt-3 mb-3">
+        <div class="col-12 mb-3 d-none">
+            <div class="badge bg-secondary rounded">#Item - 1</div>
+        </div>
         @foreach($fields as $field)
 
             @php
@@ -8,9 +11,8 @@
                 $fieldName = "dynamic_fields[{$field->id}]";
                 $options = $field->field_options ? explode(',', $field->field_options) : [];
             @endphp
-
+            
             <div class="col-md-6 mb-3">
-
                 <label class="form-label mb-1">
                     {{ $field->field_label }}
 

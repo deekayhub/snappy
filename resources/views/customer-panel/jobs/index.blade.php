@@ -110,6 +110,7 @@
                             </div>
                             <div class="col-md-12 mb-3">
                                 <div id="dynamic-fields"></div>
+                                
                             </div>
                         </div>
                     </div>
@@ -128,19 +129,76 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function(){
+    let itemCount = 1;
+
+    function customFieldByJobCategory(categoryId, isAddMore = false) {
+        $.ajax({
+            url: "{{ route('customer-panel.get.category.fields', ':id') }}".replace(':id', categoryId),
+            type: "GET",
+            beforeSend: function () {
+                 Swal.fire({
+                    title: 'Loading fields...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                });
+            },
+            success: function (response) {
+                Swal.close();
+                if (!isAddMore) {
+                    $('#dynamic-fields').html('');
+                    $('.add-more-item').remove();
+                    itemCount = 1;
+                } else {
+                    itemCount++;
+                }
+
+                let updatedHtml = response.html.replace(
+                    /#Item - \d+/g,
+                    `#Item - ${itemCount}`
+                );
+                $('#dynamic-fields').append(updatedHtml);
+                if ($('#addMoreFieldBtn').length === 0) {
+                    $('#dynamic-fields').after(`
+                        <div class="add-more-item text-end mt-3">
+                            <button 
+                                type="button" 
+                                class="btn btn-primary rounded-pill d-none" 
+                                id="addMoreFieldBtn">
+                                <i class="fa fa-plus"></i> Add More Item
+                            </button>
+                        </div>
+                    `);
+                }
+            }
+        });
+    }
+
+    $(document).ready(function () {
         $('#job_category').change(function () {
             let categoryId = $(this).val();
 
-            $.ajax({
-                url: "{{ route('customer-panel.get.category.fields', ':id') }}".replace(':id', categoryId),
-                type: "GET",
-                success: function (response) {
-                    $('#dynamic-fields').html(response.html);
-                }
-            });
+            if (categoryId) {
+                customFieldByJobCategory(categoryId, false);
+            } else {
+                $('#dynamic-fields').html('');
+                $('.add-more-item').remove();
+                itemCount = 1;
+            }
         });
+
+        $(document).on('click', '#addMoreFieldBtn', function () {
+            let categoryId = $('#job_category').val();
+
+            if (categoryId) {
+                customFieldByJobCategory(categoryId, true);
+            }
+        });
+
     });
+
     document.addEventListener('DOMContentLoaded', function () {
         const jobModalElement = document.getElementById('postjobmodal');
         const jobModal = bootstrap.Modal.getOrCreateInstance(jobModalElement);
@@ -205,9 +263,11 @@
         }
 
         const neededByInput = document.getElementById('needed_by');
-        if (neededByInput && typeof flatpickr !== 'undefined') {
+       if (neededByInput && typeof flatpickr !== 'undefined') {
             flatpickr('#needed_by', {
-                dateFormat: 'Y-m-d',
+                enableTime: true,          
+                dateFormat: 'Y-m-d H:i',   
+                time_24hr: false,           
                 minDate: 'today',
                 disableMobile: true,
                 defaultDate: neededByInput.value || null

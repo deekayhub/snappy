@@ -23,7 +23,7 @@
 
 @section('content')
 <div class="content-wrapper p-3">
-     
+    @dump($jobs->toArray())
 
     <div class="card border-0 shadow-sm rounded-4 mb-4">
         <div class="card-body p-4">
@@ -83,7 +83,7 @@
                             <div class="small text-muted mb-2">Category: <strong class="text-capitalize">{{ $job->categoryId?->name ?? 'General' }}</strong></div>
                             <div class="small text-muted mb-2">Organisation: {{ $job->organisation_name ?: 'Not provided' }}</div>
                             <div class="small text-muted mb-2">Location: {{ $job->location ?: 'Not provided' }}</div>
-                            <div class="small text-muted mb-3">Needed by: {{ $job->needed_by?->format('d M Y h:i A') ?? 'TBC' }}</div>
+                            <div class="small text-muted mb-3">Needed by: {{ $job->needed_by?->format('d M Y h:i A') ?? 'N/A' }}</div>
                         </div>
                         <div class="fw-semibold mb-3">{{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Budget not shared' }}</div>
                         <div class="alert alert-light border rounded-4 small mb-3">

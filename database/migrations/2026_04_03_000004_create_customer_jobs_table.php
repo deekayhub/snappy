@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('organisation_name')->nullable();
             $table->string('location')->nullable();
             $table->decimal('budget', 10, 2)->nullable();
-            $table->date('needed_by')->nullable();
+            $table->datetime('needed_by')->nullable();
             $table->text('description');
             $table->string('status')->default('open');
             $table->timestamps();

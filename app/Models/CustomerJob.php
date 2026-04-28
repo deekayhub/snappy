@@ -27,7 +27,7 @@ class CustomerJob extends Model
     {
         return [
             'budget' => 'decimal:2',
-            'needed_by' => 'date',
+            'needed_by' => 'datetime',
         ];
     }
 
