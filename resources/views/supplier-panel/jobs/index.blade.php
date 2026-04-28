@@ -149,25 +149,41 @@
                                         <strong>More Details</strong>
                                     </div>
 
-                                    <div class="col-12">                                        
+                                    <div class="col-12">
                                         @foreach ($job->dynamicFieldValues as $itemFields)
                                             <div class="row border rounded-4 p-2 m-0 mb-3">
                                                 <div class="col-12 mb-3">
                                                     <div class="badge bg-secondary rounded">#Item - {{ $loop->index + 1 }}</div>
                                                 </div>
-                                                @foreach ($itemFields as $fieldsValue)                   
-                                                    @if($fieldsValue['category_fields']['field_type'] == 'file')
+
+                                                @foreach ($itemFields as $fieldsValue)
+                                                    @if(($fieldsValue['category_fields']['field_type'] ?? null) === 'file')
                                                         <div class="col-md-4 mb-3">
                                                             <div class="border rounded-4 p-3 h-100">
                                                                 <div class="small text-muted">
                                                                     {{ $fieldsValue['category_fields']['field_label'] }}
                                                                 </div>
 
-                                                                <img
-                                                                    src="{{ asset($fieldsValue['field_value']) }}"
-                                                                    alt=""
-                                                                    style="max-height: 200px; object-fit: cover;"
-                                                                >
+                                                                <div class="d-flex flex-wrap gap-2 mt-2">
+                                                                    @forelse ((array) ($fieldsValue['parsed_value'] ?? $fieldsValue['field_value'] ?? []) as $filePath)
+                                                                        <div class="border rounded-3 p-2" style="max-width: 140px;">
+                                                                            @if(in_array(strtolower(pathinfo($filePath, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg']))
+                                                                                <img
+                                                                                    src="{{ asset($filePath) }}"
+                                                                                    alt="{{ $fieldsValue['category_fields']['field_label'] }}"
+                                                                                    style="max-height: 140px; max-width: 120px; object-fit: cover;"
+                                                                                    class="rounded-3"
+                                                                                >
+                                                                            @else
+                                                                                <a href="{{ asset($filePath) }}" target="_blank" rel="noopener">
+                                                                                    {{ \Illuminate\Support\Str::afterLast($filePath, '/') }}
+                                                                                </a>
+                                                                            @endif
+                                                                        </div>
+                                                                    @empty
+                                                                        <div class="text-muted">No file uploaded</div>
+                                                                    @endforelse
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     @else
@@ -178,13 +194,13 @@
                                                                 </div>
 
                                                                 <div class="fw-semibold">
-                                                                    {{ $fieldsValue['field_value'] }}
+                                                                    {{ is_array($fieldsValue['parsed_value'] ?? null)
+                                                                        ? implode(', ', array_map('strval', $fieldsValue['parsed_value']))
+                                                                        : (string) ($fieldsValue['parsed_value'] ?? $fieldsValue['field_value'] ?? '') }}
                                                                 </div>
                                                             </div>
                                                         </div>
-
                                                     @endif
-
                                                 @endforeach
                                             </div>
                                         @endforeach

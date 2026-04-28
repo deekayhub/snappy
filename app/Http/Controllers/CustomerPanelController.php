@@ -7,6 +7,7 @@ use App\Models\CustomerJob;
 use App\Models\OrganisationCategory;
 use App\Models\Quote;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,25 +53,29 @@ class CustomerPanelController extends Controller
     {
         $jobs = $request->user()
             ->customerJobs()
-            ->with(['categoryId', 'dynamicFieldValues.categoryFields',])
+            ->with(['categoryId', 'dynamicFieldValues.categoryFields'])
             ->withCount('quotes')
             ->latest()
             ->paginate(10);
-        // dd($jobs->toArray());
 
         $categories = OrganisationCategory::where('type', 'supplier')->get();
 
         return view('customer-panel.jobs.index', compact('jobs', 'categories'));
     }
 
-    public function getCategoryFields($id)
+    public function getCategoryFields(Request $request, $id)
     {
+        $itemIndex = max(1, (int) $request->integer('item_index', 1));
         $fields = CategoryField::where('category_id', $id)
             ->where('status', 1)
             ->orderBy('sort_order')
             ->get();
 
-        $html = view('customer-panel.jobs.dynamic-fields', compact('fields'))->render();
+        $html = view('customer-panel.jobs.dynamic-fields', [
+            'fields' => $fields,
+            'itemIndex' => $itemIndex,
+            'itemValues' => [],
+        ])->render();
 
         return response()->json([
             'html' => $html
@@ -80,7 +85,6 @@ class CustomerPanelController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        // dd($request->all());
         if (! $request->user()?->hasRole('customer')) {
             return response()->json([
                 'success' => false,
@@ -89,79 +93,9 @@ class CustomerPanelController extends Controller
         }
 
         $validated = $this->validateJob($request);
-        $job = $request->user()->customerJobs()->create($validated);        
+        $job = $request->user()->customerJobs()->create(Arr::except($validated, ['dynamic_fields', 'dynamic_fields_existing']));
 
-        if (!empty($validated['dynamic_fields'])) {
-
-            foreach ($validated['dynamic_fields'] as $fieldId => $values) {
-
-                foreach ((array) $values as $item => $value) {
-
-                    /*
-                    Start item_no from 1 instead of 0
-                    */
-                    $itemNo = $item + 1;
-
-                    /*
-                    Handle File Upload for specific item
-                    */
-
-                    if ($request->hasFile("dynamic_fields.$fieldId.$item")) {
-
-                        $uploadedFiles = $request->file("dynamic_fields.$fieldId.$item");
-                        $savedFiles = [];
-
-                        foreach ((array) $uploadedFiles as $file) {
-
-                            if ($file) {
-                                $originalName = pathinfo(
-                                    $file->getClientOriginalName(),
-                                    PATHINFO_FILENAME
-                                );
-
-                                $extension = $file->getClientOriginalExtension();
-                                $originalName = str_replace(' ', '_', $originalName);
-
-                                $fileName = $validated['category']
-                                    . '_' . $job->id
-                                    . '_' . $itemNo
-                                    . '_' . time()
-                                    . '_' . $originalName
-                                    . '.' . $extension;
-
-                                $file->move(
-                                    public_path('assets/jobimage'),
-                                    $fileName
-                                );
-
-                                $savedFiles[] = 'assets/jobimage/' . $fileName;
-                            }
-                        }
-
-                        $value = $savedFiles;
-                    }
-
-                    /*
-                    Convert array values to JSON
-                    */
-                    if (is_array($value)) {
-                        $value = json_encode($value);
-                    }
-
-                    /*
-                    Save row
-                    */
-                    $job->dynamicFieldValues()->create([
-                        'job_id'      => $job->id,
-                        'category_id' => $validated['category'],
-                        'field_id'    => $fieldId,
-                        'user_id'     => Auth::id(),
-                        'item_no'     => $itemNo, // starts from 1
-                        'field_value' => $value,
-                    ]);
-                }
-            }
-        }
+        $this->syncDynamicFields($request, $job, $validated['dynamic_fields'] ?? []);
 
         return response()->json([
             'success' => true,
@@ -178,24 +112,55 @@ class CustomerPanelController extends Controller
             ], 403);
         }
 
+        $job->loadMissing([
+            'categoryId',
+            'dynamicFieldValues.categoryFields',
+            'quotes',
+        ]);
+
+        $fields = CategoryField::where('category_id', $job->category)
+            ->where('status', 1)
+            ->orderBy('sort_order')
+            ->get();
+
+        $groupedDynamicFieldValues = $this->groupDynamicFieldValues($job);
+
+        $dynamicFieldsHtml = '';
+        $renderableItems = empty($groupedDynamicFieldValues) ? [[]] : $groupedDynamicFieldValues;
+
+        foreach ($renderableItems as $index => $itemValues) {
+            $dynamicFieldsHtml .= view('customer-panel.jobs.dynamic-fields', [
+                'fields' => $fields,
+                'itemIndex' => $index + 1,
+                'itemValues' => $itemValues,
+            ])->render();
+        }
+
         return response()->json([
             'success' => true,
             'job' => [
                 'id' => $job->id,
                 'title' => $job->title,
                 'category' => $job->category,
+                'category_label' => $job->categoryId?->name ?? 'General',
                 'organisation_name' => $job->organisation_name,
                 'location' => $job->location,
                 'budget' => $job->budget,
-                'needed_by' => $job->needed_by?->format('Y-m-d'),
+                'needed_by' => $job->needed_by?->format('Y-m-d H:i'),
                 'description' => $job->description,
+                'status' => $job->status,
             ],
+            'view_html' => view('customer-panel.jobs.job-details', [
+                'job' => $job,
+                'groupedDynamicFieldValues' => $groupedDynamicFieldValues,
+            ])->render(),
+            'edit_fields_html' => $dynamicFieldsHtml,
+            'item_count' => count($renderableItems),
         ]);
     }
 
     public function updateJob(Request $request, CustomerJob $job): JsonResponse
     {
-        // dd($request->all());
         if ((int) $job->user_id !== (int) $request->user()->id) {
             return response()->json([
                 'success' => false,
@@ -204,7 +169,9 @@ class CustomerPanelController extends Controller
         }
 
         $validated = $this->validateJob($request);
-        $job->update($validated);
+        $job->update(Arr::except($validated, ['dynamic_fields', 'dynamic_fields_existing']));
+
+        $this->syncDynamicFields($request, $job, $validated['dynamic_fields'] ?? []);
 
         return response()->json([
             'success' => true,
@@ -266,12 +233,118 @@ class CustomerPanelController extends Controller
             'organisation_name' => ['nullable', 'string', 'max:255'],
             'location' => ['nullable', 'string', 'max:255'],
             'budget' => ['nullable', 'numeric', 'min:0'],
-            'needed_by' => ['nullable', 'date', 'after_or_equal:today'],
+            'needed_by' => ['required', 'date', 'after_or_equal:today'],
             'description' => ['required', 'string'],
             'dynamic_fields' => ['nullable', 'array'],
             'dynamic_fields.*' => ['nullable', 'array'],
             'dynamic_fields.*.*' => ['nullable'],
+            'dynamic_fields_existing' => ['nullable', 'array'],
         ]);
+    }
+
+    private function syncDynamicFields(Request $request, CustomerJob $job, array $dynamicFields): void
+    {
+        $job->dynamicFieldValues()->delete();
+
+        if (empty($dynamicFields) || empty($job->category)) {
+            return;
+        }
+
+        $fields = CategoryField::where('category_id', $job->category)
+            ->where('status', 1)
+            ->get()
+            ->keyBy('id');
+
+        foreach ($dynamicFields as $fieldId => $items) {
+            $field = $fields->get((int) $fieldId);
+
+            if (! $field) {
+                continue;
+            }
+
+            foreach ((array) $items as $itemIndex => $value) {
+                $storedValue = $this->normalizeDynamicFieldValue(
+                    $request,
+                    $field,
+                    (int) $fieldId,
+                    $itemIndex,
+                    $value
+                );
+
+                if ($storedValue === null || $storedValue === '') {
+                    continue;
+                }
+
+                $job->dynamicFieldValues()->create([
+                    'job_id' => $job->id,
+                    'category_id' => $job->category,
+                    'field_id' => $fieldId,
+                    'user_id' => Auth::id(),
+                    'item_no' => (int) $itemIndex,
+                    'field_value' => $storedValue,
+                ]);
+            }
+        }
+    }
+
+    private function normalizeDynamicFieldValue(Request $request, CategoryField $field, int $fieldId, int|string $itemIndex, mixed $value): mixed
+    {
+        if ($field->field_type === 'file') {
+            $uploadedFiles = $request->file("dynamic_fields.$fieldId.$itemIndex", []);
+            $uploadedFiles = is_array($uploadedFiles) ? $uploadedFiles : array_filter([$uploadedFiles]);
+
+            if (! empty($uploadedFiles)) {
+                $savedFiles = [];
+
+                foreach ($uploadedFiles as $file) {
+                    if (! $file) {
+                        continue;
+                    }
+
+                    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $extension = $file->getClientOriginalExtension();
+                    $originalName = str_replace(' ', '_', $originalName);
+
+                    $fileName = $request->input('category', 'job')
+                        . '_' . $request->user()->id
+                        . '_' . $itemIndex
+                        . '_' . time()
+                        . '_' . $originalName
+                        . '.' . $extension;
+
+                    $file->move(public_path('assets/jobimage'), $fileName);
+                    $savedFiles[] = 'assets/jobimage/' . $fileName;
+                }
+
+                return empty($savedFiles) ? null : json_encode($savedFiles);
+            }
+
+            $existingValue = $request->input("dynamic_fields_existing.$fieldId.$itemIndex");
+
+            return $existingValue ?: null;
+        }
+
+        if ($field->field_type === 'checkbox') {
+            $selectedValues = array_values(array_filter((array) $value, fn ($item) => $item !== null && $item !== ''));
+
+            return empty($selectedValues) ? null : json_encode($selectedValues);
+        }
+
+        if (is_array($value)) {
+            $value = Arr::first(array_filter($value, fn ($item) => $item !== null && $item !== ''));
+        }
+
+        return $value ?: null;
+    }
+
+    private function groupDynamicFieldValues(CustomerJob $job): array
+    {
+        return $job->dynamicFieldValues
+            ->groupBy('item_no')
+            ->map(function ($items) {
+                return $items->keyBy('field_id')->all();
+            })
+            ->all();
     }
 
     public function suppliers(Request $request)

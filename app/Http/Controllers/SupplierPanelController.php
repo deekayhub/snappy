@@ -85,7 +85,18 @@ class SupplierPanelController extends Controller
                 ])
                 ->groupBy('item_no')
                 ->map(function ($items) {
-                    return $items->values()->toArray();
+                    return $items->values()->map(function ($item) {
+                        $rawValue = $item->field_value;
+                        $parsedValue = is_string($rawValue) ? json_decode($rawValue, true) : $rawValue;
+
+                        if (json_last_error() !== JSON_ERROR_NONE && is_string($rawValue)) {
+                            $parsedValue = $rawValue;
+                        }
+
+                        $item->setAttribute('parsed_value', $parsedValue);
+
+                        return $item;
+                    })->toArray();
                 })
                 ->values()
                 ->toArray();
