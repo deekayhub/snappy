@@ -103,6 +103,7 @@
             </div>
 
             <div class="card-body">
+                @dump($fields->toArray())
                 <div class="table-responsive">
                     <table class="table table-bordered align-middle">
                         <thead>
@@ -124,7 +125,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
-                                        {{ $field->categoryId?->name ?? '-' }}
+                                        {{ $field->categoryId?->name }}
                                     </td>
                                     <td>
                                         {{ $field->field_label }}

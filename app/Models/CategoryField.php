@@ -19,6 +19,6 @@ class CategoryField extends Model
 
     public function categoryId()
     {
-        return $this->belongsTo(OrganisationCategory::class);
+        return $this->belongsTo(OrganisationCategory::class, 'category_id');
     }
 }
