@@ -124,7 +124,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
-                                        {{ $field->category->name ?? '-' }}
+                                        {{ $field->categoryId?->name ?? '-' }}
                                     </td>
                                     <td>
                                         {{ $field->field_label }}

@@ -13,7 +13,7 @@ class CategoryFieldController extends Controller
     public function index()
     { 
         $categories = OrganisationCategory::where('type', 'supplier')->get();
-        $fields = CategoryField::with('category')
+        $fields = CategoryField::with('categoryId')
             ->orderBy('category_id')
             ->orderBy('sort_order')
             ->latest()
