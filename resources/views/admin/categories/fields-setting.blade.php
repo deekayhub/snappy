@@ -103,7 +103,6 @@
             </div>
 
             <div class="card-body">
-                @dump($fields->toArray())
                 <div class="table-responsive">
                     <table class="table table-bordered align-middle">
                         <thead>
@@ -111,7 +110,7 @@
                                 <th>#</th>
                                 <th>Category</th>
                                 <th>Field Label</th>
-                                <th>Field Name</th>
+                                {{-- <th>Field Name</th> --}}
                                 <th>Type</th>
                                 <th>Required</th>
                                 <th>Options</th>
@@ -125,14 +124,14 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
-                                        {{ $field->categoryId?->name }}
+                                        {{ ucfirst($field->categoryId?->name) ?? 'N/A' }}
                                     </td>
                                     <td>
                                         {{ $field->field_label }}
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         <code>{{ $field->field_name }}</code>
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         <span class="badge bg-info">
                                             {{ ucfirst($field->field_type) }}
