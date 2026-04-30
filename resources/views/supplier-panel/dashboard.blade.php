@@ -3,16 +3,20 @@
 
 @php
     $statusMeta = function ($job) {
-        if ($job->status !== 'open' || ($job->needed_by && $job->needed_by->isPast())) {
-            return ['Ended', 'danger'];
-        }
+    if ($job->status !== 'open' || ($job->needed_by && $job->needed_by->isPast())) {
+        return ['Ended', 'danger'];
+    }
 
-        if ($job->needed_by && $job->needed_by->diffInSeconds(now(), false) <= 7200)  {
+    if ($job->needed_by) {
+        $secondsLeft = now()->diffInSeconds($job->needed_by, false);
+
+        if ($secondsLeft > 0 && $secondsLeft <= 7200) {
             return ['Ending Soon', 'warning'];
         }
+    }
 
-        return ['Active', 'success'];
-    };
+    return ['Active', 'success'];
+};
 @endphp
 
 @section('content')
@@ -83,7 +87,7 @@
                                             </div>
                                             <div class="text-lg-end">
                                                 <div class="fw-semibold">{{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Budget on request' }}</div>
-                                                <div class="small text-muted mb-3">Needed by {{ $job->needed_by?->format('d M Y') ?? 'TBC' }}</div>
+                                                <div class="small text-muted mb-3">Needed by {{ $job->needed_by?->format('d M Y H:i') ?? 'N/A' }}</div>
                                                 <a href="{{ route('supplier-panel.jobs') }}" class="btn btn-primary rounded-4">Open quote form</a>
                                             </div>
                                         </div>
