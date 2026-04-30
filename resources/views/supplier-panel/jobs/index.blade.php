@@ -216,7 +216,7 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="quoteModal{{ $job->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal fade job-modal" id="quoteModal{{ $job->id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content rounded-4 border-0">
                         <div class="modal-header border-0">
@@ -286,29 +286,42 @@
 
     document.addEventListener("DOMContentLoaded", function () {
 
-        const priceInput = document.querySelector('input[name="price_for_job"]');
-        const discountInput = document.querySelector('input[name="discount_offered"]');
-        const deliveryInput = document.querySelector('input[name="delivery_cost"]');
-        const totalInput = document.querySelector('input[name="total"]');
+        // Loop through all modals
+        document.querySelectorAll(".job-modal").forEach(function (modal) {
 
-        function calculateTotal() {
-            let price = parseFloat(priceInput.value) || 0;
-            let discount = parseFloat(discountInput.value) || 0;
-            let delivery = parseFloat(deliveryInput.value) || 0;
+            const priceInput = modal.querySelector('input[name="price_for_job"]');
+            const discountInput = modal.querySelector('input[name="discount_offered"]');
+            const deliveryInput = modal.querySelector('input[name="delivery_cost"]');
+            const totalInput = modal.querySelector('input[name="total"]');
 
-            let total = price - discount + delivery;
+            // Skip if fields not found
+            if (!priceInput || !discountInput || !deliveryInput || !totalInput) {
+                return;
+            }
 
-            if (total < 0) total = 0;
+            function calculateTotal() {
+                let price = parseFloat(priceInput.value) || 0;
+                let discount = parseFloat(discountInput.value) || 0;
+                let delivery = parseFloat(deliveryInput.value) || 0;
 
-            totalInput.value = total.toFixed(2);
-        }
-        calculateTotal();
+                let total = price - discount + delivery;
 
-        totalInput.value = "0.00";
+                if (total < 0) {
+                    total = 0;
+                }
 
-        priceInput.addEventListener("input", calculateTotal);
-        discountInput.addEventListener("input", calculateTotal);
-        deliveryInput.addEventListener("input", calculateTotal);
+                totalInput.value = total.toFixed(2);
+            }
+
+            // Initial calculation
+            calculateTotal();
+
+            // Event listeners for current modal only
+            priceInput.addEventListener("input", calculateTotal);
+            discountInput.addEventListener("input", calculateTotal);
+            deliveryInput.addEventListener("input", calculateTotal);
+        });
+
     });
    (function () {
         function formatTimeLeft(diffMs) {
