@@ -12,6 +12,8 @@ class CategoryField extends Model
         'field_name',
         'field_type',
         'field_options',
+        'placeholder',
+        'help_text',
         'is_required',
         'sort_order',
         'status'

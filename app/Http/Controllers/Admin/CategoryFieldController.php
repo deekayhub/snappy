@@ -24,6 +24,7 @@ class CategoryFieldController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'category_id' => 'required',
             'field_label' => 'required',
@@ -36,6 +37,8 @@ class CategoryFieldController extends Controller
             'field_name' => Str::slug($request->field_label, '_'),
             'field_type' => $request->field_type,
             'field_options' => $request->field_options,
+            'placeholder' => $request->placeholder,
+            'help_text' => $request->help_text,
             'is_required' => $request->is_required ?? 0,
             'sort_order' => $request->sort_order ?? 0,
             'status' => 1,

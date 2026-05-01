@@ -166,14 +166,14 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="#"
+                                        {{-- <a href="#"
                                         class="btn btn-sm btn-warning">
                                             Edit
                                         </a>
                                         <a href="#"
                                         class="btn btn-sm btn-danger">
                                             Delete
-                                        </a>
+                                        </a> --}}
                                     </td>
                                 </tr>
                             @empty
