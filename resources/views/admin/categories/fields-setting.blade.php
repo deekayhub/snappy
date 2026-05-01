@@ -16,7 +16,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Select Category</label>
-                            <select name="category_id" class="form-control" required>
+                            <select name="category_id" class="form-control rounded" required>
                                 <option value="">Choose Category</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}">
@@ -28,12 +28,12 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Field Label</label>
-                            <input type="text" name="field_label" class="form-control" placeholder="Example: Material Type" required>
+                            <input type="text" name="field_label" class="form-control rounded" placeholder="Example: Material Type" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Field Type</label>
-                            <select name="field_type" class="form-control" required>
+                            <select name="field_type" class="form-control rounded" required>
                                 <option value="">Select Type</option>
                                 <option value="text">Text</option>
                                 <option value="textarea">Textarea</option>
@@ -50,36 +50,36 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Field Options<small>(comma separated)</small></label>
-                            <input type="text" name="field_options" class="form-control" placeholder="Wood, Metal, Glass">
+                            <input type="text" name="field_options" class="form-control rounded" placeholder="Wood, Metal, Glass">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Placeholder</label>
-                            <input type="text" name="placeholder" class="form-control" placeholder="Enter placeholder">
+                            <input type="text" name="placeholder" class="form-control rounded" placeholder="Enter placeholder">
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Validation Rules</label>
-                            <input type="text" name="validation_rules" class="form-control" placeholder="required|max:255">
+                            <input type="text" name="validation_rules" class="form-control rounded" placeholder="required|max:255">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Default Value</label>
-                            <input type="text" name="default_value" class="form-control" placeholder="Default Value">
+                            <input type="text" name="default_value" class="form-control rounded" placeholder="Default Value">
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Sort Order</label>
-                            <input type="number" name="sort_order" class="form-control" value="0">
+                            <input type="number" name="sort_order" class="form-control rounded" value="0">
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label">Help Text</label>
-                            <textarea name="help_text" class="form-control" rows="3" placeholder="Helpful text for user"></textarea>
+                            <textarea name="help_text" class="form-control rounded" rows="3" placeholder="Helpful text for user"></textarea>
                         </div>
 
                         <div class="col-md-12 mb-4">
                             <div class="form-check">                                
                                 <label class="form-check-label" for="requiredField">
-                                    <input type="checkbox" name="is_required" value="1" class="form-check-input" id="requiredField" >
+                                    <input type="checkbox" name="is_required" value="1" class="form-check-input rounded" id="requiredField" >
                                     Required Field
                                 </label>
                             </div>
