@@ -346,6 +346,7 @@
                 var endAt = new Date(el.dataset.endAt).getTime();
                 var badge = document.getElementById(el.dataset.statusBadgeId);
                 var statusText = document.getElementById(el.dataset.statusTextId);
+                var card = el.closest('.card');
 
                 if (isNaN(endAt)) {
                     el.textContent = 'Time left: --';
@@ -381,6 +382,10 @@
                         badge.textContent = 'Active';
                         badge.classList.remove('bg-warning', 'bg-danger', 'bg-secondary');
                         badge.classList.add('bg-success');
+                    }
+
+                    if (card) {
+                        card.style.setProperty('border-top', '5px solid var(--bs-success)', 'important');
                     }
 
                     return;
