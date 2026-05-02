@@ -133,17 +133,17 @@
                                         <code>{{ $field->field_name }}</code>
                                     </td> --}}
                                     <td>
-                                        <span class="badge bg-info">
+                                        <span class="badge bg-info rounded">
                                             {{ ucfirst($field->field_type) }}
                                         </span>
                                     </td>
                                     <td>
                                         @if($field->is_required)
-                                            <span class="badge bg-success">
+                                            <span class="badge bg-success rounded">
                                                 Yes
                                             </span>
                                         @else
-                                            <span class="badge bg-secondary">
+                                            <span class="badge bg-secondary rounded">
                                                 No
                                             </span>
                                         @endif
@@ -156,24 +156,22 @@
                                     </td>
                                     <td>
                                         @if($field->status)
-                                            <span class="badge bg-success">
+                                            <span class="badge bg-success rounded">
                                                 Active
                                             </span>
                                         @else
-                                            <span class="badge bg-danger">
+                                            <span class="badge bg-danger rounded">
                                                 Inactive
                                             </span>
                                         @endif
                                     </td>
                                     <td>
-                                        {{-- <a href="#"
-                                        class="btn btn-sm btn-warning">
+                                        <button type="button" class="btn btn-sm btn-warning edit-button" data-id="{{ $field->id }}">
                                             Edit
-                                        </a>
-                                        <a href="#"
-                                        class="btn btn-sm btn-danger">
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger delete-button" data-id="{{ $field->id }}">
                                             Delete
-                                        </a> --}}
+                                        </button>
                                     </td>
                                 </tr>
                             @empty
@@ -196,3 +194,122 @@
     </div>
 
 @endsection
+@push('scripts')
+    <script>
+        $(document).on('click', '.edit-button', function () {
+            let id = $(this).data('id');
+
+            $.ajax({
+                url: "{{ route('admin.categories.fields.edit', ':id') }}".replace(':id', id),
+                type: "GET",
+                beforeSend: function () {
+                    Swal.fire({
+                        title: 'Loading...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                },
+                success: function (response) {
+                    Swal.close();
+
+                    let collapseElement = document.getElementById('collapseExample');
+
+                    if (!collapseElement.classList.contains('show')) {
+                        let bsCollapse = new bootstrap.Collapse(collapseElement, {
+                            show: true
+                        });
+                    }
+
+                    $('select[name="category_id"]').val(response.data.category_id);
+                    $('input[name="field_label"]').val(response.data.field_label);
+                    $('select[name="field_type"]').val(response.data.field_type);
+                    $('input[name="field_options"]').val(response.data.field_options);
+                    $('input[name="placeholder"]').val(response.data.placeholder);
+                    $('input[name="validation_rules"]').val(response.data.validation_rules);
+                    $('input[name="default_value"]').val(response.data.default_value);
+                    $('input[name="sort_order"]').val(response.data.sort_order);
+                    $('textarea[name="help_text"]').val(response.data.help_text);
+
+                    $('input[name="is_required"]').prop('checked', response.data.is_required == 1);
+
+                    $('form').attr(
+                        'action',
+                        "{{ route('admin.categories.fields.update', ':id') }}".replace(':id', id)
+                    );
+
+                    if ($('input[name="_method"]').length === 0) {
+                        $('form').append('<input type="hidden" name="_method" value="PUT">');
+                    } else {
+                        $('input[name="_method"]').val('PUT');
+                    }
+
+                    $('button.btn-primary').text('Update Field');
+                    setTimeout(function () {
+                        collapseElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }, 300);
+                },
+                error: function () {
+                    alert('Failed to fetch field data.');
+                }
+            });
+        });
+
+
+        $(document).on('click', '.delete-button', function () {
+            let id = $(this).data('id');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This field will be deleted permanently.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('admin.categories.fields.destroy', ':id') }}".replace(':id', id),
+                        type: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            _method: "DELETE"
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: 'Field deleted successfully.',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Failed',
+                                    text: 'Failed to delete field.'
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Something went wrong while deleting.'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+@endpush

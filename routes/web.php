@@ -100,6 +100,9 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
     
     Route::get('/category-fields', [CategoryFieldController::class, 'index'])->name('categories.fields');
     Route::post('category-fields/store', [CategoryFieldController::class, 'store'])->name('category-fields.store');
+    Route::get('/category-fields/edit/{id}', [CategoryFieldController::class, 'edit'])->name('categories.fields.edit');
+    Route::put('/category-fields/update/{id}', [CategoryFieldController::class, 'update'])->name('categories.fields.update');
+    Route::delete('/category-fields/destroy/{id}', [CategoryFieldController::class, 'destroy'])->name('categories.fields.destroy');
 
 });
 

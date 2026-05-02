@@ -24,7 +24,6 @@ class CategoryFieldController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'category_id' => 'required',
             'field_label' => 'required',
@@ -47,5 +46,54 @@ class CategoryFieldController extends Controller
         return redirect()
             ->back()
             ->with('success', 'Field Created Successfully');
+    }
+
+    public function edit($id)
+    {
+        $field = CategoryField::findOrFail($id);
+        return response()->json([
+            'success' => true,
+            'data' => $field
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'category_id' => 'required',
+            'field_label' => 'required',
+            'field_type' => 'required',
+        ]);
+
+        $field = CategoryField::findOrFail($id);
+
+        $field->update([
+            'category_id' => $request->category_id,
+            'field_label' => $request->field_label,
+            'field_name' => Str::slug($request->field_label, '_'),
+            'field_type' => $request->field_type,
+            'field_options' => $request->field_options,
+            'placeholder' => $request->placeholder,
+            'help_text' => $request->help_text,
+            'is_required' => $request->is_required ?? 0,
+            'sort_order' => $request->sort_order ?? 0,
+            'status' => 1,
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('success', 'Field Updated Successfully');
+    }
+
+    public function destroy($id)
+    {
+        $field = CategoryField::findOrFail($id);
+
+        $field->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Field Deleted Successfully'
+        ]);
     }
 }
