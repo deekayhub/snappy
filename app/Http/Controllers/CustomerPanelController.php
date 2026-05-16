@@ -234,7 +234,7 @@ class CustomerPanelController extends Controller
             'location' => ['nullable', 'string', 'max:255'],
             'budget' => ['nullable', 'numeric', 'min:0'],
             'needed_by' => ['required', 'date', 'after_or_equal:today'],
-            'description' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
             'dynamic_fields' => ['nullable', 'array'],
             'dynamic_fields.*' => ['nullable', 'array'],
             'dynamic_fields.*.*' => ['nullable'],

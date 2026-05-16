@@ -3,17 +3,21 @@
 use App\Http\Controllers\Admin\CategoryFieldController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrganisationCategoryController;
+use App\Http\Controllers\Admin\PageSectionController;
 use App\Http\Controllers\Admin\QuoteManagementController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerJobController;
 use App\Http\Controllers\CustomerPanelController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SupplierPanelController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
+
+
 
 
 
@@ -37,12 +41,8 @@ Route::get('/db-seed', function () {
     return 'Database seeded';
 });
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
-Route::get('/supplier', function () {
-    return view('supplier');
-})->middleware(['auth', 'role:supplier'])->name('supplier');
+Route::get('/', [HomeController::class, 'index'])->name('home'); 
+Route::get('/supplier', [HomeController::class, 'supplier'])->middleware(['auth', 'role:supplier'])->name('supplier');
 Route::get('/how-it-work', function () {
     return view('how-it-work');
 })->name('how-it-work');
@@ -103,7 +103,9 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
     Route::get('/category-fields/edit/{id}', [CategoryFieldController::class, 'edit'])->name('categories.fields.edit');
     Route::put('/category-fields/update/{id}', [CategoryFieldController::class, 'update'])->name('categories.fields.update');
     Route::delete('/category-fields/destroy/{id}', [CategoryFieldController::class, 'destroy'])->name('categories.fields.destroy');
-
+    
+    Route::get('/page-sections', [PageSectionController::class, 'index'])->name('page-sections');
+    Route::post('/page-sections', [PageSectionController::class, 'store'])->name('page-sections.store');
 });
 
 Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {

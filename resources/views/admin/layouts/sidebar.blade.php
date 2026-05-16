@@ -61,6 +61,12 @@
                 <span class="menu-title">Categories Fields</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.page-sections') }}">
+                <i class="mdi mdi-shape-outline menu-icon"></i>
+                <span class="menu-title">Page Sections</span>
+            </a>
+        </li>
         @endif
     </ul>
 </nav>
