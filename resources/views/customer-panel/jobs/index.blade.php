@@ -114,8 +114,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary px-5 py-2 rounded-4" data-bs-dismiss="modal">Close</button>
-                        <button id="jobSubmitBtn" type="submit" class="btn btn-primary px-5 py-2 rounded-4">Post Job</button>
+                        <button type="button" class="btn btn-secondary px-5  rounded-4" data-bs-dismiss="modal">Close</button>
+                        <button id="jobSubmitBtn" type="submit" class="btn btn-primary px-5  rounded-4">Post Job</button>
                     </div>
                 </form>
             </div>

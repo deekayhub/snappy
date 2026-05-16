@@ -13,10 +13,10 @@
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">Page Sections Settings</h3>
-            <div>
+            {{-- <div>
                 <button class="btn btn-outline-primary btn-sm">Export CSV</button>
                 <button class="btn btn-primary btn-sm">Generate Report</button>
-            </div>
+            </div> --}}
         </div>
         @php
             $faqSection = $sections->where('section_type', 'faq')->first();

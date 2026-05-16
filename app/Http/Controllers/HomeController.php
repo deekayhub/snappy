@@ -14,6 +14,25 @@ class HomeController extends Controller
     }
     public function supplier()
     {
-        return view('supplier');
+        $faqs = PageSection::where('section_type', 'faq')->first();
+        return view('supplier', compact('faqs'));
+    }
+
+    public function howItWork()
+    {
+        $faqs = PageSection::where('section_type', 'faq')->first();
+        return view('how-it-work', compact('faqs'));
+    }
+
+    public function faq()
+    {
+        $faqs = PageSection::where('section_type', 'faq')->first();
+        return view('faq', compact('faqs'));
+    }
+
+    public function contactUs()
+    {
+        $faqs = PageSection::where('section_type', 'faq')->first();
+        return view('contact-us', compact('faqs'));
     }
 }

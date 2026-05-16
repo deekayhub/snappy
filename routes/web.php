@@ -43,15 +43,9 @@ Route::get('/db-seed', function () {
 
 Route::get('/', [HomeController::class, 'index'])->name('home'); 
 Route::get('/supplier', [HomeController::class, 'supplier'])->middleware(['auth', 'role:supplier'])->name('supplier');
-Route::get('/how-it-work', function () {
-    return view('how-it-work');
-})->name('how-it-work');
-Route::get('/faq', function () {
-    return view('faq');
-})->name('faq');
-Route::get('/contact-us', function () {
-    return view('contact-us');
-})->name('contact-us');
+Route::get('/how-it-work', [HomeController::class, 'howItWork'])->name('how-it-work');
+Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
+Route::get('/contact-us', [HomeController::class, 'contactUs'])->name('contact-us');
 
 Route::middleware('auth', 'verified')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -43,16 +43,16 @@
                 </label>
 
                 @if($field->field_type == 'text')
-                    <input type="text" name="{{ $baseName }}" class="form-control rounded" value="{{ $currentValue ?? '' }}" placeholder="{{ $field->placeholder ?? '' }}" {{ $required }}>
+                    <input type="text" name="{{ $baseName }}" class="form-control rounded" value="{{ $currentValue ?? '' }}" placeholder="" {{ $required }}>
                     <div class="form-text">{{ $field->help_text ?? '' }}</div>
                 @elseif($field->field_type == 'number')
-                    <input type="number" name="{{ $baseName }}" class="form-control rounded" value="{{ $currentValue ?? '' }}" placeholder="{{ $field->placeholder ?? '' }}" {{ $required }}>
+                    <input type="number" name="{{ $baseName }}" class="form-control rounded" value="{{ $currentValue ?? '' }}" placeholder="" {{ $required }}>
                     <div class="form-text">{{ $field->help_text ?? '' }}</div>
                 @elseif($field->field_type == 'date')
-                    <input type="date" name="{{ $baseName }}" class="form-control rounded" value="{{ $currentValue ?? '' }}" placeholder="{{ $field->placeholder ?? '' }}" {{ $required }}>
+                    <input type="date" name="{{ $baseName }}" class="form-control rounded" value="{{ $currentValue ?? '' }}" placeholder="" {{ $required }}>
                     <div class="form-text">{{ $field->help_text ?? '' }}</div>
                 @elseif($field->field_type == 'file')
-                    <input type="file" name="{{ $baseName }}[]" class="form-control rounded" placeholder="{{ $field->placeholder ?? '' }}" {{ $required }} multiple>
+                    <input type="file" name="{{ $baseName }}[]" class="form-control rounded" placeholder="" {{ $required }} multiple>
                     @if(!empty($currentValues))
                         <input type="hidden" name="dynamic_fields_existing[{{ $field->id }}][{{ $itemIndex }}]" value="{{ is_array($rawValue) ? e(json_encode($rawValue)) : e((string) $rawValue) }}">
                         <div class="mt-2">
@@ -76,7 +76,7 @@
                     @endif
                     <div class="form-text">{{ $field->help_text ?? '' }}</div>
                 @elseif($field->field_type == 'textarea')
-                    <textarea name="{{ $baseName }}" rows="4" class="form-control rounded" placeholder="{{ $field->placeholder ?? '' }}" {{ $required }}>{{ $currentValue ?? '' }}</textarea>
+                    <textarea name="{{ $baseName }}" rows="4" class="form-control rounded" placeholder="" {{ $required }}>{{ $currentValue ?? '' }}</textarea>
                     <div class="form-text">{{ $field->help_text ?? '' }}</div>
                 @elseif($field->field_type == 'select')
                     <select name="{{ $baseName }}" class="form-select text-dark" {{ $required }}>

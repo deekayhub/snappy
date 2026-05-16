@@ -23,7 +23,11 @@
         </ul>
     </div>
 </section>
-@include('components.faq')
+    @if(isset($faqs))
+        @include('components.faq', [
+            'faqs' => $faqs
+        ])
+    @endif
  {{-- @include('components.testimonial') --}}
     @include('components.cta-section')
 

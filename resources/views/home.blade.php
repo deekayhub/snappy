@@ -16,7 +16,7 @@
 
     <div class="py-5"></div>
 
-   @include('components.contact-section')
+    @include('components.contact-section')
     @if(isset($faqs))
         @include('components.faq', [
             'faqs' => $faqs
