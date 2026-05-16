@@ -10,7 +10,8 @@ class HomeController extends Controller
     public function index()
     {
         $faqs = PageSection::where('section_type', 'faq')->first();
-        return view('home', compact('faqs'));
+        $howItWork = PageSection::where('section_type', 'how_it_work')->first();
+        return view('home', compact('faqs', 'howItWork'));
     }
     public function supplier()
     {

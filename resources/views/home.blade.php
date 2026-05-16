@@ -6,7 +6,11 @@
 
 
     @include('components.features-3')
-    @include('components.how-it-work')
+     @if(isset($howItWork))
+        @include('components.how-it-work', [
+            'howItWork' => $howItWork
+        ])
+    @endif
     @include('components.how-it-work-snappy')
 
     {{-- <div class="py-5"></div> --}}
@@ -22,4 +26,5 @@
             'faqs' => $faqs
         ])
     @endif
+    
 @endsection

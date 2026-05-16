@@ -1,8 +1,8 @@
 <section class="how-it-works">
         <div class="container">
             <div class="section-header mx-auto text-center mb-5">
-                <h2 class="h1 fw-bold text-white">How It Works</h2>
-                <p class="fs-5 text-white">Quickly connect with suppliers who specialise in your exact requirement.</p>
+                <h2 class="h1 fw-bold text-white">{{ $howItWork['data']['heading'] ?? 'How It Works' }}</h2>
+                <p class="fs-5 text-white">{{ $howItWork['data']['description'] ?? 'Quickly connect with suppliers who specialise in your exact requirement.' }}</p>
             </div>
             <div class="row position-relative text-center">
                 <svg class="curve-line d-none d-lg-block" width="975" height="22" viewBox="0 0 975 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -14,26 +14,24 @@
                     <div class="icon-circle mx-auto mb-3">
                         <img src="{{ asset('assets/images/how-it-work-1.png') }}" alt="">
                     </div>
-                    <h5 class="fw-normal text-white fw-bold">Tell Us What You Need</h5>
-                    <p class="text-white">
-                        Post a job request with quantities, requirements and <br> any artwork files.
-                    </p>
+                    <h5 class="fw-normal text-white fw-bold">{{ $howItWork['data']['steps'][0]['heading'] ?? 'Tell Us What You Need' }}</h5>
+                    <p class="text-white">{{ $howItWork['data']['steps'][0]['description'] ?? 'Post a job request with quantities, requirements and <br> any artwork files.' }}</p>
                 </div>
 
                 <div class="col-lg-4 mb-5 mb-lg-0">
                     <div class="icon-circle mx-auto mb-3">
                         <img src="{{ asset('assets/images/how-it-work-2.png') }}" alt="">
                     </div>
-                    <h5 class="fw-normal text-white fw-bold">Suppliers Send You Quotes</h5>
-                    <p class="text-white">Verified UK suppliers review your request and <br> respond with their best price.</p>
+                    <h5 class="fw-normal text-white fw-bold">{{ $howItWork['data']['steps'][1]['heading'] ?? 'Suppliers Send You Quotes' }}</h5>
+                    <p class="text-white">{{ $howItWork['data']['steps'][1]['description'] ?? 'Verified UK suppliers review your request and <br> respond with their best price.' }}</p>
                 </div>
 
                 <div class="col-lg-4">
                     <div class="icon-circle mx-auto mb-3">
                         <img src="{{ asset('assets/images/how-it-work-3.png') }}" alt="">
                     </div>
-                    <h5 class="fw-normal text-white fw-bold">Compare & Choose</h5>
-                    <p class="text-white">Review quotes side-by-side, message suppliers <br> and pick the best deal.</p>
+                    <h5 class="fw-normal text-white fw-bold">{{ $howItWork['data']['steps'][2]['heading'] ?? 'Compare & Choose' }}</h5>
+                    <p class="text-white">{{ $howItWork['data']['steps'][2]['description'] ?? 'Review quotes side-by-side, message suppliers <br> and pick the best deal.' }}</p>
                 </div>
             </div>
 
