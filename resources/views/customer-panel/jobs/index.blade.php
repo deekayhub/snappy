@@ -70,11 +70,11 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label mb-1">Job Title</label>
                                 <input type="text" id="job_title" name="title" value="{{ old('title') }}" class="form-control" placeholder="Need football kits for school team">
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label mb-1">Category</label>
                                 <select name="category" id="job_category" class="form-select text-dark">
                                     <option value="">Select Category</option>
@@ -84,22 +84,22 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label mb-1">Organisation Name</label>
                                 <input type="text" id="job_organisation_name" name="organisation_name" value="{{ old('organisation_name', auth()->user()->customerProfile?->school_name) }}" class="form-control">
                             </div>
 
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label mb-1">Location</label>
                                 <input type="text" id="job_location" name="location" value="{{ old('location', auth()->user()->customerProfile?->county) }}" class="form-control">
                             </div>
 
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label mb-1">Budget</label>
                                 <input type="number" min="0" step="0.01" id="job_budget" name="budget" value="{{ old('budget') }}" class="form-control" placeholder="Not specified">
                             </div>
 
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label mb-1">Needed By</label>
                                 <input type="text" id="needed_by" autocomplete="off" placeholder="Select date" name="needed_by" value="{{ old('needed_by') }}" class="form-control">
                             </div>
