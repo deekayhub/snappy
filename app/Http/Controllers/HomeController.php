@@ -36,4 +36,9 @@ class HomeController extends Controller
         $faqs = PageSection::where('section_type', 'faq')->first();
         return view('contact-us', compact('faqs'));
     }
+
+    public function pricing()
+    {
+        return view('pricing');
+    }
 }

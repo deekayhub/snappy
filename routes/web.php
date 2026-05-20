@@ -46,6 +46,7 @@ Route::get('/supplier', [HomeController::class, 'supplier'])->middleware(['auth'
 Route::get('/how-it-work', [HomeController::class, 'howItWork'])->name('how-it-work');
 Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
 Route::get('/contact-us', [HomeController::class, 'contactUs'])->name('contact-us');
+Route::get('/pricing', [HomeController::class, 'pricing'])->name('pricing');
 
 Route::middleware('auth', 'verified')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
