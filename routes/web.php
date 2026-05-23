@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SupplierPanelController;
+use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -105,6 +106,16 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
 
 Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/profile', [ProfileController::class, 'adminEdit'])->name('profile');
+});
+
+Route::middleware(['auth', 'verified'])->prefix('subscription')->name('subscription.')->group(function () {
+    Route::get('/', [SubscriptionController::class, 'index'])->name('index');
+    Route::post('/checkout/{plan}', [SubscriptionController::class, 'checkout'])->name('checkout');
+    Route::post('/cancel', [SubscriptionController::class, 'cancel'])->name('cancel');
+    Route::post('/resume', [SubscriptionController::class, 'resume'])->name('resume');
+    Route::get('/success', [SubscriptionController::class, 'success'])->name('success');
+    Route::get('/invoices', [SubscriptionController::class, 'invoices'])->name('invoices');
+    Route::get('/invoices/{invoice}/download', [SubscriptionController::class, 'downloadInvoice'])->name('invoice.download');
 });
 
 Route::middleware(['auth', 'verified', 'role:supplier'])->prefix('supplier-panel')->name('supplier-panel.')->group(function () {

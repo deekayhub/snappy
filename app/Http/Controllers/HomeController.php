@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PageSection;
+use App\Models\Plan;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -15,8 +16,9 @@ class HomeController extends Controller
     }
     public function supplier()
     {
+        $plans = Plan::active()->ordered()->get();
         $faqs = PageSection::where('section_type', 'faq')->first();
-        return view('supplier', compact('faqs'));
+        return view('supplier', compact('faqs', 'plans'));
     }
 
     public function howItWork()
@@ -39,6 +41,7 @@ class HomeController extends Controller
 
     public function pricing()
     {
-        return view('pricing');
+        $plans = Plan::active()->ordered()->get();
+        return view('pricing', compact('plans'));
     }
 }

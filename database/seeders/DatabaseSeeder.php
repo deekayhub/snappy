@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             OrganisationCategorySeeder::class,
             DefaultUsersSeeder::class,
             DemoUsersSeeder::class,
+            PlanSeeder::class,
             // DemoCustomerJobsSeeder::class,
         ]);
     }

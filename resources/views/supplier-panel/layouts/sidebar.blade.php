@@ -30,5 +30,11 @@
                 <span class="menu-title">Profile</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('subscription.index') }}">
+                <i class="mdi mdi-currency-gbp menu-icon"></i>
+                <span class="menu-title">Subscription</span>
+            </a>
+        </li>
     </ul>
 </nav>

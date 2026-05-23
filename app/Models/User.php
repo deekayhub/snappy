@@ -83,5 +83,50 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Quote::class, 'supplier_user_id')->whereNotNull('customer_rating');
     }
 
+    public function onTrialOrSubscribed(): bool
+    {
+        return $this->onTrial('default') || $this->subscribed('default');
+    }
 
+    public function hasActiveSubscription(): bool
+    {
+        return $this->subscribed('default');
+    }
+
+    public function currentPlan(): ?Plan
+    {
+        $subscription = $this->subscription('default');
+        if (!$subscription || !$subscription->stripe_price) {
+            return Plan::where('is_free', true)->first();
+        }
+        return Plan::where('stripe_price_id', $subscription->stripe_price)->first();
+    }
+
+    public function subscriptionUsage(): array
+    {
+        $plan = $this->currentPlan();
+
+        if (!$plan || $plan->is_free) {
+            $quotesThisMonth = $this->supplierQuotes()
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->count();
+
+            $quotesThisYear = $this->supplierQuotes()
+                ->whereYear('created_at', now()->year)
+                ->count();
+
+            return [
+                'can_submit_quote' => $quotesThisMonth < 1 && $quotesThisYear < 6,
+                'quotes_remaining_this_month' => max(0, 1 - $quotesThisMonth),
+                'quotes_remaining_this_year' => max(0, 6 - $quotesThisYear),
+            ];
+        }
+
+        return [
+            'can_submit_quote' => true,
+            'quotes_remaining_this_month' => -1,
+            'quotes_remaining_this_year' => -1,
+        ];
+    }
 }
