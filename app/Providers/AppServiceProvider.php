@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Laravel\Cashier\Cashier;
+use Laravel\Cashier\Http\Controllers\PaymentController;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -25,11 +26,13 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
 
-        Cashier::$registersRoutes = false;
+        Cashier::ignoreRoutes();
 
-        Route::post(
-            '/' . config('cashier.path') . '/webhook',
-            'App\Http\Controllers\WebhookController@handleWebhook'
-        )->name('cashier.webhook');
+        Route::prefix(config('cashier.path'))
+            ->name('cashier.')
+            ->group(function () {
+                Route::get('payment/{id}', [PaymentController::class, 'show'])->name('payment');
+                Route::post('webhook', [\App\Http\Controllers\WebhookController::class, 'handleWebhook'])->name('webhook');
+            });
     }
 }

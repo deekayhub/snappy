@@ -93,7 +93,7 @@ class SubscriptionController extends Controller
     public function success(Request $request)
     {
         return redirect()->route('subscription.index')
-            ->with('success', 'Subscription activated successfully! Your subscription will be active once payment is confirmed.');
+            ->with('success', 'We received your checkout response from Stripe. Your subscription will appear active once Stripe confirms it through the webhook.');
     }
 
     public function invoices(Request $request)

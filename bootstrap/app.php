@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->validateCsrfTokens(except: [
-            'stripe/*',
+            env('CASHIER_PATH', 'stripe') . '/*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
