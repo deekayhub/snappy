@@ -59,7 +59,7 @@
                                 <p class="mb-1 text-success fw-semibold">Active</p>
                                 <form method="POST" action="{{ route('subscription.cancel') }}" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel your subscription?');">
                                     @csrf
-                                    <button type="submit" class="btn btn-outline-danger">Cancel Subscription</button>
+                                    <button type="submit" class="btn btn-outline-danger py-2">Cancel Subscription</button>
                                 </form>
                             @endif
                         </div>
@@ -68,7 +68,7 @@
             </div>
 
             <div class="mb-4">
-                <a href="{{ route('subscription.invoices') }}" class="btn btn-outline-primary">
+                <a href="{{ route('subscription.invoices') }}" class="btn btn-outline-primary py-2">
                     <i class="bi bi-receipt me-2"></i>View Invoices
                 </a>
             </div>

@@ -13,7 +13,7 @@
             return ['Ended Jobs', 'danger', 'Ended jobs'];
         }
 
-        if ($neededBy->diffInSeconds(now(), false) <= 7200) {  
+        if ($neededBy->diffInSeconds(now(), false) <= 86400) {
             return ['Ending Soon', 'warning', 'Job ending time left'];
         }
 
