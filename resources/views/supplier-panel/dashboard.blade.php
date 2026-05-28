@@ -2,21 +2,23 @@
 @section('title', 'Supplier Dashboard')
 
 @php
-    $statusMeta = function ($job) {
-    if ($job->status !== 'open' || ($job->needed_by && $job->needed_by->isPast())) {
-        return ['Ended', 'danger'];
-    }
+    $endingSoonThresholdSeconds = 86400;
 
-    if ($job->needed_by) {
-        $secondsLeft = now()->diffInSeconds($job->needed_by, false);
-
-        if ($secondsLeft > 0 && $secondsLeft <= 7200) {
-            return ['Ending Soon', 'warning'];
+    $statusMeta = function ($job) use ($endingSoonThresholdSeconds) {
+        if ($job->status !== 'open' || ($job->needed_by && $job->needed_by->isPast())) {
+            return ['Ended', 'danger'];
         }
-    }
 
-    return ['Active', 'success'];
-};
+        if ($job->needed_by) {
+            $secondsLeft = now()->diffInSeconds($job->needed_by, false);
+
+            if ($secondsLeft > 0 && $secondsLeft <= $endingSoonThresholdSeconds) {
+                return ['Ending Soon', 'warning'];
+            }
+        }
+
+        return ['Active', 'success'];
+    };
 @endphp
 
 @section('content')

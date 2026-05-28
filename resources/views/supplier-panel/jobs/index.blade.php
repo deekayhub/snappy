@@ -2,7 +2,9 @@
 @section('title', 'Job Board')
 
 @php
-    $jobMeta = function ($job) {
+    $endingSoonThresholdSeconds = 86400;
+
+    $jobMeta = function ($job) use ($endingSoonThresholdSeconds) {
         $neededBy = $job->needed_by;
 
         if (!$neededBy || $job->status !== 'open') {
@@ -13,7 +15,7 @@
             return ['Ended Jobs', 'danger', 'Ended jobs'];
         }
 
-        if ($neededBy->diffInSeconds(now(), false) <= 86400) {
+        if ($neededBy->diffInSeconds(now(), false) <= $endingSoonThresholdSeconds) {
             return ['Ending Soon', 'warning', 'Job ending time left'];
         }
 
@@ -92,6 +94,7 @@
                                     <div 
                                         class="fw-semibold mt-1 js-job-countdown {{ $meta[0] === 'Ending Soon' ? 'text-danger' : 'text-muted d-none' }}"
                                         data-end-at="{{ $job->needed_by->toIso8601String() }}"
+                                        data-ending-soon-threshold="{{ $endingSoonThresholdSeconds }}"
                                         data-status-badge-id="status-{{ $job->id }}"
                                         data-status-text-id="status-text-{{ $job->id }}"
                                     >
@@ -344,6 +347,8 @@
 
             timers.forEach(function (el) {
                 var endAt = new Date(el.dataset.endAt).getTime();
+                var endingSoonThreshold = parseInt(el.dataset.endingSoonThreshold, 10) || 86400;
+                endingSoonThreshold = endingSoonThreshold * 1000;
                 var badge = document.getElementById(el.dataset.statusBadgeId);
                 var statusText = document.getElementById(el.dataset.statusTextId);
                 var card = el.closest('.card');
@@ -371,7 +376,7 @@
                     return;
                 }
 
-                if (diff > 86400000) { // more than 24 hours
+                if (diff > endingSoonThreshold) {
                     el.classList.add('d-none');
                     el.classList.remove('text-danger');
                     el.classList.add('text-muted');

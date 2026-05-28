@@ -9,6 +9,8 @@ use Illuminate\View\View;
 
 class SupplierPanelController extends Controller
 {
+    private const ENDING_SOON_THRESHOLD_HOURS = 24;
+
     public function dashboard(Request $request): View
     {
         $user = $request->user()->load(['supplierProfile', 'organisationCategories']);
@@ -34,8 +36,8 @@ class SupplierPanelController extends Controller
         $stats = [
             'available_jobs' => CustomerJob::count(),
             'active_jobs' => CustomerJob::where('status', 'open')->count(),
-            'ending_soon' => CustomerJob::whereDate('needed_by', '>=', now()->toDateString())
-                ->whereDate('needed_by', '<=', now()->addDays(3)->toDateString())
+            'ending_soon' => CustomerJob::where('status', 'open')
+                ->whereBetween('needed_by', [now(), now()->addHours(self::ENDING_SOON_THRESHOLD_HOURS)])
                 ->count(),
             'ended_jobs' => CustomerJob::where(function ($query) {
                 $query->where('status', '!=', 'open')
