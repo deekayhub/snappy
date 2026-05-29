@@ -29,6 +29,9 @@
         @endif
 
         @if($subscription)
+            @php
+                $currentPlan = $plans->firstWhere('stripe_price_id', $subscription->stripe_price);
+            @endphp
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
@@ -36,7 +39,7 @@
                             <h5 class="fw-bold mb-1">Current Plan</h5>
                             <p class="mb-0 text-muted">
                                 @php
-                                    $currentPlan = $plans->firstWhere('stripe_price_id', $subscription->stripe_price);
+                                    $currentPlan = $currentPlan ?? $plans->firstWhere('stripe_price_id', $subscription->stripe_price);
                                 @endphp
                                 @if($currentPlan)
                                     <span class="badge bg-primary fs-6 me-2">{{ $currentPlan->name }}</span>
@@ -66,6 +69,12 @@
                     </div>
                 </div>
             </div>
+
+            @if($currentPlan?->slug === 'bronze')
+                <div class="alert alert-warning border-0 shadow-sm mb-4">
+                    Changing away from Bronze will end the current subscription first, then create a fresh checkout for the new plan. No swap settlement will be used.
+                </div>
+            @endif
 
             <div class="mb-4">
                 <a href="{{ route('subscription.invoices') }}" class="btn btn-outline-primary py-2">
@@ -113,6 +122,13 @@
                                     <form method="POST" action="{{ route('subscription.checkout', $plan) }}">
                                         @csrf
                                         <button type="submit" class="btn btn-outline-primary w-100 mb-3">Downgrade to Free</button>
+                                    </form>
+                                @elseif($currentPlan?->slug === 'bronze' && $subscription && $subscription->stripe_price !== $plan->stripe_price_id)
+                                    <form method="POST" action="{{ route('subscription.checkout', $plan) }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                                            Cancel Bronze & Start New Payment
+                                        </button>
                                     </form>
                                 @else
                                     <form method="POST" action="{{ route('subscription.checkout', $plan) }}">

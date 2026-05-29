@@ -38,6 +38,13 @@
                                         @csrf
                                         <button type="submit" class="btn btn-outline-primary btn-lg w-100 mb-3">Downgrade to Free</button>
                                     </form>
+                                @elseif($userSub && optional(auth()->user()->currentPlan())->slug === 'bronze' && $userSub->stripe_price !== $plan->stripe_price_id)
+                                    <form method="POST" action="{{ route('subscription.checkout', $plan) }}" class="mt-auto">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                                            Cancel Bronze & Start New Payment
+                                        </button>
+                                    </form>
                                 @elseif($userSub && $userSub->stripe_price === $plan->stripe_price_id)
                                     <button class="btn btn-outline-secondary btn-lg w-100 mb-3" disabled>Current Plan</button>
                                 @else

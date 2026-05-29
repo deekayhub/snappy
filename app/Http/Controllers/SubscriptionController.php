@@ -18,6 +18,7 @@ class SubscriptionController extends Controller
     public function checkout(Request $request, Plan $plan)
     {
         $user = $request->user();
+        $currentPlan = $user->currentPlan();
 
         if ($plan->is_free) {
             if ($user->subscribed('default')) {
@@ -30,6 +31,21 @@ class SubscriptionController extends Controller
         if (!$plan->stripe_price_id) {
             return redirect()->route('subscription.index')
                 ->with('error', 'This plan is not yet configured for billing. Please run "php artisan stripe:sync-plans" to set up Stripe products.');
+        }
+
+        if ($currentPlan?->slug === 'bronze' && $plan->stripe_price_id !== $currentPlan->stripe_price_id) {
+            if ($user->subscribed('default')) {
+                $user->subscription('default')->cancelNow();
+            }
+
+            $checkout = $user->newSubscription('default', $plan->stripe_price_id)
+                ->checkout([
+                    'success_url' => route('subscription.success') . '?session_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url' => route('subscription.index'),
+                ]);
+
+            return redirect($checkout->url)
+                ->with('info', 'Your Bronze subscription was ended first, and a new checkout was created for the selected plan.');
         }
 
         if ($user->subscribed('default')) {
