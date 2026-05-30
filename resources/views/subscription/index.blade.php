@@ -1,6 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Subscription')
 @section('section')
+    @php
+        $currentPlan = null;
+    @endphp
     <div class="container py-5">
         <div class="mb-4">
             <h1 class="fw-bold">Subscription</h1>
@@ -38,9 +41,6 @@
                         <div>
                             <h5 class="fw-bold mb-1">Current Plan</h5>
                             <p class="mb-0 text-muted">
-                                @php
-                                    $currentPlan = $currentPlan ?? $plans->firstWhere('stripe_price_id', $subscription->stripe_price);
-                                @endphp
                                 @if($currentPlan)
                                     <span class="badge bg-primary fs-6 me-2">{{ $currentPlan->name }}</span>
                                     {{ $currentPlan->price_formatted }} / {{ $currentPlan->duration_label }}

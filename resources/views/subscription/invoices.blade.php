@@ -39,7 +39,7 @@
                                         @endif
                                     </td>
                                     <td class="text-end">
-                                        <a href="{{ route('subscription.invoice.download', $invoice->id) }}" class="btn btn-sm btn-outline-primary">
+                                        <a href="{{ route('subscription.invoice.download', $invoice->id) }}" class="btn btn-sm btn-outline-primary py-2">
                                             <i class="bi bi-download"></i> Download
                                         </a>
                                     </td>
