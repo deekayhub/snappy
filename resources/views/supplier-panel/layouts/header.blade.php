@@ -16,11 +16,12 @@
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-top border-bottom" style="height: 80px;">
         <ul class="navbar-nav ms-auto">
-            <li class="nav-item dropdown d-none d-lg-block user-dropdown">
-                <a class="nav-link dropdown-toggle border rounded-pill px-3" id="SupplierUserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="profile-text">{{ ucfirst(Auth::user()->name) }}</span>
+            <li class="nav-item dropdown user-dropdown">
+                <a class="nav-link dropdown-toggle border rounded-pill px-2 px-lg-3 py-2 d-flex align-items-center gap-2" id="SupplierUserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img class="rounded-circle" src="{{ asset('admin/assets/images/faces/face8.jpg') }}" alt="Profile image" style="width: 32px; height: 32px; object-fit: cover;">
+                    <span class="profile-text d-none d-lg-inline">{{ ucfirst(Auth::user()->name) }}</span>
                 </a>
-                <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="SupplierUserDropdown">
+                <div class="dropdown-menu dropdown-menu-end navbar-dropdown" aria-labelledby="SupplierUserDropdown">
                     <div class="dropdown-header text-center">
                         <img class="img-md rounded-circle" src="{{ asset('admin/assets/images/faces/face8.jpg') }}" alt="Profile image">
                         <p class="mb-1 mt-3 fw-semibold">{{ ucfirst(Auth::user()->name) }}</p>

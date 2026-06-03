@@ -124,6 +124,13 @@ Route::middleware(['auth', 'verified', 'role:supplier'])->prefix('supplier-panel
     Route::get('/reports', [SupplierPanelController::class, 'reports'])->name('reports');
     Route::get('/activity', [SupplierPanelController::class, 'activity'])->name('activity');
     Route::get('/profile', [SupplierPanelController::class, 'profile'])->name('profile');
+    Route::get('/subscription', [SupplierPanelController::class, 'subscriptionIndex'])->name('subscription.index');
+    Route::post('/subscription/checkout/{plan}', [SupplierPanelController::class, 'subscriptionCheckout'])->name('subscription.checkout');
+    Route::post('/subscription/cancel', [SupplierPanelController::class, 'subscriptionCancel'])->name('subscription.cancel');
+    Route::post('/subscription/resume', [SupplierPanelController::class, 'subscriptionResume'])->name('subscription.resume');
+    Route::get('/subscription/success', [SupplierPanelController::class, 'subscriptionSuccess'])->name('subscription.success');
+    Route::get('/subscription/invoices', [SupplierPanelController::class, 'subscriptionInvoices'])->name('subscription.invoices');
+    Route::get('/subscription/invoices/{invoice}/download', [SupplierPanelController::class, 'downloadSubscriptionInvoice'])->name('subscription.invoice.download');
     Route::post('/jobs/{job}/quotes', [QuoteController::class, 'store'])->name('quotes.store');
 });
 

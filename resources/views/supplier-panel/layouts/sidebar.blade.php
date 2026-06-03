@@ -31,7 +31,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('subscription.index') }}">
+            <a class="nav-link {{ request()->routeIs('supplier-panel.subscription.*') ? 'active' : '' }}" href="{{ route('supplier-panel.subscription.index') }}">
                 <i class="mdi mdi-currency-gbp menu-icon"></i>
                 <span class="menu-title">Subscription</span>
             </a>

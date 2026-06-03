@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Plan;
 use App\Models\CustomerJob;
 use App\Models\OrganisationCategory;
 use Illuminate\Http\Request;
@@ -159,5 +160,126 @@ class SupplierPanelController extends Controller
         $user = $request->user()->load(['supplierProfile', 'organisationCategories']);
 
         return view('supplier-panel.profile.index', compact('user', 'organisation'));
+    }
+
+    public function subscriptionIndex(Request $request): View
+    {
+        $plans = Plan::active()->ordered()->get();
+        $subscription = $request->user()->subscription('default');
+
+        return view('supplier-panel.subscription.index', compact('plans', 'subscription'));
+    }
+
+    public function subscriptionCheckout(Request $request, Plan $plan)
+    {
+        $user = $request->user();
+        $currentPlan = $user->currentPlan();
+
+        if ($plan->is_free) {
+            if ($user->subscribed('default')) {
+                $user->subscription('default')->cancelNow();
+            }
+
+            return redirect()->route('supplier-panel.subscription.index')
+                ->with('success', 'You are now on the Basic (Free) plan.');
+        }
+
+        if (! $plan->stripe_price_id) {
+            return redirect()->route('supplier-panel.subscription.index')
+                ->with('error', 'This plan is not yet configured for billing. Please run "php artisan stripe:sync-plans" to set up Stripe products.');
+        }
+
+        if ($currentPlan?->slug === 'bronze' && $plan->stripe_price_id !== $currentPlan->stripe_price_id) {
+            if ($user->subscribed('default')) {
+                $user->subscription('default')->cancelNow();
+            }
+
+            $checkout = $user->newSubscription('default', $plan->stripe_price_id)
+                ->checkout([
+                    'success_url' => route('supplier-panel.subscription.success') . '?session_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url' => route('supplier-panel.subscription.index'),
+                ]);
+
+            return redirect($checkout->url)
+                ->with('info', 'Your Bronze subscription was ended first, and a new checkout was created for the selected plan.');
+        }
+
+        if ($user->subscribed('default')) {
+            return $this->subscriptionSwap($request, $plan);
+        }
+
+        $checkout = $user->newSubscription('default', $plan->stripe_price_id)
+            ->checkout([
+                'success_url' => route('supplier-panel.subscription.success') . '?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => route('supplier-panel.subscription.index'),
+            ]);
+
+        return redirect($checkout->url);
+    }
+
+    protected function subscriptionSwap(Request $request, Plan $plan)
+    {
+        $user = $request->user();
+        $subscription = $user->subscription('default');
+
+        if (! $plan->stripe_price_id) {
+            return redirect()->route('supplier-panel.subscription.index')
+                ->with('error', 'This plan is not yet configured for billing.');
+        }
+
+        if ($subscription->stripe_price === $plan->stripe_price_id) {
+            return redirect()->route('supplier-panel.subscription.index')
+                ->with('info', 'You are already on this plan.');
+        }
+
+        $subscription->swap($plan->stripe_price_id);
+
+        return redirect()->route('supplier-panel.subscription.index')
+            ->with('success', 'Subscription changed to ' . $plan->name . ' successfully.');
+    }
+
+    public function subscriptionCancel(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user->subscribed('default')) {
+            $user->subscription('default')->cancel();
+        }
+
+        return redirect()->route('supplier-panel.subscription.index')
+            ->with('success', 'Subscription cancelled successfully. Access continues until the end of the billing period.');
+    }
+
+    public function subscriptionResume(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user->subscribed('default') && $user->subscription('default')->onGracePeriod()) {
+            $user->subscription('default')->resume();
+        }
+
+        return redirect()->route('supplier-panel.subscription.index')
+            ->with('success', 'Subscription resumed successfully.');
+    }
+
+    public function subscriptionSuccess(Request $request)
+    {
+        return redirect()->route('supplier-panel.subscription.index')
+            ->with('success', 'We received your checkout response from Stripe. Your subscription will appear active once Stripe confirms it through the webhook.');
+    }
+
+    public function subscriptionInvoices(Request $request): View
+    {
+        $invoices = $request->user()->invoices();
+
+        return view('supplier-panel.subscription.invoices', compact('invoices'));
+    }
+
+    public function downloadSubscriptionInvoice(Request $request, string $invoiceId)
+    {
+        return $request->user()->downloadInvoice($invoiceId, [
+            'vendor' => config('app.name'),
+            'product' => 'Subscription',
+        ]);
     }
 }
