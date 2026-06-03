@@ -61,12 +61,12 @@
             </a>
             </div>
         </li> 
-        <li class="nav-item dropdown d-none d-lg-block user-dropdown">
-            <a class="nav-link dropdown-toggle border rounded-pill px-3" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                {{-- <img class="img-xs rounded-circle" src="{{ asset('admin/assets/images/faces/face8.jpg') }}" alt="Profile image">  --}}
-                <span class="profile-text">{{ ucfirst(Auth::user()->name) }}</span>
+        <li class="nav-item dropdown user-dropdown">
+            <a class="nav-link dropdown-toggle border rounded-pill px-2 px-lg-3 py-2 d-flex align-items-center gap-2" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                <img class="rounded-circle" src="{{ asset('admin/assets/images/faces/face8.jpg') }}" alt="Profile image" style="width: 32px; height: 32px; object-fit: cover;">
+                <span class="profile-text d-none d-lg-inline">{{ ucfirst(Auth::user()->name) }}</span>
             </a>
-            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
+            <div class="dropdown-menu dropdown-menu-end navbar-dropdown" aria-labelledby="UserDropdown">
                 <div class="dropdown-header text-center">
                     <img class="img-md rounded-circle" src="{{ asset('admin/assets/images/faces/face8.jpg') }}" alt="Profile image">
                     <p class="mb-1 mt-3 fw-semibold">{{ ucfirst(Auth::user()->name) }}</p>
@@ -75,14 +75,14 @@
                 <a class="dropdown-item" href="{{ route('admin.profile') }}"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> My Profile</a>
                 <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>
                 {{-- <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2"></i> FAQ</a> --}}
-                <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="dropdown-item text-danger border-0">
-                            Log Out
-                        </button>
-                    </form>
-                </a>
+                <div class="dropdown-divider"></div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="dropdown-item text-danger border-0">
+                        <i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>
+                        Log Out
+                    </button>
+                </form>
             </div>
         </li>
         </ul>
