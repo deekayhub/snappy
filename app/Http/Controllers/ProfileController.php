@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
@@ -194,11 +194,27 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:30',
+            'profile_picture' => 'nullable|file|mimetypes:image/jpeg,image/png|max:10240',
         ], [
             'name.required' => 'Name is required',
+            'profile_picture.mimetypes' => 'Profile picture must be a JPG, JPEG, or PNG image.',
+            'profile_picture.max' => 'Profile picture must not be larger than 10 MB.',
         ]);
 
-        $user->update($validated);
+        $profilePicturePath = $user->profile_picture;
+
+        if ($request->hasFile('profile_picture')) {
+            $profilePicturePath = $this->storeProfilePicture(
+                $request->file('profile_picture'),
+                $user->profile_picture
+            );
+        }
+
+        $user->update([
+            'name' => $validated['name'],
+            'phone' => $validated['phone'] ?? null,
+            'profile_picture' => $profilePicturePath,
+        ]);
     }
 
     private function updateSupplier($user, Request $request)
@@ -374,6 +390,25 @@ class ProfileController extends Controller
         }
 
         return $normalized;
+    }
+
+    private function storeProfilePicture(\Illuminate\Http\UploadedFile $file, ?string $currentPath = null): string
+    {
+        $directory = public_path('profile-pictures');
+
+        if (! is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        if ($currentPath && file_exists(public_path($currentPath))) {
+            unlink(public_path($currentPath));
+        }
+
+        $extension = strtolower($file->getClientOriginalExtension() ?: 'jpg');
+        $filename = Str::uuid()->toString() . '.' . $extension;
+        $file->move($directory, $filename);
+
+        return 'profile-pictures/' . $filename;
     }
 
 

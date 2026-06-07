@@ -3,6 +3,7 @@
 
 @php
     $supplierOrganisationIds = old('supplier_organisation', $user->organisationCategories->where('type', 'supplier')->pluck('id')->toArray());
+    $currentProfilePicture = $user->profile_picture;
     $savedSocialLinks = old('social_links');
     if (! is_array($savedSocialLinks)) {
         $savedSocialLinks = $user->supplierProfile?->social_links;
@@ -43,6 +44,10 @@
                                 <label class="form-label">Phone no.</label>
                                 <input type="text" name="phone" class="form-control  rounded-3" value="{{ old('phone', $user->phone) }}">
                             </div>
+                            @include('partials.profile-picture-field', [
+                                'currentProfilePicture' => $currentProfilePicture,
+                                'profilePictureLabel' => 'Profile picture',
+                            ])
                             <div class="col-md-6">
                                 <label class="form-label">Company name</label>
                                 <input type="text" name="company_name" class="form-control  rounded-3" value="{{ old('company_name', $user->supplierProfile?->company_name) }}" required>
@@ -160,6 +165,7 @@
     </div>
 </div>
 @push('scripts')
+@include('partials.profile-picture-script')
 <script>
     $(function () {
         $('.supplier-organisations').select2({

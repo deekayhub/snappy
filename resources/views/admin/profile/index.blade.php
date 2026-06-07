@@ -4,6 +4,7 @@
 @php
     $isSupplier = $user->hasRole('supplier');
     $supplierOrganisationIds = old('supplier_organisation', $user->organisationCategories->where('type', 'supplier')->pluck('id')->toArray());
+    $currentProfilePicture = $user->profile_picture;
 @endphp
 
 @section('content')
@@ -68,7 +69,7 @@
                                         <p class="text-muted mb-0">{{ $isSupplier ? 'Keep your supplier details up to date so your panel reflects the latest business information.' : 'Update your admin account details.' }}</p>
                                     </div>
 
-                                    <form method="POST" action="{{ route('profile.update') }}">
+                                    <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row g-3">
                                             <div class="col-md-6">
@@ -83,6 +84,10 @@
                                                 <label class="form-label">Phone number</label>
                                                 <input type="text" name="phone" class="form-control form-control-lg rounded-4" value="{{ old('phone', $user->phone) }}">
                                             </div>
+                                            @include('partials.profile-picture-field', [
+                                                'currentProfilePicture' => $currentProfilePicture,
+                                                'profilePictureLabel' => 'Profile picture',
+                                            ])
 
                                             @if ($isSupplier)
                                                 <div class="col-md-6">
@@ -169,6 +174,7 @@
     </div>
 </div>
 @push('scripts')
+    @include('partials.profile-picture-script')
     @if ($isSupplier)
         <script>
             $(function () {

@@ -1,4 +1,9 @@
 <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+    @php
+        $adminHeaderAvatar = Auth::user()->profile_picture
+            ? asset(Auth::user()->profile_picture)
+            : asset('admin/assets/images/faces/face8.jpg');
+    @endphp
     <div class="text-center navbar-brand-wrapper border-bottom  d-flex align-items-center justify-content-start" style="height: 80px;">
         <div class="me-3">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
@@ -63,12 +68,11 @@
         </li> 
         <li class="nav-item dropdown user-dropdown">
             <a class="nav-link dropdown-toggle border rounded-pill px-2 px-lg-3 py-2 d-flex align-items-center gap-2" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                <img class="rounded-circle" src="{{ asset('admin/assets/images/faces/face8.jpg') }}" alt="Profile image" style="width: 32px; height: 32px; object-fit: cover;">
+                <img class="rounded-circle" src="{{ $adminHeaderAvatar }}" alt="Profile image" style="width: 32px; height: 32px; object-fit: cover;">
                 <span class="profile-text d-none d-lg-inline">{{ ucfirst(Auth::user()->name) }}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-end navbar-dropdown" aria-labelledby="UserDropdown">
                 <div class="dropdown-header text-center">
-                    <img class="img-md rounded-circle" src="{{ asset('admin/assets/images/faces/face8.jpg') }}" alt="Profile image">
                     <p class="mb-1 mt-3 fw-semibold">{{ ucfirst(Auth::user()->name) }}</p>
                     <p class="fw-light text-muted mb-0">{{ Auth::user()->email }}</p>
                 </div>

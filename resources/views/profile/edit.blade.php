@@ -4,6 +4,7 @@
 
 @php
     $customerOrganisationIds = old('customer_organisation', $user->organisationCategories->where('type', 'customer')->pluck('id')->toArray());
+    $currentProfilePicture = $user->profile_picture;
 @endphp
 
 @section('section')
@@ -67,7 +68,7 @@
                 <h3 class="mb-2">Profile details</h3>
                 <p class="text-secondary mb-4">Update the information connected to your customer account.</p>
 
-                <form method="POST" action="{{ route('profile.update') }}">
+                <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -101,6 +102,10 @@
                             <label class="form-label fw-semibold">Club / School name</label>
                             <input name="school_name" class="form-control rounded-3" value="{{ old('school_name', optional($user->customerProfile)->school_name) }}">
                         </div>
+                        @include('partials.profile-picture-field', [
+                            'currentProfilePicture' => $currentProfilePicture,
+                            'profilePictureLabel' => 'Profile picture',
+                        ])
                         <div class="col-12 pt-2">
                             <button class="btn btn-primary rounded-3 py-2">Save profile changes</button>
                         </div>
@@ -155,4 +160,7 @@
         });
     });
 </script>
+@push('scripts')
+    @include('partials.profile-picture-script')
+@endpush
 @endsection
