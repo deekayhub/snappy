@@ -38,17 +38,19 @@
                                     <label class="form-label fw-semibold">Phone number</label>
                                     <input name="phone" class="form-control rounded-3" value="{{ old('phone', $user->phone) }}">
                                 </div>
-                                {{-- <div class="col-md-6">
+                                <div class="col-md-6">
                                     <label class="form-label fw-semibold">Organisation type</label>
-                                    <select name="customer_organisation[]" class="form-select rounded-3 select2-single" required>
+                                    <select name="customer_organisation[]" class="form-select rounded-3 select2-single text-dark" required>
                                         <option value="">Select organisation</option>
                                         @foreach ($organisation as $item)
                                             @if ($item->type === 'customer')
-                                                <option value="{{ $item->id }}" {{ in_array($item->id, $customerOrganisationIds) ? 'selected' : '' }}>{{ strtoupper($item->name) }}</option>
+                                                <option value="{{ $item->id }}"
+                                                    {{ in_array($item->id, $user->organisationCategories->pluck('id')->toArray()) ? 'selected' : '' }}
+                                                    >{{ strtoupper($item->name) }}</option>
                                             @endif
                                         @endforeach
                                     </select>
-                                </div> --}}
+                                </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold">County</label>
                                     <input name="county" class="form-control rounded-3" value="{{ old('county', optional($user->customerProfile)->county) }}">

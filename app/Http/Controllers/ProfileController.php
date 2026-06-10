@@ -310,7 +310,7 @@ class ProfileController extends Controller
     {
         
         $validated = $request->validate([
-            'customer_organisation' => 'required|array|min:1',
+            // 'customer_organisation' => 'required|array|min:1',
             'customer_organisation.*' => [
                 'integer',
                 Rule::exists('organisation_categories', 'id')->where('type', 'customer'),

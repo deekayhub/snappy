@@ -1,6 +1,6 @@
 @php
     $profilePictureLabel = $profilePictureLabel ?? 'Profile picture';
-    $profilePictureHelp = $profilePictureHelp ?? 'Allowed: JPG, JPEG, PNG. Max size 10 MB. iPhone HEIF/HEIC photos are converted automatically before upload.';
+    $profilePictureHelp = $profilePictureHelp ?? 'Allowed: JPG, JPEG, PNG. Max size 10 MB.';
     $currentProfilePicture = $currentProfilePicture ?? null;
 @endphp
 
