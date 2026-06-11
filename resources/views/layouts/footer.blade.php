@@ -7,7 +7,9 @@
             <div class="col-md-6 col-12">
                  <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
                     <li><a href="{{ route('home') }}" class="nav-link px-2 {{ request()->routeIs('home') ? 'active' : '' }}">Home</a></li>
+                    @role('supplier')
                     <li><a href="{{ route('supplier') }}" class="nav-link px-2 {{ request()->routeIs('supplier') ? 'active' : '' }}">Suppliers</a></li>
+                    @endrole
                     <li><a href="{{ route('how-it-work') }}" class="nav-link px-2 {{ request()->routeIs('how-it-work') ? 'active' : '' }}">How it Works</a></li>
                     <li><a href="{{ route('contact-us') }}" class="nav-link px-2 {{ request()->routeIs('contact-us') ? 'active' : '' }}">Contact Us</a></li>
                     <li><a href="{{ route('faq') }}" class="nav-link px-2 {{ request()->routeIs('faq') ? 'active' : '' }}">FAQ's</a></li>

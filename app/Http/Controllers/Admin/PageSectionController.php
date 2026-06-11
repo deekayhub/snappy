@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
+use \App\Models\OrganisationCategorySetting;
 use App\Http\Controllers\Controller;
+use App\Models\OrganisationCategory;
 use App\Models\PageSection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PageSectionController extends Controller
 {
     public function index()
     {
         $sections = PageSection::all();
-        return view('admin.page-sections.index', compact('sections'));
+        $orgCategories = OrganisationCategory::with('categorySetting')->where('type', 'supplier')->get();
+        $homeContactSection = $sections->where('section_type', 'home_contact_section')->first();
+        // dd($orgCategories->toArray());
+        return view('admin.page-sections.index', compact('sections', 'orgCategories', 'homeContactSection'));
     }
     public function store(Request $request)
     {
-        // dd($request->all());
         if ($request->section_type == 'faq') {
         $request->validate([
             'section_type' => 'required',
@@ -46,6 +51,19 @@ class PageSectionController extends Controller
                 'description' => $request->description,
                 'steps' => array_values($request->steps),
             ];
+        } elseif ($request->section_type == 'home_contact_section') {
+            $request->validate([
+                'section_type' => 'required',
+                'heading' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'button_text' => 'required|string|max:255',
+            ]);
+
+            $data = [
+                'heading' => $request->heading,
+                'description' => $request->description,
+                'button_text' => $request->button_text,
+            ];
         } else {
             return redirect()->back()->with('error', 'Invalid section type');
         }
@@ -62,5 +80,34 @@ class PageSectionController extends Controller
 
         return redirect()->back()->with('success', 'Section Saved Successfully');
 
+    }
+    
+    public function organisationCategoryUpdate(Request $request, $categoryId)
+    {
+        $request->validate([
+            'image'  => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        $setting = OrganisationCategorySetting::firstOrNew([
+            'organisation_category_id' => $categoryId
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($setting->image) {
+                Storage::delete($setting->image);
+            }
+
+            $setting->image = $request->file('image')
+                ->store('organisation_category_images', 'public');
+        }
+
+        $setting->status = $request->status;
+        $setting->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category updated successfully'
+        ]);
     }
 }

@@ -98,6 +98,14 @@
 
     <div class="py-5"></div>
 
-   @include('components.contact-section')
-   @include('components.faq')
+    @if(isset($homeContactSection))
+        @include('components.contact-section', [
+            'homeContactSection' => $homeContactSection
+        ])
+    @endif
+    @if(isset($faqs))
+        @include('components.faq', [
+            'faqs' => $faqs
+        ])
+    @endif
 @endsection

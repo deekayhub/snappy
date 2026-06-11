@@ -3,10 +3,12 @@
 
 @section('section')
     @include('components.hero-3')
-
-
-    @include('components.features-3')
-     @if(isset($howItWork))
+    @if(isset($features))
+        @include('components.features-3', [
+            'features' => $features
+        ])
+    @endif 
+    @if(isset($howItWork))
         @include('components.how-it-work', [
             'howItWork' => $howItWork
         ])
@@ -20,7 +22,13 @@
 
     <div class="py-5"></div>
 
-    @include('components.contact-section')
+    
+    @if(isset($homeContactSection))
+        @include('components.contact-section', [
+            'homeContactSection' => $homeContactSection
+        ])
+    @endif
+
     @if(isset($faqs))
         @include('components.faq', [
             'faqs' => $faqs

@@ -29,17 +29,87 @@
 
         <ul class="nav nav-pills mb-3 border-0" id="pills-tab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="pills-faq-tab" data-bs-toggle="pill" data-bs-target="#pills-faq" type="button" role="tab" aria-controls="pills-faq" aria-selected="true">FAQs</button>
+                <button class="nav-link active" id="pills-organisation-category-tab" data-bs-toggle="pill" data-bs-target="#pills-organisation-category" type="button" role="tab" aria-controls="pills-organisation-category" aria-selected="false">Organisation Category</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-faq-tab" data-bs-toggle="pill" data-bs-target="#pills-faq" type="button" role="tab" aria-controls="pills-faq" aria-selected="true">FAQs</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-home-contact-section-tab" data-bs-toggle="pill" data-bs-target="#pills-home-contact-section" type="button" role="tab" aria-controls="pills-home-contact-section" aria-selected="false">Home Contact Section</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="pills-how-it-work-tab" data-bs-toggle="pill" data-bs-target="#pills-how-it-work" type="button" role="tab" aria-controls="pills-how-it-work" aria-selected="false">How It Works</button>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Contact</button>
-            </li>
+            
+            
         </ul>
         <div class="tab-content p-0 border-0" id="pills-tabContent">
-            <div class="tab-pane fade show active" id="pills-faq" role="tabpanel" aria-labelledby="pills-faq-tab" tabindex="0">
+            <div class="tab-pane fade show active" id="pills-organisation-category" role="tabpanel" aria-labelledby="pills-organisation-category-tab" tabindex="0">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{{ route('admin.page-sections.store') }}"
+                            method="POST">
+                            @csrf
+                            <input type="hidden" name="section_type" value="faq">
+
+                            <div class="row">
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label">Heading</label>
+                                    <input type="text" name="heading" value="{{ $faqData['heading'] ?? '' }}" class="form-control rounded" placeholder="Enter FAQ Heading">
+                                </div>
+
+                                <div class="mb-4 col-md-6">
+                                    <label class="form-label">Description</label>
+                                    <textarea name="description" class="form-control rounded" rows="3" placeholder="Enter FAQ Description">{{ $faqData['description'] ?? '' }}</textarea>
+                                </div>
+                            </div>
+                            <h3>Organisation Categories</h3>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">#</th>
+                                            <th>Name</th>
+                                            <th>Image</th>
+                                            <th>Status</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody> 
+                                        @foreach($orgCategories as $index => $category)
+                                            <tr class="faq-row">
+                                                <td class="text-center">{{ $index + 1 }}</td>
+                                                <td>{{ ucfirst($category->name ?? '') }} </td>
+                                                <td class="d-flex align-items-center justify-content-between gap-2">
+                                                    @if($category->categorySetting?->image)
+                                                        <img src="{{ asset('storage/' . $category->categorySetting?->image) }}" alt="{{ $category->name }}" width="100" height="100">
+                                                    @else
+                                                        <img src="https://placehold.co/600x400" alt="{{ $category->name }}" width="100" height="100">
+                                                    @endif
+                                                    <input type="file" name="image" class="w-50 form-control rounded mt-2" accept="image/png, image/jpeg, image/jpg">
+                                                </td>
+                                                <td class="text-center"> 
+                                                    <select name="status" class="form-select rounded text-dark">
+                                                        <option value="active" {{ $category->categorySetting?->status == 'active' ? 'selected' : '' }}>Active</option>
+                                                        <option value="inactive" {{ $category->categorySetting?->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-primary rounded save-category" data-category-id="{{ $category->id }}">
+                                                        <i class="fa fa-save"></i> Save
+                                                    </button>
+                                                </td>  
+                                            </tr>
+                                        @endforeach
+                                         
+                                    </tbody>
+                                </table>                           
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pills-faq" role="tabpanel" aria-labelledby="pills-faq-tab" tabindex="0">
                 <div class="card">
                     <div class="card-body">
                         <form action="{{ route('admin.page-sections.store') }}"
@@ -108,11 +178,40 @@
                     </div>
                 </div>
             </div>
+            <div class="tab-pane fade" id="pills-home-contact-section" role="tabpanel" aria-labelledby="pills-home-contact-section-tab" tabindex="0">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{{ route('admin.page-sections.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="section_type" value="home_contact_section">
+
+                            <div class="row">
+                                <div class="mb-3 col-md-4">
+                                    <label class="form-label">Heading</label>
+                                    <input type="text" name="heading" value="{{ $homeContactSection->data['heading'] ?? '' }}" class="form-control rounded" placeholder="Enter Heading">
+                                </div>
+
+                                <div class="mb-4 col-md-4">
+                                    <label class="form-label">Description</label>
+                                    <textarea name="description" value="" class="form-control rounded" rows="3" placeholder="Enter Description">{{ $homeContactSection->data['description'] ?? '' }}</textarea>
+                                </div>
+                                <div class="mb-4 col-md-4">
+                                    <label class="form-label">Button Text</label>
+                                    <input type="text" name="button_text" value="{{ $homeContactSection->data['button_text'] ?? '' }}" class="form-control rounded" placeholder="Enter Button Text">
+                                </div>
+                            </div>
+                             
+                            <div class="mb-3 text-end">
+                                <button type="submit" class="btn btn-success rounded bt n-sm">Save FAQ Section</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div class="tab-pane fade" id="pills-how-it-work" role="tabpanel" aria-labelledby="pills-how-it-work-tab" tabindex="0">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('admin.page-sections.store') }}"
-                            method="POST">
+                        <form action="{{ route('admin.page-sections.store') }}" method="POST">
                             @csrf
                             <input type="hidden" name="section_type" value="how_it_work">
 
@@ -171,8 +270,7 @@
                         </form>
                     </div>
                 </div>
-            </div>
-            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">...</div>
+            </div>          
         </div>
     </div>
 @endsection
@@ -216,5 +314,84 @@
                 $(this).find('.faq-number').text(index + 1);
             });
         }
+
+
+        // category save scripts
+        $(document).on('click', '.save-category', function() {
+
+            let categoryId = $(this).data('category-id');
+            let row = $(this).closest('tr');
+            let imageInput = row.find(`input[name="image"]`)[0];
+            let statusSelect = row.find(`select[name="status"]`);
+            let formData = new FormData();
+            formData.append('category_id', categoryId);
+            if (imageInput.files[0]) {
+                formData.append('image', imageInput.files[0]);
+            }
+            formData.append('status', statusSelect.val());
+
+            $.ajax({
+                url: '{{ route("admin.organisation-category.update", ["category" => ":category"]) }}'.replace(':category', categoryId),
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                beforeSend: function() {
+                    row.find('.save-category').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Saving');
+                    swal.fire({
+                        title: 'Saving...',
+                        text: 'Please wait while the category is being updated.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            swal.showLoading();
+                        }
+                    });
+                },
+                success: function(response) {
+                    swal.close();
+                   if(response.success) {
+                        swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
+                        });
+                        window.location.reload();
+                    } else {
+                        swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message || 'An error occurred while updating the category.',
+                        });
+                    }
+                    row.find('.save-category').prop('disabled', false).html('<i class="fa fa-save"></i> Save');
+                },
+
+                error: function(xhr) {
+                    swal.close();
+
+                    let errorMessage = 'An error occurred while updating the category.';
+
+                    // Laravel validation errors (422)
+                    if (xhr.status === 422 && xhr.responseJSON.errors) {
+                        errorMessage = Object.values(xhr.responseJSON.errors)
+                            .flat()
+                            .join('\n');
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: errorMessage
+                    });
+
+                    row.find('.save-category')
+                        .prop('disabled', false)
+                        .html('<i class="fa fa-save"></i> Save');
+                }
+            });
+        });
     </script>
 @endpush

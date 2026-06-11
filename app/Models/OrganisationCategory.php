@@ -18,5 +18,10 @@ class OrganisationCategory extends Model
         return $this->belongsToMany(User::class)->withTimestamps();
     }
 
+    public function categorySetting()
+    {
+        return $this->hasOne(OrganisationCategorySetting::class, 'organisation_category_id');
+    }
+
 
 }

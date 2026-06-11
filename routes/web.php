@@ -102,6 +102,8 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
     
     Route::get('/page-sections', [PageSectionController::class, 'index'])->name('page-sections');
     Route::post('/page-sections', [PageSectionController::class, 'store'])->name('page-sections.store');
+
+    Route::post('/organisation-categories/{category}', [PageSectionController::class, 'organisationCategoryUpdate'])->name('organisation-category.update');
 });
 
 Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {

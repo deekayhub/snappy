@@ -32,7 +32,31 @@
     ];
 @endphp
 
-<section class="features-section">
+{{-- <section class="features-section">
+    <div class="container" id="featured-3">
+        <div class="section-header mx-auto text-center mb-5">
+            <h2 class="h1 fw-bold text-body-emphasis">
+                {{ $categorySettings['title'] }}
+                @if (! empty($categorySettings['highlight_text']))
+                    <div class="text-primary d-inline">{{ $categorySettings['highlight_text'] }}</div>
+                @endif
+            </h2>
+            <p class="fs-5 secondary-color">{{ $categorySettings['description'] }}</p>
+        </div>
+        <div class="row">
+            @foreach ($categorySettings['items'] as $item)
+                <div class="col-md-4 mb-3">
+                    <div class="card position-relative border-0 shadow-sm">
+                        <img src="{{ asset($item['image']) }}" class="card-img-top" alt="{{ $item['title'] }}">
+                        <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">{{ $item['title'] }}</h4>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section> --}}
+@if ($features->isNotEmpty())
+    <section class="features-section">
         <div class="container" id="featured-3">
             <div class="section-header mx-auto text-center mb-5">
                 <h2 class="h1 fw-bold text-body-emphasis">
@@ -44,14 +68,15 @@
                 <p class="fs-5 secondary-color">{{ $categorySettings['description'] }}</p>
             </div>
             <div class="row">
-                @foreach ($categorySettings['items'] as $item)
-                    <div class="col-md-4 mb-3">
-                        <div class="card position-relative border-0 shadow-sm">
-                            <img src="{{ asset($item['image']) }}" class="card-img-top" alt="{{ $item['title'] }}">
-                            <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">{{ $item['title'] }}</h4>
+                    @foreach ($features as $item)
+                        <div class="col-md-4 mb-3">
+                            <div class="card position-relative border-0 shadow-sm">
+                                <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top" height="315" alt="{{ $item->organisationCategory?->name }}">
+                                <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">{{ $item->organisationCategory?->name }}</h4>
+                            </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
             </div>
         </div>
-    </section>
+    </section>    
+@endif
