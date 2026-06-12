@@ -84,7 +84,7 @@ class PageSectionController extends Controller
     public function organisationCategoryUpdate(Request $request, $categoryId)
     {
         $request->validate([
-            'image'  => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image'  => 'nullable|image|mimes:jpeg,png,jpg|max:20480',
             'status' => 'required|in:active,inactive',
         ]);
 
