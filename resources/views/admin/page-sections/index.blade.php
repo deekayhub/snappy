@@ -82,7 +82,7 @@
                                                 <td>{{ ucfirst($category->name ?? '') }} </td>
                                                 <td class="d-flex align-items-center justify-content-between gap-2">
                                                     @if($category->categorySetting?->image)
-                                                        <img src="{{ asset('storage/' . $category->categorySetting?->image) }}" alt="{{ $category->name }}" width="100" height="100">
+                                                        <img src="{{ asset($category->categorySetting?->image) }}" alt="{{ $category->name }}" width="100" height="100">
                                                     @else
                                                         <img src="https://placehold.co/600x400" alt="{{ $category->name }}" width="100" height="100">
                                                     @endif

@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Models\OrganisationCategory;
 use App\Models\PageSection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class PageSectionController extends Controller
 {
@@ -94,12 +93,17 @@ class PageSectionController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($setting->image) {
-                Storage::delete($setting->image);
+
+            if ($setting->image && file_exists(public_path($setting->image))) {
+                unlink(public_path($setting->image));
             }
 
-            $setting->image = $request->file('image')
-                ->store('organisation_category_images', 'public');
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+            $image->move(public_path('organisation_category_images'), $imageName);
+
+            $setting->image = 'organisation_category_images/' . $imageName;
         }
 
         $setting->status = $request->status;
