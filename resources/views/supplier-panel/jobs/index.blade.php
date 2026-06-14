@@ -272,7 +272,7 @@
     </div>
 
     <div class="mt-4">
-        {{ $jobs->links() }}
+        {{ $jobs->links('pagination::bootstrap-5') }}
     </div>
 </div>
 @endsection
