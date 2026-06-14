@@ -56,7 +56,7 @@ class CustomerPanelController extends Controller
             ->with(['categoryId', 'dynamicFieldValues.categoryFields'])
             ->withCount('quotes')
             ->latest()
-            ->paginate(10);
+            ->paginate(9);
 
         $categories = OrganisationCategory::where('type', 'supplier')->get();
 

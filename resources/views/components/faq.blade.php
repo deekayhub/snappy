@@ -69,7 +69,7 @@
                     <div class="card-content">
                         <h5 class="card-title secondary-color fw-bold">{{ $faqSettings['cta_title'] }}</h5>
                         <p class="card-description secondary-color">{{ $faqSettings['cta_description'] }}</p>
-                        <a href="{{ $faqSettings['cta_button_link'] ?: route('contact-us') }}" class="btn btn-primary w-100 rounded-4 px-4 py-3">{{ $faqSettings['cta_button_text'] ?: 'Get in touch' }}</a>
+                    <a href="{{ $faqSettings['cta_button_link'] ?: route('contact-us') }}" class="btn btn-primary w-100 rounded-4 px-4 py-3">{{ $faqSettings['cta_button_text'] ?: 'Get in touch' }}</a>
                     </div>
                 </div>
             </div>

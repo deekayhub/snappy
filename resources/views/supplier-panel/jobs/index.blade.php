@@ -76,17 +76,18 @@
                             <span id="status-{{ $job->id }}" class="badge bg-{{ $meta[1] }}">
                                 {{ $meta[0] }}
                             </span>
-                            <span class="small text-muted">Job No. {{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</span>
+                            <span class="small text-muted fw-semibold">Job No. {{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</span>
                         </div>
                         <h4 class="mb-2">{{ $job->title }}</h4>
                         <p class="text-muted mb-3">{{ \Illuminate\Support\Str::limit($job->description, 140) }}</p>
-                        <div class="alert alert-light rounded p-2 mb-3">
+                        <div class="alert alert -light rounded p-2 mb-3" style="background-color: #f7f9fc !important;">
                             <div class="small text-muted mb-2">Category: <strong class="text-capitalize">{{ $job->categoryId?->name ?? 'General' }}</strong></div>
-                            <div class="small text-muted mb-2">Organisation: {{ $job->organisation_name ?: 'Not provided' }}</div>
-                            <div class="small text-muted mb-2">Location: {{ $job->location ?: 'Not provided' }}</div>
-                            <div class="small text-muted mb-3">Needed by: {{ $job->needed_by?->format('d M Y h:i A') ?? 'N/A' }}</div>
+                            <div class="small text-muted mb-2">Organisation: <strong class="text-capitalize">{{ $job->organisation_name ?: 'Not provided' }}</strong></div>
+                            <div class="small text-muted mb-2">Budget: <strong class="text-capitalize">{{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'N/A' }}</strong></div>
+                            <div class="small text-muted mb-2">Location: <strong class="text-capitalize">{{ $job->location ?: 'Not provided' }}</strong></div>
+                            <div class="small text-muted mb-3">Needed by: <strong class="text-capitalize">{{ $job->needed_by?->format('d M Y h:i A') ?? 'N/A' }}</strong></div>
                         </div>
-                        <div class="fw-semibold mb-3">{{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Budget not shared' }}</div>
+                        {{-- <div class="fw-semibold mb-3">{{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Budget not shared' }}</div> --}}
                         <div class="alert alert-light border rounded-4 small mb-3">
                             <div class="d-flex justify-content-between flex-wrap align-items-center">
                                 <span id="status-text-{{ $job->id }}" class="js-job-status-text">{{ $meta[2] }}</span>

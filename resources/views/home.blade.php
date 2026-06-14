@@ -23,11 +23,10 @@
     <div class="py-5"></div>
 
     
-    @if(isset($homeContactSection))
+    
         @include('components.contact-section', [
-            'homeContactSection' => $homeContactSection
+            'homeContactSection' => $homeContactSection ?? ''
         ])
-    @endif
 
     @if(isset($faqs))
         @include('components.faq', [

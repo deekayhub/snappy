@@ -11,52 +11,94 @@
         <button id="openCreateJobModal" type="button" class="btn btn-primary rounded-4" data-bs-toggle="modal" data-bs-target="#postjobmodal">Post New Job</button>
     </div>
 
-    @forelse ($jobs as $job)
-        <div class="card border-0 shadow-sm rounded-4 mb-3">
-            <div class="card-body p-4">
-                <div class="d-flex flex-column flex-lg-row justify-content-between gap-3">
-                    <div>
-                        <div class="small text-muted mb-1">Job #{{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</div>
-                        <h4 class="mb-1">{{ $job->title }}</h4>
-                        <div class="text-muted mb-2">{{ ucfirst($job->categoryId?->name ?? 'General') }} | {{ $job->location ?: 'No location set' }}</div>
-                        <p class="mb-0 text-muted">{{ \Illuminate\Support\Str::limit($job->description, 200) }}</p>
-                    </div>
-                    <div class="text-lg-end">
-                        <div class="d-flex justify-content-lg-end gap-2 mb-2">
-                            <button type="button" class="btn btn-sm btn-light border rounded-circle text-primary view-job-btn" title="View Job" data-job-id="{{ $job->id }}">
-                                <i class="fa fa-eye"></i>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-light border rounded-circle edit-job-btn" title="Edit" data-job-id="{{ $job->id }}">
-                                <i class="fa fa-pencil"></i>
-                            </button>
+    <div class="row">
+        @forelse ($jobs as $job)
+            <div class="col-md-4 mb-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 job-card">
+                    <div class="card-body p-4">
 
-                            <button type="button" class="btn btn-sm btn-light border rounded-circle text-danger delete-job-btn" title="Delete" data-delete-url="{{ route('customer-panel.jobs.destroy', $job->id) }}">
-                                <i class="fa fa-trash"></i>
-                            </button>
+                        <!-- Badge -->
+                        <div class="d-flex align-items-center justify-content-between gap-3">
+                            <span class="badge bg-info text-white rounded-pill mb-3">
+                                Job Details
+                            </span>
+                            <span class="rounded badge bg-{{ $job->status=='open' ? 'success' : 'secondary' }}">
+                                {{ ucfirst($job->status) }}
+                            </span>
                         </div>
 
-                        <span class="badge bg-{{ $job->status === 'open' ? 'success' : 'secondary' }}">
-                            {{ ucfirst($job->status) }}
-                        </span>
-                        <div class="small text-muted mt-2">
-                            Needed by: {{ $job->needed_by?->format('d M Y') ?? 'Not set' }}
+                        <!-- Title -->
+                        <h5 class="fw-bold mb-2">{{ $job->title }}</h5>
+
+                        <p class="text-muted small mb-3">
+                            Needed by:
+                            {{ $job->needed_by?->diffForHumans() ?? 'No deadline set' }}
+                        </p>
+
+                        <!-- Info Box -->
+                        <div class="bg-light rounded-4 p-3 mb-3">
+                            <div class="small mb-2">
+                                <span class="text-muted">Category:</span>
+                                <strong>{{ ucfirst($job->categoryId?->name ?? 'General') }}</strong>
+                            </div>
+
+                            <div class="small mb-2">
+                                <span class="text-muted">Location:</span>
+                                <strong>{{ $job->location ?: 'Not specified' }}</strong>
+                            </div>
+
+                            <div class="small mb-2">
+                                <span class="text-muted">Budget:</span>
+                                <strong class="text-success">
+                                    {{ $job->budget ? '£'.number_format($job->budget,2) : 'Not shared' }}
+                                </strong>
+                            </div> 
                         </div>
-                        <div class="small text-muted">
-                            Budget: {{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Not shared' }}
+
+                        <!-- Description -->
+                        <p class="small text-muted mb-3">
+                            {{ \Illuminate\Support\Str::limit($job->description, 80) }}
+                        </p>
+
+                        <!-- Footer -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="fw-semibold">
+                                {{ $job->quotes_count }} quotes
+                            </div>
+
+                            <div class="d-flex gap-1">
+                                <button class="btn btn-light btn-sm rounded-circle border view-job-btn"
+                                    data-job-id="{{ $job->id }}">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+
+                                <button class="btn btn-light btn-sm rounded-circle border edit-job-btn"
+                                    data-job-id="{{ $job->id }}">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+
+                                <button class="btn btn-light btn-sm rounded-circle border text-danger delete-job-btn"
+                                    data-delete-url="{{ route('customer-panel.jobs.destroy', $job->id) }}">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="fw-semibold mt-2">
-                            {{ $job->quotes_count }} supplier quotes
-                        </div>
+
                     </div>
                 </div>
             </div>
-        </div>
-    @empty
-        <div class="alert alert-light border rounded-4">No jobs posted yet.</div>
-    @endforelse
+        @empty
+            <div class="col-12">
+                <div class="alert alert-light rounded-4">
+                    No jobs posted yet.
+                </div>
+            </div>
+        @endforelse
+    </div>
+    
 
     <div class="mt-4">
-        {{ $jobs->links() }}
+        {{ $jobs->links('pagination::bootstrap-5') }}
     </div>
 
     <div class="modal fade" id="postjobmodal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="postjobmodalLabel" aria-hidden="true">
@@ -824,3 +866,5 @@
     });
 </script>
 @endpush
+
+ 

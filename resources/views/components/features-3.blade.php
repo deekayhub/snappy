@@ -71,7 +71,7 @@
                     @foreach ($features as $item)
                         <div class="col-md-4 mb-3">
                             <div class="card position-relative border-0 shadow-sm">
-                                <img src="{{ asset($item->image) }}" class="card-img-top" height="315" alt="{{ $item->organisationCategory?->name }}">
+                                <img  src="{{ $item->image ? asset($item->image) : asset('assets/images/category-placeholder-img.png') }}" class="card-img-top" height="315" alt="{{ $item->organisationCategory?->name }}">
                                 <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow">{{ $item->organisationCategory?->name }}</h4>
                             </div>
                         </div>
