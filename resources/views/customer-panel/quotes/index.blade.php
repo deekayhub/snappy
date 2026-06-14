@@ -57,8 +57,8 @@
                         <p class="mb-0 text-muted fw-semibold text-capitalize">{{ $job->categoryId?->name ?: 'General' }} | {{ $job->location ?: 'Location not set' }}</p>
                     </div>
                     <div class="d-flex gap-2 flex-wrap">
-                        <span class="badge bg-primary-subtle text-primary px-3 py-2">{{ $job->quotes->count() }} quotes</span>
-                        <span class="badge bg-success-subtle text-success px-3 py-2">{{ $supplierCount ?? '' }} suppliers quoted</span>
+                        <span class="badge rounded bg-primary-subtle text-primary px-3 py-2">{{ $job->quotes->count() }} quotes</span>
+                        <span class="badge rounded bg-success-subtle text-success px-3 py-2">{{ $supplierCount ?? '' }} suppliers quoted</span>
                     </div>
                 </div>
 

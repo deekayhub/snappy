@@ -73,13 +73,14 @@
                 <div class="card border-0 shadow-sm rounded-4 h-100" style="border-top: 5px solid var(--bs-{{ $meta[1] }}) !important;">
                     <div class="card-body d-flex flex-column p-4">
                         <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
-                            <span id="status-{{ $job->id }}" class="badge bg-{{ $meta[1] }}">
+                            <span id="status-{{ $job->id }}" class="rounded badge bg-{{ $meta[1] }}">
                                 {{ $meta[0] }}
                             </span>
                             <span class="small text-muted fw-semibold">Job No. {{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</span>
                         </div>
                         <h4 class="mb-2">{{ $job->title }}</h4>
-                        <p class="text-muted mb-3">{{ \Illuminate\Support\Str::limit($job->description, 140) }}</p>
+                         <p class="text-muted mb-3">Posted {{ $job->created_at->diffForHumans() ?? '' }}</p>
+                       
                         <div class="alert alert -light rounded p-2 mb-3" style="background-color: #f7f9fc !important;">
                             <div class="small text-muted mb-2">Category: <strong class="text-capitalize">{{ $job->categoryId?->name ?? 'General' }}</strong></div>
                             <div class="small text-muted mb-2">Organisation: <strong class="text-capitalize">{{ $job->organisation_name ?: 'Not provided' }}</strong></div>
@@ -87,6 +88,7 @@
                             <div class="small text-muted mb-2">Location: <strong class="text-capitalize">{{ $job->location ?: 'Not provided' }}</strong></div>
                             <div class="small text-muted mb-3">Needed by: <strong class="text-capitalize">{{ $job->needed_by?->format('d M Y h:i A') ?? 'N/A' }}</strong></div>
                         </div>
+                         <p class="text-muted mb-3">{{ \Illuminate\Support\Str::limit($job->description, 140) }}</p>
                         {{-- <div class="fw-semibold mb-3">{{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Budget not shared' }}</div> --}}
                         <div class="alert alert-light border rounded-4 small mb-3">
                             <div class="d-flex justify-content-between flex-wrap align-items-center">
