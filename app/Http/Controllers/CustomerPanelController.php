@@ -201,6 +201,7 @@ class CustomerPanelController extends Controller
         $jobs = $request->user()
             ->customerJobs()
             ->with([
+                'categoryId',
                 'quotes' => fn ($quoteQuery) => $quoteQuery->latest(),
                 'quotes.supplier' => fn ($supplierQuery) => $supplierQuery
                     ->select('id', 'name', 'email')

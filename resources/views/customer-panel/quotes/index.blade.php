@@ -42,6 +42,7 @@
         </div>
         {{-- <a href="{{ route('customer.jobs.create') }}" class="btn btn-primary rounded-4">Post New Quote Request</a> --}}
     </div> 
+    {{-- @dump($jobs->toArray()) --}}
 
     @forelse ($jobs as $job)
         @php
@@ -53,7 +54,7 @@
                     <div>
                         <div class="small text-muted mb-1">Job #{{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</div>
                         <h3 class="mb-1">{{ $job->title }}</h3>
-                        <p class="mb-0 text-muted">{{ $job->category ?: 'General' }} | {{ $job->location ?: 'Location not set' }}</p>
+                        <p class="mb-0 text-muted fw-semibold text-capitalize">{{ $job->categoryId?->name ?: 'General' }} | {{ $job->location ?: 'Location not set' }}</p>
                     </div>
                     <div class="d-flex gap-2 flex-wrap">
                         <span class="badge bg-primary-subtle text-primary px-3 py-2">{{ $job->quotes->count() }} quotes</span>
@@ -61,149 +62,153 @@
                     </div>
                 </div>
 
-                @forelse ($job->quotes as $quote)
-                    @php
-                        $supplierName = $quote->supplier?->supplierProfile?->company_name ?: $quote->supplier?->name;
-                        $mailSubject = rawurlencode('Quote follow-up for Job #'.str_pad((string) $job->id, 4, '0', STR_PAD_LEFT).' - '.$job->title);
-                        $mailBody = rawurlencode('Hello '.$supplierName.",\n\nI am contacting you regarding your quote for ".$job->title.".\n\nThank you.");
-                    @endphp
-                    <div class="border rounded-4 p-4 mb-3" style="background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);">
-                        <div class="row g-3 align-items-center">
-                            <div class="col-xl-5">
-                                <div class="d-flex align-items-center gap-2 mb-2">
-                                    <span class="badge bg-dark">Supplier quote</span>
-                                    <span class="badge bg-light text-dark text-uppercase">{{ $quote->status }}</span>
-                                </div>
-                                <h5 class="mb-1">{{ $supplierName }}</h5>
-                                <div class="small text-muted mb-2">{{ $quote->supplier?->email ?: 'No email address' }}</div>
-                                @php
-                                    $avgRating = $quote->supplier?->supplier_average_rating ? round((float) $quote->supplier->supplier_average_rating, 1) : null;
-                                    $ratingCount = (int) ($quote->supplier?->supplier_ratings_count ?? 0);
-                                @endphp
-                                <div class="small mb-2">
-                                    @if ($avgRating)
-                                        <span class="text-warning">
+                <div class="quote-list row ">
+                    @forelse ($job->quotes as $quote)
+                        @php
+                            $supplierName = $quote->supplier?->supplierProfile?->company_name ?: $quote->supplier?->name;
+                            $mailSubject = rawurlencode('Quote follow-up for Job #'.str_pad((string) $job->id, 4, '0', STR_PAD_LEFT).' - '.$job->title);
+                            $mailBody = rawurlencode('Hello '.$supplierName.",\n\nI am contacting you regarding your quote for ".$job->title.".\n\nThank you.");
+                        @endphp
+                        <div class=" col-md-4">
+                            <div class="border rounded-4 p-4 mb-3" style="background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);">
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span class="badge bg-primary rounded">Supplier quote</span>
+                                        <span class="badge bg-success rounded text-white text-uppercase">{{ $quote->status }}</span>
+                                    </div>
+                                    <h5 class="mb-1">{{ $supplierName }}</h5>
+                                    <div class="small text-muted mb-2">{{ $quote->supplier?->email ?: 'No email address' }}</div>
+                                    @php
+                                        $avgRating = $quote->supplier?->supplier_average_rating ? round((float) $quote->supplier->supplier_average_rating, 1) : null;
+                                        $ratingCount = (int) ($quote->supplier?->supplier_ratings_count ?? 0);
+                                    @endphp
+                                    <div class="small mb-2">
+                                        <span class="{{ $avgRating ? 'text-warning' : 'text-light' }}">
                                             @for ($i = 1; $i <= 5; $i++)
-                                                <i class="fa {{ $i <= round($avgRating) ? 'fa-star' : 'fa-star-o' }}"></i>
+                                                <i class="fa {{ $avgRating && $i <= round($avgRating) ? 'fa-star' : 'fa fa-star' }}"></i>
                                             @endfor
                                         </span>
-                                        <span class="text-muted">{{ $avgRating }}/5 ({{ $ratingCount }} ratings)</span>
-                                    @else
-                                        <span class="text-muted">No ratings yet</span>
-                                    @endif
-                                </div>
-                                <p class="mb-0 text-muted">{{ $quote->notes ?: 'No extra notes were provided for this quote.' }}</p>
-                            </div>
-                            <div class="col-xl-4">
-                                <div class="row g-2 text-center">
-                                    <div class="col-6">
-                                        <div class="border rounded-4 p-2 h-100">
-                                            <div class="small text-muted">Job price</div>
-                                            <div class="fw-semibold">£ {{ number_format((float) $quote->price_for_job, 2) }}</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="border rounded-4 p-2 h-100">
-                                            <div class="small text-muted">Delivery</div>
-                                            <div class="fw-semibold">£ {{ number_format((float) $quote->delivery_cost, 2) }}</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="border rounded-4 p-2 h-100">
-                                            <div class="small text-muted">Discount</div>
-                                            <div class="fw-semibold">£ {{ number_format((float) $quote->discount_offered, 2) }}</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="border rounded-4 p-2 h-100 bg-light">
-                                            <div class="small text-muted">Total</div>
-                                            <div class="fw-bold">£ {{ number_format((float) $quote->total_price, 2) }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3">
-                                <div class="d-grid gap-2">
-                                    <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="status" value="accepted">
-                                        <button class="btn btn-success rounded-4 w-100">Accept Quote</button>
-                                    </form>
-                                    <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="status" value="rejected">
-                                        <button class="btn btn-outline-danger rounded-4 w-100">Reject Quote</button>
-                                    </form>
-                                    <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="status" value="submitted">
-                                        <button class="btn btn-outline-secondary rounded-4 w-100">Mark Pending</button>
-                                    </form>
-                                    @if (in_array($quote->status, ['accepted', 'completed']))
-                                        <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
-                                            @csrf
-                                            @method('PATCH')
-                                            <input type="hidden" name="status" value="completed">
-                                            <button class="btn btn-outline-dark rounded-4 w-100">Mark Completed</button>
-                                        </form>
-                                    @endif
-                                    @if ($quote->supplier?->email)
-                                        <a class="btn btn-outline-primary rounded-4 w-100" href="mailto:{{ $quote->supplier->email }}?subject={{ $mailSubject }}&body={{ $mailBody }}">
-                                            Email Supplier
-                                        </a>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
 
-                        @if ($quote->status === 'completed')
-                            <div class="border rounded-4 p-3 mt-3">
-                                <div class="fw-semibold mb-2">Rate this supplier</div>
-                                <form method="POST" action="{{ route('customer.quotes.rating', $quote) }}" class="row g-2 align-items-end">
-                                    @csrf
-                                    <div class="col-md-3">
-                                        <label class="form-label small text-muted">Stars</label>
-                                        @php($selectedRating = (int) old('customer_rating', $quote->customer_rating))
-                                        <div class="rating-stars mt-1">
-                                            @for ($i = 5; $i >= 1; $i--)
+                                        @if ($avgRating)
+                                            <span class="text-muted">
+                                                {{ $avgRating }}/5 ({{ $ratingCount }} ratings)
+                                            </span>
+                                        @else
+                                            <span class="text-muted">
+                                                0
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <p class="mb-0 text-muted">{{ $quote->notes ?: 'No extra notes were provided for this quote.' }}</p>
+                                </div>
+                                <div class="mb-3 p-2 rounded" style="background: #f7f9fc;">
+                                    <ul class="list-unstyled">
+                                        <li class="d-flex justify-content-between py-2 border-bottom">
+                                            <span>Job price</span>
+                                            <strong>£ {{ number_format((float) $quote->price_for_job, 2) }}</strong>
+                                        </li>
+
+                                        <li class="d-flex justify-content-between py-2 border-bottom">
+                                            <span>Delivery</span>
+                                            <strong>£ {{ number_format((float) $quote->delivery_cost, 2) }}</strong>
+                                        </li>
+
+                                        <li class="d-flex justify-content-between py-2 border-bottom">
+                                            <span>Discount</span>
+                                            <strong>£ {{ number_format((float) $quote->discount_offered, 2) }}</strong>
+                                        </li>
+
+                                        <li class="d-flex justify-content-between py-2 fw-bold">
+                                            <span>Total</span>
+                                            <span>£ {{ number_format((float) $quote->total_price, 2) }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                @if ($quote->status === 'completed')
+                                    <div class="border rounded-4 p-3 mt-3">
+                                        <div class="fw-semibold mb-2">Rate this supplier</div>
+                                        <form method="POST" action="{{ route('customer.quotes.rating', $quote) }}" class=" ">
+                                            @csrf
+                                            <div class="mb-3 d-flex gap-3 align-items-center">
+                                                <label class="form-label small mb-0 fw-semibold text-muted">Stars: </label>
+                                                @php($selectedRating = (int) old('customer_rating', $quote->customer_rating))
+                                                <div class="rating-stars mt-1">
+                                                    @for ($i = 5; $i >= 1; $i--)
+                                                        <input
+                                                            type="radio"
+                                                            name="customer_rating"
+                                                            id="customer_rating_{{ $quote->id }}_{{ $i }}"
+                                                            value="{{ $i }}"
+                                                            @checked($selectedRating === $i)
+                                                            required
+                                                        >
+                                                        <label for="customer_rating_{{ $quote->id }}_{{ $i }}" title="{{ $i }} Star{{ $i > 1 ? 's' : '' }}">
+                                                            <i class="fa fa-star"></i>
+                                                        </label>
+                                                    @endfor
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label small text-muted">Review (optional)</label>
                                                 <input
-                                                    type="radio"
-                                                    name="customer_rating"
-                                                    id="customer_rating_{{ $quote->id }}_{{ $i }}"
-                                                    value="{{ $i }}"
-                                                    @checked($selectedRating === $i)
-                                                    required
+                                                    type="text"
+                                                    name="customer_review"
+                                                    class="form-control rounded-4"
+                                                    maxlength="1000"
+                                                    value="{{ old('customer_review', $quote->customer_review) }}"
+                                                    placeholder="Share your experience with this supplier"
                                                 >
-                                                <label for="customer_rating_{{ $quote->id }}_{{ $i }}" title="{{ $i }} Star{{ $i > 1 ? 's' : '' }}">
-                                                    <i class="fa fa-star"></i>
-                                                </label>
-                                            @endfor
+                                            </div>
+                                            <div class="co l-md-2">
+                                                <button class="btn btn-primary rounded-4 w-100">{{ $quote->customer_rating ? 'Update' : 'Submit' }}</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                @else
+                                    <div class="mb-3">
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="accepted">
+                                                <button class="btn btn-success rounded-4 w-100">Accept Quote</button>
+                                            </form>
+                                            <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="rejected">
+                                                <button class="btn btn-outline-danger rounded-4 w-100">Reject Quote</button>
+                                            </form>
+                                            <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="submitted">
+                                                <button class="btn btn-outline-secondary rounded-4 w-100">Mark Pending</button>
+                                            </form>
+                                            @if (in_array($quote->status, ['accepted', 'completed']))
+                                                <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="status" value="completed">
+                                                    <button class="btn btn-outline-dark rounded-4 w-100">Mark Completed</button>
+                                                </form>
+                                            @endif
+                                            @if ($quote->supplier?->email)
+                                                <a class="btn btn-outline-primary rounded-4 w-100" href="mailto:{{ $quote->supplier->email }}?subject={{ $mailSubject }}&body={{ $mailBody }}">
+                                                    Email Supplier
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-7">
-                                        <label class="form-label small text-muted">Review (optional)</label>
-                                        <input
-                                            type="text"
-                                            name="customer_review"
-                                            class="form-control rounded-4"
-                                            maxlength="1000"
-                                            value="{{ old('customer_review', $quote->customer_review) }}"
-                                            placeholder="Share your experience with this supplier"
-                                        >
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button class="btn btn-primary rounded-4 w-100">{{ $quote->customer_rating ? 'Update' : 'Submit' }}</button>
-                                    </div>
-                                </form>
+                                @endif
                             </div>
-                        @endif
-                    </div>
-                @empty
-                    <div class="alert alert-light border rounded-4 mb-0">No supplier quotes have been submitted for this job yet.</div>
-                @endforelse
+
+                        </div>
+                    @empty
+                        <div class="alert alert-light border rounded-4 mb-0">No supplier quotes have been submitted for this job yet.</div>
+                    @endforelse
+                </div>
             </div>
         </div>
     @empty
