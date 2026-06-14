@@ -36,7 +36,7 @@
                         </p>
 
                         <!-- Info Box -->
-                        <div class="bg-light rounded-4 p-3 mb-3">
+                        <div class="  rounded-4 p-3 mb-3" style="background: #f7f9fc;">
                             <div class="small mb-2">
                                 <span class="text-muted">Category:</span>
                                 <strong>{{ ucfirst($job->categoryId?->name ?? 'General') }}</strong>
