@@ -115,6 +115,11 @@
         font-size: .78rem;
     }
 
+    .customer-status-badge.inactive {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
     .customer-actions {
         display: flex;
         gap: .5rem;
@@ -311,13 +316,14 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-white" id="customerModalLabel">Add New customer</h5>
+                <h5 class="modal-title text-white" id="customerModalLabel">Add New Customer</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <form id="customerForm">
+                    <input type="hidden" id="customer_id" name="customer_id">
                     <div class="form-group">
                         <label for="name">Name *</label>
                         <input type="text" class="form-control" id="name" name="name" required>
@@ -336,15 +342,34 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="school_name">School / Club Name</label>
-                        <input type="text" class="form-control" id="school_name" name="school_name">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="school_name">School / Club Name</label>
+                                <input type="text" class="form-control" id="school_name" name="school_name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="is_active">Status</label>
+                                <select class="form-control" id="is_active" name="is_active">
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="organisation">Categories</label>
-                                <input type="text" class="form-control" id="organisation" name="organisation">
+                                <label for="customer_organisation">Categories *</label>
+                                <select name="customer_organisation[]" id="customer_organisation" class="form-select customer-organisations" multiple required>
+                                    @foreach ($organisation as $item)
+                                        @if ($item->type === 'customer')
+                                            <option value="{{ $item->id }}">{{ strtoupper($item->name) }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -354,15 +379,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="address">Address</label>
-                        <textarea class="form-control" id="address" name="address" rows="3"></textarea>
-                    </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light border" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-gradient-primary" id="saveBtncustomer">Save customer</button>
+                <button type="button" class="btn btn-primary" id="saveBtnCustomer">Save Customer</button>
             </div>
         </div>
     </div>
@@ -413,16 +434,118 @@
             table.ajax.reload(null, false);
         });
 
+        $('[data-toggle="tooltip"]').tooltip();
+
+        function resetCustomerForm() {
+            $('#customerForm')[0].reset();
+            $('#customer_id').val('');
+            $('#is_active').val('1');
+            $('#customer_organisation').val(null).trigger('change');
+            $('#customerModalLabel').text('Add New Customer');
+            $('#saveBtnCustomer').text('Save Customer');
+        }
+
         $('#customerModal').on('hidden.bs.modal', function() {
+            resetCustomerForm();
             table.ajax.reload();
         });
 
-        $('#saveBtncustomer').on('click', function() {
-            alert('Save functionality will be implemented soon');
-            $('#customerModal').modal('hide');
+        $('#customerModal').on('shown.bs.modal', function() {
+            $(this).find('.customer-organisations').select2({
+                placeholder: 'Select customer categories',
+                width: '100%',
+                dropdownParent: $('#customerModal')
+            });
         });
 
-        $('[data-toggle="tooltip"]').tooltip();
+        $('#customerTable tbody').on('click', '.customer-action-btn.edit', function() {
+            var customerId = $(this).data('id');
+
+            $.ajax({
+                url: "{{ route('admin.customers.edit', ':id') }}".replace(':id', customerId),
+                type: 'GET',
+                success: function(data) {
+                    $('#customer_id').val(data.id);
+                    $('#name').val(data.name);
+                    $('#email').val(data.email);
+                    $('#phone').val(data.phone);
+                    $('#is_active').val(data.is_active ? '1' : '0');
+                    $('#school_name').val(data.school_name);
+                    $('#county').val(data.county);
+
+                    if (data.categories && data.categories.length) {
+                        $('#customer_organisation').val(data.categories).trigger('change');
+                    }
+
+                    $('#customerModalLabel').text('Edit Customer');
+                    $('#saveBtnCustomer').text('Update Customer');
+                    $('#customerModal').modal('show');
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Failed to fetch customer data.',
+                    });
+                }
+            });
+        });
+
+        $('#saveBtnCustomer').on('click', function() {
+            var customerId = $('#customer_id').val();
+            var formData = $('#customerForm').serialize();
+            var url, method;
+
+            if (customerId) {
+                url = "{{ route('admin.customers.update', ':id') }}".replace(':id', customerId);
+                method = 'PUT';
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Coming Soon',
+                    text: 'Add new customer functionality will be implemented soon.',
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Saving...',
+                text: 'Please wait',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData + '&_method=' + method + '&_token=' + $('meta[name="csrf-token"]').attr('content'),
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Updated!',
+                        text: response.message || 'Customer updated successfully.',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                    $('#customerModal').modal('hide');
+                },
+                error: function(xhr) {
+                    var errors = xhr.responseJSON?.errors;
+                    var message = 'Something went wrong.';
+                    if (errors) {
+                        message = Object.values(errors).flat().join('\n');
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: message,
+                    });
+                }
+            });
+        });
+
         $('#customerTable tbody').on('click', '.customer-action-btn.delete', function () {
             let customerId = $(this).data('id');
 

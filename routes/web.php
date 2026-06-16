@@ -77,8 +77,12 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
 
     Route::get('/jobs', [CustomerJobController::class, 'index'])->name('jobs');
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers');
+    Route::get('/suppliers/{id}/edit', [SupplierController::class, 'edit'])->name('suppliers.edit');
+    Route::put('/suppliers/{id}', [SupplierController::class, 'update'])->name('suppliers.update');
     Route::delete('/suppliers/{id}', [SupplierController::class, 'supplierDestroy'])->name('suppliers.destroy');
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
+    Route::get('/customers/{id}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
+    Route::put('/customers/{id}', [CustomerController::class, 'update'])->name('customers.update');
     Route::delete('/customers/{id}', [CustomerController::class, 'customerDestroy'])->name('customers.destroy');
     Route::get('/invoices', function () {
         return view('admin.invoices.index');

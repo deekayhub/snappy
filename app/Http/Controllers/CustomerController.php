@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OrganisationCategory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
 class CustomerController extends Controller
@@ -25,6 +27,7 @@ class CustomerController extends Controller
                     'users.name',
                     'users.email',
                     'users.phone',
+                    'users.is_active',
                     'customer_profiles.county',
                     'customer_profiles.school_name',
                     'users.created_at',
@@ -35,6 +38,7 @@ class CustomerController extends Controller
                     'users.name',
                     'users.email',
                     'users.phone',
+                    'users.is_active',
                     'customer_profiles.county',
                     'customer_profiles.school_name',
                     'users.created_at',
@@ -45,7 +49,11 @@ class CustomerController extends Controller
                 ->editColumn('organisation_names', fn ($row) => $row->organisation_names ?: '-')
                 ->editColumn('school_name', fn ($row) => $row->school_name ?: '-')
                 ->editColumn('county', fn ($row) => $row->county ?: '-')
-                ->addColumn('status', fn () => '<span class="customer-status-badge">Active</span>')
+                ->addColumn('status', function ($row) {
+                    $badge = $row->is_active ? 'customer-status-badge' : 'customer-status-badge inactive';
+                    $label = $row->is_active ? 'Active' : 'Inactive';
+                    return '<span class="' . $badge . '">' . $label . '</span>';
+                })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="customer-actions">';
                     $btn .= '<button type="button" class="customer-action-btn edit" data-id="' . $row->id . '" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil"></i></button>';
@@ -59,7 +67,72 @@ class CustomerController extends Controller
                 ->make(true);
         }
 
-        return view('admin.customers.index');
+        $organisation = OrganisationCategory::orderBy('type')->orderBy('name')->get();
+
+        return view('admin.customers.index', compact('organisation'));
+    }
+
+    public function edit($id)
+    {
+        $user = User::with('customerProfile', 'organisationCategories')->findOrFail($id);
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'is_active' => $user->is_active,
+            'school_name' => $user->customerProfile?->school_name ?? '',
+            'county' => $user->customerProfile?->county ?? '',
+            'categories' => $user->organisationCategories->where('type', 'customer')->pluck('id'),
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $id,
+            'phone' => 'nullable|string|max:20',
+            'is_active' => 'required|boolean',
+            'school_name' => 'nullable|string|max:255',
+            'county' => 'nullable|string|max:255',
+            'customer_organisation' => 'required|array|min:1',
+            'customer_organisation.*' => [
+                'integer',
+                Rule::exists('organisation_categories', 'id')->where('type', 'customer'),
+            ],
+        ]);
+
+        $user = User::with('customerProfile')->findOrFail($id);
+
+        DB::transaction(function () use ($user, $validated) {
+            $user->update([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'is_active' => $validated['is_active'],
+            ]);
+
+            $user->customerProfile()->updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'school_name' => $validated['school_name'] ?? null,
+                    'county' => $validated['county'] ?? null,
+                ]
+            );
+
+            $this->syncOrganisationCategories(
+                $user,
+                'customer',
+                $validated['customer_organisation']
+            );
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Customer updated successfully.',
+        ]);
     }
 
     public function customerDestroy($id)
@@ -75,5 +148,21 @@ class CustomerController extends Controller
         return response()->json([
             'success' => true
         ]);
+    }
+
+    protected function syncOrganisationCategories($user, string $type, array $selectedIds): void
+    {
+        $typeCategoryIds = OrganisationCategory::where('type', $type)->pluck('id');
+        $existingTypeIds = $user->organisationCategories()
+            ->whereIn('organisation_categories.id', $typeCategoryIds)
+            ->pluck('organisation_categories.id');
+
+        $idsToDetach = $existingTypeIds->diff($selectedIds)->all();
+
+        if (! empty($idsToDetach)) {
+            $user->organisationCategories()->detach($idsToDetach);
+        }
+
+        $user->organisationCategories()->syncWithoutDetaching($selectedIds);
     }
 }

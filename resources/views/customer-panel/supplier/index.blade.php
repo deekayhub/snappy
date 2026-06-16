@@ -92,7 +92,7 @@
             let table = $('#supplierTable').DataTable({
                 processing: true,
                 serverSide: true,
-                scrollY: '400px',
+                // scrollY: '400px',
                 scrollCollapse: true,
                 paging: true,
                 ajax: {

@@ -80,8 +80,8 @@
                                         <div class="d-flex flex-column flex-lg-row justify-content-between gap-3">
                                             <div>
                                                 <div class="d-flex align-items-center gap-2 mb-2">
-                                                    <span class="badge bg-{{ $meta[1] }}">{{ $meta[0] }}</span>
-                                                    <span class="badge bg-light text-dark">Job No. {{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</span>
+                                                    <span class="badge rounded bg-{{ $meta[1] }}">{{ $meta[0] }}</span>
+                                                    <span class="badge rounded bg-light text-dark">Job No. {{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</span>
                                                 </div>
                                                 <h5 class="mb-1">{{ $job->title }}</h5>
                                                 <p class="text-muted mb-2">{{ \Illuminate\Support\Str::limit($job->description, 120) }}</p>
@@ -136,9 +136,11 @@
                         <h4 class="mb-3">Recent quotes</h4>
                         @forelse ($recentQuotes as $quote)
                             <div class="border rounded-4 p-3 mb-3">
-                                <div class="small text-muted">{{ $quote->created_at?->format('d M Y h:i A') }}</div>
+                                <div class="d-flex align-items-center justify-content-between ">
+                                    <div class="small text-muted">{{ $quote->created_at?->format('d M Y h:i A') }}</div>
+                                    <div class="small text-muted text-uppercase">{{ $quote->status }}</div>
+                                </div>
                                 <div class="fw-semibold">{{ $quote->job?->title ?: 'Job removed' }}</div>
-                                <div class="small text-muted text-uppercase">{{ $quote->status }}</div>
                                 <div class="fw-bold mt-1">£ {{ number_format((float) $quote->total_price, 2) }}</div>
                             </div>
                         @empty

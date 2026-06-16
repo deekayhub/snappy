@@ -114,6 +114,11 @@
         font-size: .78rem;
     }
 
+    .supplier-status-badge.inactive {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
     .supplier-actions {
         display: flex;
         gap: .5rem;
@@ -315,6 +320,7 @@
             </div>
             <div class="modal-body">
                 <form id="supplierForm">
+                    <input type="hidden" id="supplier_id" name="supplier_id">
                     <div class="form-group">
                         <label for="name">Name *</label>
                         <input type="text" class="form-control" id="name" name="name" required>
@@ -333,15 +339,34 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="company_name">Company Name</label>
-                        <input type="text" class="form-control" id="company_name" name="company_name">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="company_name">Company Name</label>
+                                <input type="text" class="form-control" id="company_name" name="company_name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="is_active">Status</label>
+                                <select class="form-control" id="is_active" name="is_active">
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="organisation">Categories</label>
-                                <input type="text" class="form-control" id="organisation" name="organisation">
+                                <label for="supplier_organisation">Categories *</label>
+                                <select name="supplier_organisation[]" id="supplier_organisation" class="form-select supplier-organisations" multiple required>
+                                    @foreach ($organisation as $item)
+                                        @if ($item->type === 'supplier')
+                                            <option value="{{ $item->id }}">{{ strtoupper($item->name) }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -359,7 +384,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light border" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-gradient-primary" id="saveBtnSupplier">Save Supplier</button>
+                <button type="button" class="btn btn-primary" id="saveBtnSupplier">Save Supplier</button>
             </div>
         </div>
     </div>
@@ -411,21 +436,118 @@
             table.ajax.reload(null, false);
         });
 
+        $('[data-toggle="tooltip"]').tooltip();
+
+        function resetSupplierForm() {
+            $('#supplierForm')[0].reset();
+            $('#supplier_id').val('');
+            $('#is_active').val('1');
+            $('#supplier_organisation').val(null).trigger('change');
+            $('#supplierModalLabel').text('Add New Supplier');
+            $('#saveBtnSupplier').text('Save Supplier');
+        }
+
         $('#supplierModal').on('hidden.bs.modal', function() {
+            resetSupplierForm();
             table.ajax.reload();
         });
 
-        $('#saveBtnSupplier').on('click', function() {
-            alert('Save functionality will be implemented soon');
-            $('#supplierModal').modal('hide');
+        $('#supplierModal').on('shown.bs.modal', function() {
+            $(this).find('.supplier-organisations').select2({
+                placeholder: 'Select supplier categories',
+                width: '100%',
+                dropdownParent: $('#supplierModal')
+            });
         });
 
-        $('[data-toggle="tooltip"]').tooltip();
+        $('#supplierTable tbody').on('click', '.supplier-action-btn.edit', function() {
+            var supplierId = $(this).data('id');
 
-            $('#supplierTable tbody').on('click', '.supplier-action-btn.edit', function() {
-                var supplierId = $(this).data('id');
-                alert('Edit functionality for supplier ID ' + supplierId + ' will be implemented soon');
+            $.ajax({
+                url: "{{ route('admin.suppliers.edit', ':id') }}".replace(':id', supplierId),
+                type: 'GET',
+                success: function(data) {
+                    $('#supplier_id').val(data.id);
+                    $('#name').val(data.name);
+                    $('#email').val(data.email);
+                    $('#phone').val(data.phone);
+                    $('#is_active').val(data.is_active ? '1' : '0');
+                    $('#company_name').val(data.company_name);
+                    $('#address').val(data.address);
+                    $('#website').val(data.website);
+
+                    if (data.categories && data.categories.length) {
+                        $('#supplier_organisation').val(data.categories).trigger('change');
+                    }
+
+                    $('#supplierModalLabel').text('Edit Supplier');
+                    $('#saveBtnSupplier').text('Update Supplier');
+                    $('#supplierModal').modal('show');
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Failed to fetch supplier data.',
+                    });
+                }
             });
+        });
+
+        $('#saveBtnSupplier').on('click', function() {
+            var supplierId = $('#supplier_id').val();
+            var formData = $('#supplierForm').serialize();
+            var url, method;
+
+            if (supplierId) {
+                url = "{{ route('admin.suppliers.update', ':id') }}".replace(':id', supplierId);
+                method = 'PUT';
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Coming Soon',
+                    text: 'Add new supplier functionality will be implemented soon.',
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Saving...',
+                text: 'Please wait',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData + '&_method=' + method + '&_token=' + $('meta[name="csrf-token"]').attr('content'),
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Updated!',
+                        text: response.message || 'Supplier updated successfully.',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                    $('#supplierModal').modal('hide');
+                },
+                error: function(xhr) {
+                    var errors = xhr.responseJSON?.errors;
+                    var message = 'Something went wrong.';
+                    if (errors) {
+                        message = Object.values(errors).flat().join('\n');
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: message,
+                    });
+                }
+            });
+        });
 
             $('#supplierTable tbody').on('click', '.supplier-action-btn.delete', function () {
                 let supplierId = $(this).data('id');
