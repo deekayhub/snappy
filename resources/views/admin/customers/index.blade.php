@@ -352,7 +352,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="is_active">Status</label>
-                                <select class="form-control" id="is_active" name="is_active">
+                                <select class="form-control text-dark" id="is_active" name="is_active">
                                     <option value="1">Active</option>
                                     <option value="0">Inactive</option>
                                 </select>
@@ -453,6 +453,7 @@
         $('#customerModal').on('shown.bs.modal', function() {
             $(this).find('.customer-organisations').select2({
                 placeholder: 'Select customer categories',
+                allowClear: true,
                 width: '100%',
                 dropdownParent: $('#customerModal')
             });
