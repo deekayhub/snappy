@@ -14,9 +14,11 @@ class Plan extends Model
         'description',
         'features',
         'price',
+        'duration',
         'duration_months',
         'is_active',
         'is_free',
+        'is_popular',
         'sort_order',
     ];
 
@@ -25,6 +27,7 @@ class Plan extends Model
         'price' => 'integer',
         'is_active' => 'boolean',
         'is_free' => 'boolean',
+        'is_popular' => 'boolean',
         'sort_order' => 'integer',
         'duration_months' => 'integer',
     ];
@@ -36,6 +39,21 @@ class Plan extends Model
                 $plan->slug = Str::slug($plan->name);
             }
         });
+    }
+
+    public function setDurationAttribute($value)
+    {
+        $this->attributes['duration'] = $value;
+
+        $map = [
+            'monthly' => 1,
+            '3_months' => 3,
+            '6_months' => 6,
+            'yearly' => 12,
+            'lifetime' => 0,
+        ];
+
+        $this->attributes['duration_months'] = $map[$value] ?? 1;
     }
 
     public function scopeActive($query)
@@ -55,6 +73,9 @@ class Plan extends Model
 
     public function getDurationLabelAttribute(): string
     {
+        if ($this->duration === 'lifetime') {
+            return 'Lifetime';
+        }
         if ($this->duration_months >= 12) {
             $years = $this->duration_months / 12;
             return $years == 1 ? '1 Year' : "{$years} Years";

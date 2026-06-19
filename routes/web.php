@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrganisationCategoryController;
 use App\Http\Controllers\Admin\PageSectionController;
 use App\Http\Controllers\Admin\QuoteManagementController;
+use App\Http\Controllers\Admin\SubscriptionSettingController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerJobController;
@@ -12,11 +13,12 @@ use App\Http\Controllers\CustomerPanelController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SupplierPanelController;
-use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -106,8 +108,13 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
     
     Route::get('/page-sections', [PageSectionController::class, 'index'])->name('page-sections');
     Route::post('/page-sections', [PageSectionController::class, 'store'])->name('page-sections.store');
-
+    
     Route::post('/organisation-categories/{category}', [PageSectionController::class, 'organisationCategoryUpdate'])->name('organisation-category.update');
+    
+    Route::get('/subscription-setting', [SubscriptionSettingController::class, 'index'])->name('subscription.settings');
+    Route::post('/subscription/add', [SubscriptionSettingController::class, 'store'])->name('subscription.add');
+    Route::put('/subscription/update/{plan}', [SubscriptionSettingController::class, 'update'])->name('subscription.update');
+    Route::delete('/subscription/delete/{plan}', [SubscriptionSettingController::class, 'destroy'])->name('subscription.destroy');
 });
 
 Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {

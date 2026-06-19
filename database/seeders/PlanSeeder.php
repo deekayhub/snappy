@@ -10,8 +10,8 @@ class PlanSeeder extends Seeder
     public function run(): void
     {
         Plan::create([
-            'name' => 'Basic',
-            'slug' => 'basic',
+            'name' => 'Free',
+            'slug' => 'free',
             'description' => 'Perfect for new suppliers exploring the platform. Get started with a basic profile and limited quotes.',
             'features' => [
                 'Basic Profile (No reviews, rating or Social Links)',
@@ -28,8 +28,8 @@ class PlanSeeder extends Seeder
         ]);
 
         Plan::create([
-            'name' => 'Bronze',
-            'slug' => 'bronze',
+            'name' => '3 Months',
+            'slug' => '3_months',
             'description' => 'For suppliers needing a monthly boost. Flexible 1-month commitment.',
             'features' => [
                 'Enhanced Supplier Profile',
@@ -50,8 +50,8 @@ class PlanSeeder extends Seeder
         ]);
 
         Plan::create([
-            'name' => 'Silver',
-            'slug' => 'silver',
+            'name' => '6 Month',
+            'slug' => '6_months',
             'description' => 'Great value for growing suppliers. Save with a 3-month plan.',
             'features' => [
                 'Enhanced Supplier Profile',
@@ -71,48 +71,48 @@ class PlanSeeder extends Seeder
             'sort_order' => 2,
         ]);
 
-        Plan::create([
-            'name' => 'Gold',
-            'slug' => 'gold',
-            'description' => 'Our most popular plan. Best value for established suppliers with a 6-month commitment.',
-            'features' => [
-                'Enhanced Supplier Profile',
-                'Instant Job Alerts',
-                'Priority Customer Support',
-                'SMS Notifications (Optional)',
-                'Recommended Supplier Badge (After 10 wins)',
-                'Professional Quote Template',
-                'Unlimited Quote Submissions',
-                'Advanced Analytics Dashboard',
-                'Early Access to jobs',
-            ],
-            'price' => 16200,
-            'duration_months' => 6,
-            'is_free' => false,
-            'is_active' => true,
-            'sort_order' => 3,
-        ]);
+        // Plan::create([
+        //     'name' => 'Gold',
+        //     'slug' => 'gold',
+        //     'description' => 'Our most popular plan. Best value for established suppliers with a 6-month commitment.',
+        //     'features' => [
+        //         'Enhanced Supplier Profile',
+        //         'Instant Job Alerts',
+        //         'Priority Customer Support',
+        //         'SMS Notifications (Optional)',
+        //         'Recommended Supplier Badge (After 10 wins)',
+        //         'Professional Quote Template',
+        //         'Unlimited Quote Submissions',
+        //         'Advanced Analytics Dashboard',
+        //         'Early Access to jobs',
+        //     ],
+        //     'price' => 16200,
+        //     'duration_months' => 6,
+        //     'is_free' => false,
+        //     'is_active' => true,
+        //     'sort_order' => 3,
+        // ]);
 
-        Plan::create([
-            'name' => 'Platinum',
-            'slug' => 'platinum',
-            'description' => 'Ultimate value for established businesses. Full year access at the best price.',
-            'features' => [
-                'Enhanced Supplier Profile',
-                'Instant Job Alerts',
-                'Priority Customer Support',
-                'SMS Notifications (Optional)',
-                'Recommended Supplier Badge (After 10 wins)',
-                'Professional Quote Template',
-                'Unlimited Quote Submissions',
-                'Advanced Analytics Dashboard',
-                'Early Access to jobs',
-            ],
-            'price' => 30000,
-            'duration_months' => 12,
-            'is_free' => false,
-            'is_active' => true,
-            'sort_order' => 4,
-        ]);
+        // Plan::create([
+        //     'name' => 'Platinum',
+        //     'slug' => 'platinum',
+        //     'description' => 'Ultimate value for established businesses. Full year access at the best price.',
+        //     'features' => [
+        //         'Enhanced Supplier Profile',
+        //         'Instant Job Alerts',
+        //         'Priority Customer Support',
+        //         'SMS Notifications (Optional)',
+        //         'Recommended Supplier Badge (After 10 wins)',
+        //         'Professional Quote Template',
+        //         'Unlimited Quote Submissions',
+        //         'Advanced Analytics Dashboard',
+        //         'Early Access to jobs',
+        //     ],
+        //     'price' => 30000,
+        //     'duration_months' => 12,
+        //     'is_free' => false,
+        //     'is_active' => true,
+        //     'sort_order' => 4,
+        // ]);
     }
 }

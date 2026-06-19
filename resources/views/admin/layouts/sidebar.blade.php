@@ -67,6 +67,12 @@
                 <span class="menu-title">Page Sections</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.subscription.settings') }}">
+                <i class="mdi mdi-shape-outline menu-icon"></i>
+                <span class="menu-title">Subscription Settings</span>
+            </a>
+        </li>
         @endif
     </ul>
 </nav>
