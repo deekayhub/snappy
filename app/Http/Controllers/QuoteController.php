@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\JobQuoteSubmittedMail;
 use App\Models\CustomerJob;
 use App\Models\Quote;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class QuoteController extends Controller
@@ -30,7 +33,7 @@ class QuoteController extends Controller
         $priceForJob = (float) $validated['price_for_job'];
         $totalPrice = max(0, $deliveryCost + $priceForJob - $discountOffered);
 
-        Quote::updateOrCreate(
+        $quote = Quote::updateOrCreate(
             [
                 'customer_job_id' => $job->id,
                 'supplier_user_id' => $request->user()->id,
@@ -45,6 +48,18 @@ class QuoteController extends Controller
                 'sent_at' => now(),
             ]
         );
+
+        try {
+            Mail::to($job->user->email)
+                ->send(new JobQuoteSubmittedMail($job, $quote));
+        } catch (\Throwable $e) {
+            Log::error('Failed to send quote email.', [
+                'job_id' => $job->id,
+                'quote_id' => $quote->id,
+                'customer_email' => $job->user->email,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return redirect()
             ->route('supplier-panel.jobs')

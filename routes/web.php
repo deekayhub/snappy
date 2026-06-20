@@ -44,6 +44,13 @@ Route::get('/db-seed', function () {
     return 'Database seeded';
 });
 
+// Route::get('/test-mail', function () { 
+//     $job = CustomerJob::first(); 
+//     $quote = Quote::first(); 
+//     Mail::to('your-email@example.com')->send(new JobQuoteSubmittedMail($job, $quote)); 
+//     return 'Mail sent successfully!'; 
+// });
+
 Route::get('/', [HomeController::class, 'index'])->name('home'); 
 Route::get('/supplier', [HomeController::class, 'supplier'])->middleware(['auth', 'role:supplier'])->name('supplier');
 Route::get('/how-it-work', [HomeController::class, 'howItWork'])->name('how-it-work');
