@@ -143,7 +143,7 @@
                                 @endif
 
                                 <ul class="list-unstyled small mb-0">
-                                    @foreach($plan->features ?? [] as $feature)
+                                    @foreach($plan->display_features as $feature)
                                         <li class="mb-2"><i class="mdi mdi-check text-primary me-1"></i>{{ $feature }}</li>
                                     @endforeach
                                 </ul>

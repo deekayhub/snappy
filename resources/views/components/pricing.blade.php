@@ -62,7 +62,7 @@
                             @endauth
 
                             <ul class="list-unstyled feature-list">
-                                @foreach($plan->features as $feature)
+                                @foreach($plan->display_features as $feature)
                                     <li class="mb-2">
                                         <i class="bi bi-check2 text-primary me-2"></i>
                                         {{ $feature }}

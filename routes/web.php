@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrganisationCategoryController;
 use App\Http\Controllers\Admin\PageSectionController;
 use App\Http\Controllers\Admin\QuoteManagementController;
+use App\Http\Controllers\Admin\FeatureController;
 use App\Http\Controllers\Admin\SubscriptionSettingController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CustomerController;
@@ -122,6 +123,11 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
     Route::post('/subscription/add', [SubscriptionSettingController::class, 'store'])->name('subscription.add');
     Route::put('/subscription/update/{plan}', [SubscriptionSettingController::class, 'update'])->name('subscription.update');
     Route::delete('/subscription/delete/{plan}', [SubscriptionSettingController::class, 'destroy'])->name('subscription.destroy');
+
+    Route::get('/features', [FeatureController::class, 'index'])->name('features.index');
+    Route::post('/features', [FeatureController::class, 'store'])->name('features.store');
+    Route::put('/features/{feature}', [FeatureController::class, 'update'])->name('features.update');
+    Route::delete('/features/{feature}', [FeatureController::class, 'destroy'])->name('features.destroy');
 });
 
 Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin')->name('admin.')->group(function () {

@@ -28,13 +28,13 @@
                     <p class="text-muted small">{{ $plan->description }}</p>
                     <h2 class="fw-bold mb-0">{{ $plan->price_formatted }}</h2>
 
-                    @if(! $plan->is_free)
+                    {{-- @if(! $plan->is_free)
                         <p class="text-muted small mb-3">/ {{ $plan->duration_label }}</p>
-                    @endif
+                    @endif --}}
 
                     <div class="mt-auto">
                         <ul class="list-unstyled small mb-3">
-                            @foreach($plan->features ?? [] as $feature)
+                            @foreach($plan->display_features as $feature)
                                 <li class="mb-2">
                                     <i class="mdi mdi-check text-primary me-1"></i>{{ $feature }}
                                 </li>
@@ -54,6 +54,7 @@
                                 data-is_free="{{ $plan->is_free ? '1' : '0' }}"
                                 data-is_popular="{{ $plan->is_popular ? '1' : '0' }}"
                                 data-features="{{ implode("\n", $plan->features ?? []) }}"
+                                data-feature_ids="{{ json_encode($plan->featureModels->pluck('id')->toArray()) }}"
                             >
                                 <i class="mdi mdi-pencil me-1"></i>Edit
                             </button>
@@ -153,15 +154,36 @@
                         </div>
                     </div>
 
-                    {{-- Features --}}
+                    {{-- Feature Checkboxes --}}
+                    <div class="col-12">
+                        <label class="form-label fw-semibold small">Select Features</label>
+                        <div class="border rounded-3 p-3 row" style="max-height:200px;overflow-y:auto;">
+                            @forelse($features as $feature)
+                                <div class="col-md-4 mb-3 form-switch">
+                                    <input class="form-check-input feature-checkbox" type="checkbox"
+                                           id="feature-{{ $feature->id }}" value="{{ $feature->id }}">
+                                    <label class="form-check-label small" for="feature-{{ $feature->id }}">
+                                        {{ $feature->name }}
+                                    </label>
+                                </div>
+                            @empty
+                                <p class="text-muted small mb-0">
+                                    No features available.
+                                    <a href="{{ route('admin.features.index') }}">Create features</a> first.
+                                </p>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    {{-- Free-text Features (legacy) --}}
                     <div class="col-12">
                         <label class="form-label fw-semibold small">
-                            Features
-                            <span class="text-muted fw-normal">(one per line)</span>
+                            Extra Features
+                            <span class="text-muted fw-normal">(one per line, shown alongside selected features)</span>
                         </label>
-                        <textarea class="form-control rounded-3 font-monospace" id="planFeatures" rows="5"
+                        <textarea class="form-control rounded-3 font-monospace" id="planFeatures" rows="3"
                                   placeholder="Unlimited access&#10;Priority support&#10;API access"></textarea>
-                        <div class="form-text">Each line becomes a bullet point on the card.</div>
+                        <div class="form-text">These appear in addition to the checked features above.</div>
                     </div>
 
                 </div>{{-- /row --}}
@@ -241,6 +263,17 @@ $(function () {
         $('#planIsPopular').prop('checked', !!data.is_popular);
         $('#planFeatures').val(data.features ?? '');
 
+        // uncheck all feature checkboxes first
+        $('.feature-checkbox').prop('checked', false);
+
+        // check the ones that belong to this plan
+        const featureIds = data.feature_ids || [];
+        if (featureIds.length) {
+            featureIds.forEach(function (id) {
+                $(`#feature-${id}`).prop('checked', true);
+            });
+        }
+
         // clear previous validation states
         $('#planModal .is-invalid').removeClass('is-invalid');
 
@@ -302,6 +335,9 @@ $(function () {
                             .split('\n')
                             .map(f => f.trim())
                             .filter(Boolean),
+            feature_ids: $('.feature-checkbox:checked').map(function () {
+                return parseInt($(this).val());
+            }).get(),
         };
 
         // loading state
@@ -395,11 +431,17 @@ $(function () {
         $card.find('p.text-muted.small').first().text(plan.description);
         $card.find('h2').text(plan.price_formatted ?? `£${parseFloat(plan.price / 100).toFixed(2)}`);
 
-        // Rebuild feature list
-        const features = Array.isArray(plan.features) ? plan.features : [];
+        // Rebuild feature list (merge relationship + legacy)
+        const features = [
+            ...(Array.isArray(plan.feature_names) ? plan.feature_names : []),
+            ...(Array.isArray(plan.features) ? plan.features : []),
+        ];
         const $ul = $card.find('ul.list-unstyled');
         $ul.empty();
+        const seen = new Set();
         features.forEach(f => {
+            if (seen.has(f)) return;
+            seen.add(f);
             $ul.append(`<li class="mb-2"><i class="mdi mdi-check text-primary me-1"></i>${$('<span>').text(f).html()}</li>`);
         });
 
@@ -412,13 +454,16 @@ $(function () {
             .data('duration',    plan.duration)
             .data('is_free',     plan.is_free ? '1' : '0')
             .data('is_popular',  plan.is_popular ? '1' : '0')
-            .data('features',    features.join('\n'));
+            .data('features',    features.join('\n'))
+            .data('feature_ids', plan.feature_ids || []);
     }
 
     /** Build card HTML for a newly saved plan (used by appendCard). */
     function buildCardHtml(plan) {
-        const features = Array.isArray(plan.features) ? plan.features : [];
-        const featureItems = features.map(f =>
+        const featureNames = Array.isArray(plan.feature_names) ? plan.feature_names : [];
+        const legacyFeatures = Array.isArray(plan.features) ? plan.features : [];
+        const allFeatures = [...new Set([...featureNames, ...legacyFeatures])];
+        const featureItems = allFeatures.map(f =>
             `<li class="mb-2"><i class="mdi mdi-check text-primary me-1"></i>${$('<span>').text(f).html()}</li>`
         ).join('');
 
@@ -449,7 +494,8 @@ $(function () {
                                 data-duration="${plan.duration ?? ''}"
                                 data-is_free="${plan.is_free ? '1' : '0'}"
                                 data-is_popular="${plan.is_popular ? '1' : '0'}"
-                                data-features="${$('<span>').text(features.join('\n')).html()}">
+                                data-features="${$('<span>').text(features.join('\n')).html()}"
+                                data-feature_ids='${JSON.stringify(plan.feature_ids || [])}'>
                                 <i class="mdi mdi-pencil me-1"></i>Edit
                             </button>
                             <button class="btn btn-outline-danger btn-sm btn-delete-plan"

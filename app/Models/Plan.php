@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
 class Plan extends Model
@@ -66,6 +67,11 @@ class Plan extends Model
         return $query->orderBy('sort_order');
     }
 
+    public function featureModels(): BelongsToMany
+    {
+        return $this->belongsToMany(Feature::class, 'feature_plan', 'plan_id', 'feature_id');
+    }
+
     public function getPriceFormattedAttribute(): string
     {
         return '£' . number_format($this->price / 100, 2);
@@ -93,5 +99,13 @@ class Plan extends Model
     {
         $yearly = $this->yearly_price;
         return $yearly ? '£' . number_format($yearly / 100, 2) : null;
+    }
+
+    public function getDisplayFeaturesAttribute(): array
+    {
+        $featureNames = $this->featureModels->pluck('name')->toArray();
+        $legacyFeatures = $this->features ?? [];
+
+        return array_values(array_unique(array_merge($featureNames, $legacyFeatures)));
     }
 }

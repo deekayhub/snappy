@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
             DefaultUsersSeeder::class,
             DemoUsersSeeder::class,
             PlanSeeder::class,
+            FeatureSeeder::class,
+            FeaturePlanSeeder::class,
             // DemoCustomerJobsSeeder::class,
         ]);
     }

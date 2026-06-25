@@ -55,6 +55,10 @@
           margin-left: 70px;
           width: calc(100% - 70px);
         }
+
+        textarea.form-control{
+          height: unset;
+        }
       }
     </style>
     @stack('styles')

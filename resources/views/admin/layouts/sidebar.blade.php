@@ -50,29 +50,49 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.categories') }}">
-                <i class="mdi mdi-shape-outline menu-icon"></i>
-                <span class="menu-title">Categories</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.categories.fields') }}">
-                <i class="mdi mdi-shape-outline menu-icon"></i>
-                <span class="menu-title">Categories Fields</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.page-sections') }}">
-                <i class="mdi mdi-shape-outline menu-icon"></i>
-                <span class="menu-title">Page Sections</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.subscription.settings') }}">
-                <i class="mdi mdi-shape-outline menu-icon"></i>
-                <span class="menu-title">Subscription Settings</span>
-            </a>
-        </li>
+    <a class="nav-link" data-bs-toggle="collapse" href="#settings-menu"
+       aria-expanded="false" aria-controls="settings-menu">
+        <i class="mdi mdi-cog-outline menu-icon"></i>
+        <span class="menu-title">Settings</span>
+        <i class="menu-arrow"></i>
+    </a>
+
+    <div class="collapse" id="settings-menu">
+        <ul class="nav flex-column sub-menu">
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.categories') }}">
+                    Categories
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.categories.fields') }}">
+                    Categories Fields
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.page-sections') }}">
+                    Page Sections
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.subscription.settings') }}">
+                    Subscription Settings
+                </a>
+            </li>
+
+            <li class="nav-item d-none">
+                <a class="nav-link" href="{{ route('admin.features.index') }}">
+                    Features
+                </a>
+            </li>
+
+        </ul>
+    </div>
+</li>
         @endif
     </ul>
 </nav>

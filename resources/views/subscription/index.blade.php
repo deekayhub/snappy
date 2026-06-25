@@ -140,7 +140,7 @@
                                 @endif
 
                                 <ul class="list-unstyled feature-list small">
-                                    @foreach($plan->features as $feature)
+                                    @foreach($plan->display_features as $feature)
                                         <li class="mb-1"><i class="bi bi-check2 text-primary me-1"></i>{{ $feature }}</li>
                                     @endforeach
                                 </ul>

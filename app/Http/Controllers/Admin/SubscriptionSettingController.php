@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Feature;
 use App\Models\Plan;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,8 +17,9 @@ class SubscriptionSettingController extends Controller
     {
         // $plans = Plan::active()->ordered()->get();
         $plans = Plan::active()->get();
+        $features = Feature::active()->ordered()->get();
 
-        return view('admin.subscription.index', compact('plans'));
+        return view('admin.subscription.index', compact('plans', 'features'));
     }
 
     public function store(Request $request): JsonResponse
@@ -32,6 +34,8 @@ class SubscriptionSettingController extends Controller
             'is_popular'  => ['boolean'],
             'features'    => ['nullable', 'array'],
             'features.*'  => ['string', 'max:200'],
+            'feature_ids' => ['nullable', 'array'],
+            'feature_ids.*' => ['integer', 'exists:features,id'],
         ]);
 
         $validated['slug']     = Str::slug($validated['slug'], '_');
@@ -40,6 +44,10 @@ class SubscriptionSettingController extends Controller
         $validated['features'] = $validated['features'] ?? [];
 
         $plan = Plan::create($validated);
+
+        if (! empty($validated['feature_ids'])) {
+            $plan->featureModels()->sync($validated['feature_ids']);
+        }
 
         Artisan::call('stripe:sync-plans');
 
@@ -61,6 +69,8 @@ class SubscriptionSettingController extends Controller
             'is_popular'  => ['boolean'],
             'features'    => ['nullable', 'array'],
             'features.*'  => ['string', 'max:200'],
+            'feature_ids' => ['nullable', 'array'],
+            'feature_ids.*' => ['integer', 'exists:features,id'],
         ]);
 
         $validated['slug']     = Str::slug($validated['slug'], '_');
@@ -73,6 +83,10 @@ class SubscriptionSettingController extends Controller
         }
 
         $plan->update($validated);
+
+        if (isset($validated['feature_ids'])) {
+            $plan->featureModels()->sync($validated['feature_ids']);
+        }
 
         Artisan::call('stripe:sync-plans');
 
@@ -95,6 +109,8 @@ class SubscriptionSettingController extends Controller
 
     private function formatPlan(Plan $plan): array
     {
+        $plan->load('featureModels');
+
         return [
             'id'              => $plan->id,
             'name'            => $plan->name,
@@ -107,6 +123,8 @@ class SubscriptionSettingController extends Controller
             'is_free'         => $plan->is_free,
             'is_popular'      => $plan->is_popular,
             'features'        => $plan->features ?? [],
+            'feature_ids'     => $plan->featureModels->pluck('id')->toArray(),
+            'feature_names'   => $plan->featureModels->pluck('name')->toArray(),
         ];
     }
 }
