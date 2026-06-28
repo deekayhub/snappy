@@ -229,6 +229,11 @@
                             <div>
                                 <div class="small text-muted">Quote for Job No. {{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</div>
                                 <h5 class="modal-title">{{ $job->title }}</h5>
+                                @hasFeature('professional_quote')
+                                <span class="badge bg-primary mt-1">Professional Quote Template</span>
+                                @else
+                                <span class="badge bg-secondary mt-1">Basic Quote Template</span>
+                                @endhasFeature
                             </div>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -252,10 +257,26 @@
                                         <label class="form-label">Total</label>
                                         <input type="number" name="total" step="0.01" min="0" class="form-control rounded-4" value="{{ old('total', optional($existingQuote)->total_price) }}" readonly>
                                     </div>
+                                    @hasFeature('professional_quote')
+                                    <div class="col-md-6">
+                                        <label class="form-label">Estimated completion date</label>
+                                        <input type="date" name="estimated_completion_date" class="form-control rounded-4" value="{{ old('estimated_completion_date', optional($existingQuote)->estimated_completion_date?->format('Y-m-d')) }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Warranty / Guarantee (months)</label>
+                                        <input type="number" name="warranty_months" min="0" class="form-control rounded-4" value="{{ old('warranty_months', optional($existingQuote)->warranty_months) }}" placeholder="e.g. 12">
+                                    </div>
+                                    @endhasFeature
                                     <div class="col-12">
                                         <label class="form-label">Notes</label>
                                         <textarea name="notes" rows="4" class="form-control rounded-4" placeholder="Add delivery terms, timing, extras, or any helpful context for the customer.">{{ old('notes', optional($existingQuote)->notes) }}</textarea>
                                     </div>
+                                    @hasFeature('professional_quote')
+                                    <div class="col-12">
+                                        <label class="form-label">Terms & Conditions</label>
+                                        <textarea name="terms" rows="3" class="form-control rounded-4" placeholder="Optional: add your terms and conditions for this quote.">{{ old('terms', optional($existingQuote)->terms) }}</textarea>
+                                    </div>
+                                    @endhasFeature
                                 </div>
                             </div>
                             <div class="modal-footer border-0">

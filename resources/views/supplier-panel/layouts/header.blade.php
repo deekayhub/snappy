@@ -21,6 +21,21 @@
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-top border-bottom" style="height: 80px;">
         <ul class="navbar-nav ms-auto">
+            @hasFeature('instant_job_alerts')
+            <li class="nav-item">
+                <a class="nav-link position-relative" href="{{ route('supplier-panel.notifications.index') }}" title="Notifications">
+                    <i class="mdi mdi-bell-outline" style="font-size: 1.3rem;"></i>
+                    @php
+                        $unreadCount = Auth::user()->userNotifications()->unread()->count();
+                    @endphp
+                    @if($unreadCount > 0)
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                            {{ $unreadCount > 99 ? '99+' : $unreadCount }}
+                        </span>
+                    @endif
+                </a>
+            </li>
+            @endhasFeature
             <li class="nav-item dropdown user-dropdown">
                 <a class="nav-link dropdown-toggle border rounded-pill px-2 px-lg-3 py-2 d-flex align-items-center gap-2" id="SupplierUserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <img class="rounded-circle" src="{{ $supplierHeaderAvatar }}" alt="Profile image" style="width: 32px; height: 32px; object-fit: cover;">

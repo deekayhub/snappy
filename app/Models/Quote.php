@@ -15,6 +15,9 @@ class Quote extends Model
         'price_for_job',
         'total_price',
         'notes',
+        'estimated_completion_date',
+        'warranty_months',
+        'terms',
         'status',
         'customer_rating',
         'customer_review',
@@ -30,6 +33,8 @@ class Quote extends Model
             'price_for_job' => 'decimal:2',
             'total_price' => 'decimal:2',
             'customer_rating' => 'integer',
+            'estimated_completion_date' => 'date',
+            'warranty_months' => 'integer',
             'rated_at' => 'datetime',
             'sent_at' => 'datetime',
         ];

@@ -12,12 +12,40 @@
                 <span class="menu-title">Job Board</span>
             </a>
         </li>
+        @hasFeature('instant_job_alerts')
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('supplier-panel.notifications.index') }}">
+                <i class="mdi mdi-bell-outline menu-icon"></i>
+                <span class="menu-title">Notifications</span>
+                @php($unreadCount = Auth::user()->userNotifications()->unread()->count())
+                @if($unreadCount > 0)
+                    <span class="badge bg-danger ms-auto">{{ $unreadCount }}</span>
+                @endif
+            </a>
+        </li>
+        @endhasFeature
+        @hasFeature('early_access_jobs')
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('supplier-panel.early.jobs') }}">
+                <i class="mdi mdi-clock-fast menu-icon"></i>
+                <span class="menu-title">Early Access Jobs</span>
+            </a>
+        </li>
+        @endhasFeature
         <li class="nav-item">
             <a class="nav-link" href="{{ route('supplier-panel.reports') }}">
                 <i class="mdi mdi-chart-areaspline menu-icon"></i>
                 <span class="menu-title">Reports</span>
             </a>
         </li>
+        @hasFeature('analytics_dashboard')
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('supplier-panel.analytics') }}">
+                <i class="mdi mdi-chart-bar menu-icon"></i>
+                <span class="menu-title">Analytics</span>
+            </a>
+        </li>
+        @endhasFeature
         <li class="nav-item">
             <a class="nav-link" href="{{ route('supplier-panel.activity') }}">
                 <i class="mdi mdi-history menu-icon"></i>

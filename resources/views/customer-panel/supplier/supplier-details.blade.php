@@ -12,13 +12,17 @@
       <div class="card-body">
         <h2 class="fw-bold mb-2">
             {{ $suppliers->supplierProfile?->company_name ?? $suppliers->name }}
-        </h2>       
+        </h2>
+        @if($suppliers->hasFeature('recommended_badge') && $suppliers->isRecommended())
+            <span class="badge bg-warning text-dark mb-2"><i class="mdi mdi-star me-1"></i>Recommended Supplier</span>
+        @endif
         <p class="card-text"><span class="mdi mdi-map-marker"></span> {{ $suppliers->supplierProfile?->address ?? '' }}</p>
         <p class="card-text"><span class="mdi mdi-phone"></span> {{ $suppliers->phone ?? '' }}</p>
         <p class="card-text"><span class="mdi mdi-email"></span> {{ $suppliers->email ?? '' }}</p>
+        @if($suppliers->hasFeature('enhanced_profile'))
         <div class="d-flex align-items-center gap-2 mb-2">
             @php
-                $rating = round($suppliers->avg_rating ?? 0); // Rounded rating
+                $rating = round($suppliers->avg_rating ?? 0);
                 $totalReviews = $suppliers->total_reviews ?? 0;
             @endphp
             <div class="text-warning fs-5">
@@ -37,6 +41,7 @@
                 ({{ $totalReviews }} Reviews)
             </div>
         </div>
+        @endif
       </div>
     </div>
   </div>
@@ -50,6 +55,7 @@
     </div>
 </div>
 
+@if($suppliers->hasFeature('enhanced_profile'))
 <div class="row">
     <div class="card border-0 shadow-sm rounded-4 h-100">
         <div class="card-body">
@@ -123,3 +129,4 @@
     </div>
 
 </div>
+@endif

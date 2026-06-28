@@ -84,6 +84,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Quote::class, 'supplier_user_id')->whereNotNull('customer_rating');
     }
 
+    public function userNotifications(): HasMany
+    {
+        return $this->hasMany(UserNotification::class);
+    }
+
+    public function notificationPreference(): HasOne
+    {
+        return $this->hasOne(UserNotificationPreference::class);
+    }
+
     public function onTrialOrSubscribed(): bool
     {
         return $this->onTrial('default') || $this->subscribed('default');
@@ -101,6 +111,24 @@ class User extends Authenticatable implements MustVerifyEmail
             return Plan::where('is_free', true)->first();
         }
         return Plan::where('stripe_price_id', $subscription->stripe_price)->first();
+    }
+
+    public function hasFeature(string $slug): bool
+    {
+        $plan = $this->currentPlan();
+        return $plan && $plan->hasFeature($slug);
+    }
+
+    public function winsCount(): int
+    {
+        return $this->supplierQuotes()
+            ->where('status', 'completed')
+            ->count();
+    }
+
+    public function isRecommended(): bool
+    {
+        return $this->winsCount() >= 10;
     }
 
     public function subscriptionUsage(): array

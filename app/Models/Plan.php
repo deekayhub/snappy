@@ -108,4 +108,9 @@ class Plan extends Model
 
         return array_values(array_unique(array_merge($featureNames, $legacyFeatures)));
     }
+
+    public function hasFeature(string $slug): bool
+    {
+        return $this->featureModels()->where('slug', $slug)->exists();
+    }
 }

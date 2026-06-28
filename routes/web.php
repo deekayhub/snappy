@@ -146,7 +146,10 @@ Route::middleware(['auth', 'verified'])->prefix('subscription')->name('subscript
 
 Route::middleware(['auth', 'verified', 'role:supplier'])->prefix('supplier-panel')->name('supplier-panel.')->group(function () {
     Route::get('/dashboard', [SupplierPanelController::class, 'dashboard'])->name('dashboard');
-    Route::get('/jobs', [SupplierPanelController::class, 'jobs'])->name('jobs');
+    Route::middleware('feature:view_job_details')->group(function () {
+        Route::get('/jobs', [SupplierPanelController::class, 'jobs'])->name('jobs');
+        Route::post('/jobs/{job}/quotes', [QuoteController::class, 'store'])->name('quotes.store');
+    });
     Route::get('/reports', [SupplierPanelController::class, 'reports'])->name('reports');
     Route::get('/activity', [SupplierPanelController::class, 'activity'])->name('activity');
     Route::get('/profile', [SupplierPanelController::class, 'profile'])->name('profile');
@@ -157,7 +160,22 @@ Route::middleware(['auth', 'verified', 'role:supplier'])->prefix('supplier-panel
     Route::get('/subscription/success', [SupplierPanelController::class, 'subscriptionSuccess'])->name('subscription.success');
     Route::get('/subscription/invoices', [SupplierPanelController::class, 'subscriptionInvoices'])->name('subscription.invoices');
     Route::get('/subscription/invoices/{invoice}/download', [SupplierPanelController::class, 'downloadSubscriptionInvoice'])->name('subscription.invoice.download');
-    Route::post('/jobs/{job}/quotes', [QuoteController::class, 'store'])->name('quotes.store');
+
+    Route::middleware('feature:analytics_dashboard')->group(function () {
+        Route::get('/analytics', [SupplierPanelController::class, 'analytics'])->name('analytics');
+    });
+
+    Route::middleware('feature:early_access_jobs')->group(function () {
+        Route::get('/early-jobs', [SupplierPanelController::class, 'earlyJobs'])->name('early.jobs');
+    });
+
+    Route::post('/notification-preferences', [SupplierPanelController::class, 'updateNotificationPreferences'])->name('notification-preferences.update');
+
+    Route::middleware('feature:instant_job_alerts')->prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\NotificationController::class, 'index'])->name('index');
+        Route::post('/{notification}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('read');
+        Route::post('/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
+    });
 });
 
 Route::middleware(['auth', 'verified', 'role:customer'])->prefix('customer-panel')->name('customer-panel.')->group(function () {

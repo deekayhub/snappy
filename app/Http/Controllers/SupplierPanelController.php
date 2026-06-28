@@ -15,7 +15,7 @@ class SupplierPanelController extends Controller
     public function dashboard(Request $request): View
     {
         $user = $request->user()->load(['supplierProfile', 'organisationCategories']);
-        $jobs = CustomerJob::query()->latest()->take(6)->get();
+        $jobs = CustomerJob::with('categoryId:id,name')->latest()->take(6)->get();
         $recentQuotes = $request->user()
             ->supplierQuotes()
             ->with('job')
@@ -157,9 +157,32 @@ class SupplierPanelController extends Controller
             ->orderBy('name')
             ->get();
 
-        $user = $request->user()->load(['supplierProfile', 'organisationCategories']);
+        $user = $request->user()->load(['supplierProfile', 'organisationCategories', 'notificationPreference']);
 
         return view('supplier-panel.profile.index', compact('user', 'organisation'));
+    }
+
+    public function updateNotificationPreferences(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $validated = $request->validate([
+            'email_alerts' => ['boolean'],
+            'sms_alerts' => ['boolean'],
+            'phone_number' => ['nullable', 'string', 'max:20'],
+        ]);
+
+        $user = $request->user();
+
+        $prefs = $user->notificationPreference()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'email_alerts' => $validated['email_alerts'] ?? false,
+                'sms_alerts' => $validated['sms_alerts'] ?? false,
+                'phone_number' => $validated['phone_number'] ?? null,
+            ]
+        );
+
+        return redirect()->route('supplier-panel.profile')
+            ->with('success', 'Notification preferences saved.');
     }
 
     public function subscriptionIndex(Request $request): View
@@ -281,5 +304,102 @@ class SupplierPanelController extends Controller
             'vendor' => config('app.name'),
             'product' => 'Subscription',
         ]);
+    }
+
+    public function analytics(Request $request): View
+    {
+        $user = $request->user();
+
+        $monthlyQuoteStats = $user->supplierQuotes()
+            ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month, COUNT(*) as total")
+            ->groupBy('month')
+            ->orderBy('month')
+            ->take(12)
+            ->get();
+
+        $categoryBreakdown = \App\Models\CustomerJob::query()
+            ->selectRaw("COALESCE(category, 'General') as name, COUNT(*) as total")
+            ->groupBy('name')
+            ->orderByDesc('total')
+            ->take(8)
+            ->get();
+
+        $winRate = $user->supplierQuotes()
+            ->selectRaw("
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'accepted' THEN 1 ELSE 0 END) as accepted,
+                SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed,
+                SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected
+            ")
+            ->first();
+
+        $totalEarnings = $user->supplierQuotes()
+            ->whereIn('status', ['accepted', 'completed'])
+            ->sum('total_price');
+
+        return view('supplier-panel.analytics.index', compact(
+            'monthlyQuoteStats',
+            'categoryBreakdown',
+            'winRate',
+            'totalEarnings'
+        ));
+    }
+
+    public function earlyJobs(Request $request): View
+    {
+        $query = \App\Models\CustomerJob::query()
+            ->with(['categoryId', 'dynamicFieldValues', 'user:id,name,email', 'quotes' => fn ($q) => $q->where('supplier_user_id', $request->user()->id)]);
+
+        if ($request->filled('search')) {
+            $search = $request->string('search')->toString();
+            $query->where(function ($jobQuery) use ($search) {
+                $jobQuery
+                    ->where('title', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%")
+                    ->orWhere('organisation_name', 'like', "%{$search}%")
+                    ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+        if ($request->filled('category')) {
+            $query->where('category', $request->string('category')->toString());
+        }
+
+        $sort = $request->string('sort', 'newest')->toString();
+        match ($sort) {
+            'oldest' => $query->oldest(),
+            'budget_high' => $query->orderByDesc('budget'),
+            'budget_low' => $query->orderBy('budget'),
+            'ending_soon' => $query->orderBy('needed_by'),
+            default => $query->latest(),
+        };
+
+        $jobs = $query->paginate(9)->withQueryString();
+        $jobs->getCollection()->transform(function ($job) {
+            $grouped = $job->dynamicFieldValues
+                ->sortBy([
+                    ['item_no', 'asc'],
+                    ['field_id', 'asc']
+                ])
+                ->groupBy('item_no')
+                ->map(function ($items) {
+                    return $items->values()->map(function ($item) {
+                        $rawValue = $item->field_value;
+                        $parsedValue = is_string($rawValue) ? json_decode($rawValue, true) : $rawValue;
+                        if (json_last_error() !== JSON_ERROR_NONE && is_string($rawValue)) {
+                            $parsedValue = $rawValue;
+                        }
+                        $item->setAttribute('parsed_value', $parsedValue);
+                        return $item;
+                    })->toArray();
+                })
+                ->values()
+                ->toArray();
+            $job->setRelation('dynamicFieldValues', collect($grouped));
+            return $job;
+        });
+
+        $categories = \App\Models\OrganisationCategory::query()->where('type', 'supplier')->orderBy('name')->get();
+
+        return view('supplier-panel.jobs.index', compact('jobs', 'sort', 'categories'));
     }
 }

@@ -27,7 +27,15 @@
             <div class="card-body text-white p-4 p-lg-5">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-8">
-                        <span class="badge bg-white text-primary px-3 py-2 mb-3">Supplier Hub</span>
+                        <span class="badge bg-white text-primary px-3 py-2 mb-3 rounded">Supplier Hub</span>
+                        @hasFeature('priority_support')
+                        <span class="badge bg-warning text-dark px-3 py-2 mb-3 ms-2"><i class="mdi mdi-star"></i> Priority Support</span>
+                        @endhasFeature
+                        @hasFeature('recommended_badge')
+                            @if($user->isRecommended())
+                            <span class="badge bg-warning text-dark px-3 py-2 mb-3 ms-2"><i class="mdi mdi-check-circle"></i> Recommended Supplier</span>
+                            @endif
+                        @endhasFeature
                         <h2 class="text-white mb-2">View jobs, track activity, and manage your supplier presence.</h2>
                         <p class="mb-0 text-white-50">Built from your supplier requirements document: profile editing, job board visibility, past-quote space, reporting, and account activity.</p>
                     </div>
@@ -71,7 +79,6 @@
                             </div>
                             <a href="{{ route('supplier-panel.jobs') }}" class="btn btn-outline-primary rounded-4">View full board</a>
                         </div>
-
                         <div class="row g-3">
                             @forelse ($jobs as $job)
                                 @php($meta = $statusMeta($job))
@@ -85,7 +92,10 @@
                                                 </div>
                                                 <h5 class="mb-1">{{ $job->title }}</h5>
                                                 <p class="text-muted mb-2">{{ \Illuminate\Support\Str::limit($job->description, 120) }}</p>
-                                                <div class="small text-muted">{{ $job->category ?: 'General' }} • {{ $job->location ?: 'Location not specified' }}</div>
+                                                <div class="small text-muted text-capitalize">
+                                                    <span class="badge text-bg-primary rounded">{{ $job->categoryId?->name ?: 'General' }}</span>
+                                                    • <span class="badge text-bg-primary rounded">{{ $job->location ?: 'Location not specified' }}</span>
+                                                    </div>
                                             </div>
                                             <div class="text-lg-end">
                                                 <div class="fw-semibold">{{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Budget on request' }}</div>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\CustomerJob;
 use App\Models\OrganisationCategory;
+use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -40,9 +42,23 @@ class CustomerJobController extends Controller
             'description' => ['required', 'string', 'min:0'],
         ]);
 
-        $request->user()->customerJobs()->create($validated);
+        $job = $request->user()->customerJobs()->create($validated);
 
-        return back()
+        User::role('supplier')->where('is_active', true)->chunk(100, function ($suppliers) use ($job) {
+            foreach ($suppliers as $supplier) {
+                if ($supplier->hasFeature('instant_job_alerts')) {
+                    UserNotification::create([
+                        'user_id' => $supplier->id,
+                        'type' => 'new_job',
+                        'message' => "New job posted: {$job->title}",
+                        'action_url' => route('supplier-panel.jobs'),
+                    ]);
+                }
+            }
+        });
+
+        return redirect()
+            ->route('customer-panel.dashboard')
             ->with('success', 'Your job has been posted successfully.');
     }
 

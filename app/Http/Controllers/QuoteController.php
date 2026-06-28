@@ -21,12 +21,29 @@ class QuoteController extends Controller
                 ->with('error', 'Only supplier accounts can submit quotes.');
         }
 
-        $validated = $request->validate([
+        $user = $request->user();
+        $usage = $user->subscriptionUsage();
+
+        if (! $usage['can_submit_quote']) {
+            return redirect()
+                ->route('supplier-panel.subscription.index')
+                ->with('error', 'You have reached your quote limit for this month or year. Please upgrade your plan to submit more quotes.');
+        }
+
+        $rules = [
             'delivery_cost' => ['nullable', 'numeric', 'min:0'],
             'discount_offered' => ['nullable', 'numeric', 'min:0'],
             'price_for_job' => ['required', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:2000'],
-        ]);
+        ];
+
+        if ($request->user()->hasFeature('professional_quote')) {
+            $rules['estimated_completion_date'] = ['nullable', 'date', 'after_or_equal:today'];
+            $rules['warranty_months'] = ['nullable', 'integer', 'min:0'];
+            $rules['terms'] = ['nullable', 'string', 'max:5000'];
+        }
+
+        $validated = $request->validate($rules);
 
         $deliveryCost = (float) ($validated['delivery_cost'] ?? 0);
         $discountOffered = (float) ($validated['discount_offered'] ?? 0);
@@ -44,6 +61,9 @@ class QuoteController extends Controller
                 'price_for_job' => $priceForJob,
                 'total_price' => $totalPrice,
                 'notes' => $validated['notes'] ?? null,
+                'estimated_completion_date' => $validated['estimated_completion_date'] ?? null,
+                'warranty_months' => $validated['warranty_months'] ?? null,
+                'terms' => $validated['terms'] ?? null,
                 'status' => 'submitted',
                 'sent_at' => now(),
             ]

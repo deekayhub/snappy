@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             PlanSeeder::class,
             FeatureSeeder::class,
             FeaturePlanSeeder::class,
+            UserNotificationSeeder::class,
             // DemoCustomerJobsSeeder::class,
         ]);
     }

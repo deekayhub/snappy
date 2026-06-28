@@ -91,7 +91,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            
+                            @hasFeature('enhanced_profile')
                             <div class="col-12">
                                 <label class="form-label">Social links</label>
                                 <div id="social-links-wrapper" class="d-flex flex-column gap-2">
@@ -125,6 +125,14 @@
                                 </div>
                                 <button type="button" class="btn btn-outline-dark rounded-3 mt-2" id="add-social-link">+ Add social link</button>
                             </div>
+                            @else
+                            <div class="col-12">
+                                <div class="alert alert-info rounded-3">
+                                    <i class="mdi mdi-lock me-1"></i> Social links are available with an <strong>Enhanced Supplier Profile</strong>.
+                                    <a href="{{ route('supplier-panel.subscription.index') }}" class="alert-link">Upgrade your plan</a> to add social links.
+                                </div>
+                            </div>
+                            @endhasFeature
                             
                             
                             <div class="col-12 pt-2">
@@ -136,9 +144,45 @@
 
                 <div class="col-xl-4">
                     <div class="border rounded-3 p-4 mb-4">
-                        <h5 class="mb-2">Quote access</h5>
-                        <p class="text-muted mb-0">Free suppliers can browse the job board. Quote submission is visually reserved but still disabled until subscription and quote tables are added.</p>
+                        <h5 class="mb-2">Quote usage</h5>
+                        @php($usage = Auth::user()->subscriptionUsage())
+                        <p class="text-muted mb-1">Quotes this month: <strong>{{ $usage['quotes_remaining_this_month'] === -1 ? 'Unlimited' : $usage['quotes_remaining_this_month'] . ' remaining' }}</strong></p>
+                        <p class="text-muted mb-0">Quotes this year: <strong>{{ $usage['quotes_remaining_this_year'] === -1 ? 'Unlimited' : $usage['quotes_remaining_this_year'] . ' remaining' }}</strong></p>
                     </div>
+
+                    @hasFeature('sms_notifications')
+                    <div class="border rounded-3 p-4 mb-4">
+                        <h5 class="mb-3">Notification Preferences</h5>
+                        <form method="POST" action="{{ route('supplier-panel.notification-preferences.update') }}">
+                            @csrf
+                            @php($prefs = Auth::user()->notificationPreference)
+                            <div class="form-check mb-2">
+                                <input type="hidden" name="email_alerts" value="0">
+                                <input class="form-check-input" type="checkbox" name="email_alerts" value="1" id="emailAlerts" {{ $prefs?->email_alerts ? 'checked' : '' }}>
+                                <label class="form-check-label" for="emailAlerts">Email Alerts</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input type="hidden" name="sms_alerts" value="0">
+                                <input class="form-check-input" type="checkbox" name="sms_alerts" value="1" id="smsAlerts" {{ $prefs?->sms_alerts ? 'checked' : '' }}>
+                                <label class="form-check-label" for="smsAlerts">SMS Notifications</label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone Number (for SMS)</label>
+                                <input type="text" name="phone_number" class="form-control rounded-3" value="{{ old('phone_number', $prefs?->phone_number) }}" placeholder="+44...">
+                            </div>
+                            <button class="btn btn-dark rounded-3 w-100">Save Preferences</button>
+                        </form>
+                    </div>
+                    @endhasFeature
+
+                    @hasFeature('priority_support')
+                    <div class="border rounded-3 p-4 mb-4">
+                        <h5 class="mb-3"><i class="mdi mdi-star text-warning me-1"></i>Priority Support</h5>
+                        <p class="text-muted mb-3">As a priority customer, you get faster response times and dedicated support.</p>
+                        <a href="mailto:priority@snappyquotes.co.uk" class="btn btn-warning rounded-3 w-100">Contact Priority Support</a>
+                    </div>
+                    @endhasFeature
+
                     <div class="border rounded-3 p-4">
                         <h5 class="mb-3">Change password</h5>
                         <form method="POST" action="{{ route('password.update') }}">
