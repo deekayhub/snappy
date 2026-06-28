@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\JobQuoteSubmittedMail;
 use App\Models\CustomerJob;
 use App\Models\Quote;
+use App\Models\UserNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -80,6 +81,13 @@ class QuoteController extends Controller
                 'error' => $e->getMessage(),
             ]);
         }
+
+        UserNotification::create([
+            'user_id' => $job->user_id,
+            'type' => 'new_quote',
+            'message' => "New quote received for your job: {$job->title}",
+            'action_url' => route('customer-panel.quotes'),
+        ]);
 
         return redirect()
             ->route('supplier-panel.jobs')

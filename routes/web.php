@@ -191,6 +191,12 @@ Route::middleware(['auth', 'verified', 'role:customer'])->prefix('customer-panel
     Route::delete('/delete-job/{job}', [CustomerPanelController::class, 'destroyJob'])->name('jobs.destroy');
     Route::get('/quotes', [CustomerPanelController::class, 'quotes'])->name('quotes');
     Route::get('/profile', [CustomerPanelController::class, 'profile'])->name('profile');
+
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\NotificationController::class, 'customerIndex'])->name('index');
+        Route::post('/{notification}/read', [\App\Http\Controllers\NotificationController::class, 'customerMarkAsRead'])->name('read');
+        Route::post('/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'customerMarkAllAsRead'])->name('mark-all-read');
+    });
 });
 
 Route::middleware('guest')->group(function () {

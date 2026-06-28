@@ -23,6 +23,51 @@
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-top border-bottom" style="height: 80px;">
         <ul class="navbar-nav ms-auto">
+            @php
+                $customerUnreadCount = Auth::user()->userNotifications()->unread()->count();
+                $customerLatestNotifications = Auth::user()->userNotifications()->latest()->take(5)->get();
+            @endphp
+            <li class="nav-item dropdown">
+                <a class="nav-link position-relative" href="#" id="CustomerNotificationDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                    <i class="mdi mdi-bell-outline" style="font-size: 1.3rem;"></i>
+                    @if($customerUnreadCount > 0)
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                            {{ $customerUnreadCount > 99 ? '99+' : $customerUnreadCount }}
+                        </span>
+                    @endif
+                </a>
+                <div class="dropdown-menu dropdown-menu-end navbar-dropdown p-0" aria-labelledby="CustomerNotificationDropdown" style="width: 340px;">
+                    <div class="dropdown-header border-bottom px-3 py-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold">Notifications</span>
+                            @if($customerUnreadCount > 0)
+                            <form method="POST" action="{{ route('customer-panel.notifications.mark-all-read') }}" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-link text-decoration-none p-0">Mark all read</button>
+                            </form>
+                            @endif
+                        </div>
+                    </div>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        @forelse($customerLatestNotifications as $notif)
+                            <div class="dropdown-item border-bottom px-3 py-2 {{ $notif->is_read ? '' : 'bg-light' }}">
+                                <form method="POST" action="{{ route('customer-panel.notifications.read', $notif) }}" class="d-block">
+                                    @csrf
+                                    <button type="submit" class="btn btn-link text-decoration-none p-0 d-block text-start w-100">
+                                        <div class="small fw-semibold">{{ $notif->message }}</div>
+                                        <div class="small text-muted">{{ $notif->created_at->diffForHumans() }}</div>
+                                    </button>
+                                </form>
+                            </div>
+                        @empty
+                            <div class="dropdown-item text-center text-muted py-3">No notifications</div>
+                        @endforelse
+                    </div>
+                    <div class="dropdown-footer text-center border-top p-2">
+                        <a href="{{ route('customer-panel.notifications.index') }}" class="small text-decoration-none">View all notifications</a>
+                    </div>
+                </div>
+            </li>
             <li class="nav-item dropdown user-dropdown">
                 <a class="nav-link dropdown-toggle border rounded-pill px-2 px-lg-3 py-2 d-flex align-items-center gap-2" id="CustomerUserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <img class="rounded-circle" src="{{ $customerHeaderAvatar }}" alt="Profile image" style="width: 32px; height: 32px; object-fit: cover;">

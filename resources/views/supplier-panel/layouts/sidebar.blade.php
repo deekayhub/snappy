@@ -1,5 +1,5 @@
-<nav class="sidebar sidebar-offcanvas" id="sidebar">
-    <ul class="nav pt-3">
+<nav class="sidebar sidebar-offcanvas d-flex flex-column" id="sidebar">
+    <ul class="nav pt-3 flex-grow-1">
         <li class="nav-item">
             <a class="nav-link" href="{{ route('supplier-panel.dashboard') }}">
                 <i class="mdi mdi-view-dashboard menu-icon"></i>
@@ -65,4 +65,13 @@
             </a>
         </li>
     </ul>
+    @if(!Auth::user()->hasActiveSubscription())
+    <div class="px-3 pb-3 mt-auto">
+        <a href="{{ route('supplier-panel.subscription.index') }}" class="btn btn-warning w-100 rounded-4 d-flex align-items-center justify-content-center gap-2">
+            <i class="mdi mdi-crown"></i>
+            <span>Upgrade Plan</span>
+        </a>
+        <p class="small text-muted text-center mt-2 mb-0">Unlock more features</p>
+    </div>
+    @endif
 </nav>

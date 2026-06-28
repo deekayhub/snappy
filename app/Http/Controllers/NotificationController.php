@@ -45,4 +45,41 @@ class NotificationController extends Controller
         return redirect()->route('supplier-panel.notifications.index')
             ->with('success', 'All notifications marked as read.');
     }
+
+    public function customerIndex(Request $request): View
+    {
+        $notifications = $request->user()
+            ->userNotifications()
+            ->latest()
+            ->paginate(20);
+
+        return view('customer-panel.notifications.index', compact('notifications'));
+    }
+
+    public function customerMarkAsRead(Request $request, UserNotification $notification): RedirectResponse
+    {
+        if ($notification->user_id !== $request->user()->id) {
+            return redirect()->route('customer-panel.notifications.index')
+                ->with('error', 'Notification not found.');
+        }
+
+        $notification->update(['is_read' => true]);
+
+        if ($notification->action_url) {
+            return redirect($notification->action_url);
+        }
+
+        return redirect()->route('customer-panel.notifications.index');
+    }
+
+    public function customerMarkAllAsRead(Request $request): RedirectResponse
+    {
+        $request->user()
+            ->userNotifications()
+            ->unread()
+            ->update(['is_read' => true]);
+
+        return redirect()->route('customer-panel.notifications.index')
+            ->with('success', 'All notifications marked as read.');
+    }
 }

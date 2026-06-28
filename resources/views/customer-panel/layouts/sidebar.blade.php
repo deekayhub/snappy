@@ -31,6 +31,16 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('customer-panel.notifications.*') ? 'active' : '' }}" href="{{ route('customer-panel.notifications.index') }}">
+                <i class="mdi mdi-bell-outline menu-icon"></i>
+                <span class="menu-title">Notifications</span>
+                @php($customerUnreadCount = Auth::user()->userNotifications()->unread()->count())
+                @if($customerUnreadCount > 0)
+                    <span class="badge bg-danger ms-auto">{{ $customerUnreadCount }}</span>
+                @endif
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('customer-panel.profile') ? 'active' : '' }}" href="{{ route('customer-panel.profile') }}">
                 <i class="mdi mdi-account-circle menu-icon"></i>
                 <span class="menu-title">Profile</span>
