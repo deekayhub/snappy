@@ -118,23 +118,119 @@ class SupplierPanelController extends Controller
         return view('supplier-panel.jobs.index', compact('jobs', 'sort', 'categories'));
     }
 
-    public function reports(): View
+    public function reports(Request $request): View
     {
-        $jobsByCategory = CustomerJob::query()
-            ->selectRaw("COALESCE(category, 'Uncategorised') as category_name, COUNT(*) as total")
-            ->groupBy('category_name')
+        $user = $request->user();
+
+        $jobsByCategory = OrganisationCategory::query()
+            ->select('organisation_categories.name', \Illuminate\Support\Facades\DB::raw('COUNT(customer_jobs.id) as total'))
+            ->leftJoin('customer_jobs', 'organisation_categories.id', '=', 'customer_jobs.category')
+            ->where('organisation_categories.type', 'supplier')
+            ->groupBy('organisation_categories.id', 'organisation_categories.name')
             ->orderByDesc('total')
-            ->take(6)
+            ->take(8)
             ->get();
 
         $jobsByLocation = CustomerJob::query()
-            ->selectRaw("COALESCE(location, 'Unspecified') as location_name, COUNT(*) as total")
+            ->selectRaw("COALESCE(NULLIF(location, ''), 'Unspecified') as location_name, COUNT(*) as total")
             ->groupBy('location_name')
             ->orderByDesc('total')
-            ->take(6)
+            ->take(8)
             ->get();
 
-        return view('supplier-panel.reports.index', compact('jobsByCategory', 'jobsByLocation'));
+        $rawMonthlyTrend = CustomerJob::query()
+            ->selectRaw("DATE_FORMAT(customer_jobs.created_at, '%Y-%m') as month, COUNT(*) as total")
+            ->join('quotes', 'customer_jobs.id', '=', 'quotes.customer_job_id')
+            ->where('quotes.supplier_user_id', $user->id)
+            ->where('customer_jobs.created_at', '>=', now()->subMonths(11))
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('total', 'month');
+
+        $monthlyTrend = collect();
+        for ($i = 11; $i >= 0; $i--) {
+            $month = now()->subMonths($i)->format('Y-m');
+            $monthlyTrend->push((object) [
+                'month' => $month,
+                'total' => (int) ($rawMonthlyTrend[$month] ?? 0),
+            ]);
+        }
+
+        $rawYearlyTrend = CustomerJob::query()
+            ->selectRaw("YEAR(customer_jobs.created_at) as year, COUNT(*) as total")
+            ->join('quotes', 'customer_jobs.id', '=', 'quotes.customer_job_id')
+            ->where('quotes.supplier_user_id', $user->id)
+            ->where('customer_jobs.created_at', '>=', now()->subYears(5))
+            ->groupBy('year')
+            ->orderBy('year')
+            ->pluck('total', 'year');
+
+        $yearlyTrend = collect();
+        for ($i = 4; $i >= 0; $i--) {
+            $year = now()->subYears($i)->format('Y');
+            $yearlyTrend->push((object) [
+                'year' => $year,
+                'total' => (int) ($rawYearlyTrend[$year] ?? 0),
+            ]);
+        }
+
+        $budgetRanges = [
+            'Under £500' => CustomerJob::where('budget', '<', 500)->whereNotNull('budget')->count(),
+            '£500 - £1k' => CustomerJob::whereBetween('budget', [500, 1000])->count(),
+            '£1k - £5k' => CustomerJob::whereBetween('budget', [1000, 5000])->count(),
+            '£5k - £10k' => CustomerJob::whereBetween('budget', [5000, 10000])->count(),
+            'Over £10k' => CustomerJob::where('budget', '>', 10000)->count(),
+            'Not set' => CustomerJob::whereNull('budget')->count(),
+        ];
+
+        $recentJobsCount = CustomerJob::where('created_at', '>=', now()->subDays(30))->count();
+
+        $totalJobs = CustomerJob::count();
+
+        $myQuoteStats = [
+            'total' => $user->supplierQuotes()->count(),
+            'this_month' => $user->supplierQuotes()
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->count(),
+            'submitted' => $user->supplierQuotes()->where('status', 'submitted')->count(),
+            'accepted' => $user->supplierQuotes()->where('status', 'accepted')->count(),
+            'completed' => $user->supplierQuotes()->where('status', 'completed')->count(),
+            'rejected' => $user->supplierQuotes()->where('status', 'rejected')->count(),
+        ];
+
+        $myQuoteStatusChart = [
+            ['status' => 'Submitted', 'count' => $myQuoteStats['submitted'], 'color' => '#0ea5e9'],
+            ['status' => 'Accepted', 'count' => $myQuoteStats['accepted'], 'color' => '#22c55e'],
+            ['status' => 'Completed', 'count' => $myQuoteStats['completed'], 'color' => '#14b8a6'],
+            ['status' => 'Rejected', 'count' => $myQuoteStats['rejected'], 'color' => '#ef4444'],
+        ];
+
+        $topJobCategories = OrganisationCategory::query()
+            ->select('organisation_categories.name', \Illuminate\Support\Facades\DB::raw('COUNT(quotes.id) as quote_count'))
+            ->leftJoin('customer_jobs', 'organisation_categories.id', '=', 'customer_jobs.category')
+            ->leftJoin('quotes', function ($join) use ($user) {
+                $join->on('customer_jobs.id', '=', 'quotes.customer_job_id')
+                    ->where('quotes.supplier_user_id', '=', $user->id);
+            })
+            ->where('organisation_categories.type', 'supplier')
+            ->groupBy('organisation_categories.id', 'organisation_categories.name')
+            ->orderByDesc('quote_count')
+            ->take(5)
+            ->get();
+
+        return view('supplier-panel.reports.index', compact(
+            'jobsByCategory',
+            'jobsByLocation',
+            'monthlyTrend',
+            'yearlyTrend',
+            'budgetRanges',
+            'recentJobsCount',
+            'totalJobs',
+            'myQuoteStats',
+            'myQuoteStatusChart',
+            'topJobCategories'
+        ));
     }
 
     public function activity(): View
