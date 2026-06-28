@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\JobQuoteSubmittedMail;
+use App\Mail\QuoteAcceptedMail;
 use App\Models\CustomerJob;
 use App\Models\Quote;
 use App\Models\UserNotification;
@@ -136,6 +137,19 @@ class QuoteController extends Controller
         $quote->update([
             'status' => $validated['status'],
         ]);
+
+        if ($validated['status'] === 'accepted') {
+            try {
+                Mail::to($quote->supplier->email)
+                    ->send(new QuoteAcceptedMail($quote));
+            } catch (\Throwable $e) {
+                Log::error('Failed to send quote accepted email.', [
+                    'quote_id' => $quote->id,
+                    'supplier_email' => $quote->supplier->email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
 
         return back()->with('success', 'Quote status updated successfully.');
     }

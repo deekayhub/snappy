@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WelcomeCustomerMail;
+use App\Mail\WelcomeSupplierMail;
 use App\Models\OrganisationCategory;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -11,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
@@ -99,7 +103,17 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
         Auth::login($user);
 
-        return redirect()->intended(route('customer.jobs.create', absolute: false));
+        try {
+            Mail::to($user->email)->send(new WelcomeCustomerMail($user));
+        } catch (\Throwable $e) {
+            Log::error('Failed to send welcome email to customer.', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return redirect()->intended(route('customer-panel.dashboard', absolute: false));
     }
 
 
@@ -179,6 +193,16 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
         Auth::login($user);
+
+        try {
+            Mail::to($user->email)->send(new WelcomeSupplierMail($user));
+        } catch (\Throwable $e) {
+            Log::error('Failed to send welcome email to supplier.', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return redirect()->intended(route('home', absolute: false));
     }
