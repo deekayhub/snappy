@@ -312,7 +312,7 @@ class SupplierPanelController extends Controller
         if ($subscription && $subscription->valid()) {
             try {
                 $stripe = new StripeClient(config('cashier.secret'));
-                $upcomingInvoice = $stripe->invoices->upcoming([
+                $upcomingInvoice = $stripe->invoices->createPreview([
                     'customer' => $user->stripe_id,
                     'subscription' => $subscription->stripe_id,
                     'subscription_items' => [
