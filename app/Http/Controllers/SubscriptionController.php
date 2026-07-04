@@ -130,6 +130,11 @@ class SubscriptionController extends Controller
 
         try {
             $subscription->swapAndInvoice($plan->stripe_price_id);
+
+            $invoice = $subscription->latestInvoice();
+            $charged = $invoice && $invoice->rawTotal() > 0
+                ? ' Your card was charged ' . $invoice->total() . '.'
+                : '';
         } catch (IncompletePayment $e) {
             return redirect()->route('cashier.payment', [
                 'id' => $e->payment->id,
@@ -142,7 +147,7 @@ class SubscriptionController extends Controller
         }
 
         return redirect()->route('subscription.index')
-            ->with('success', 'Subscription changed to ' . $plan->name . ' successfully.');
+            ->with('success', 'Subscription changed to ' . $plan->name . ' successfully.' . $charged);
     }
 
     public function cancel(Request $request)

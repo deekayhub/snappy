@@ -129,13 +129,28 @@
         </div>
 
         <div class="mt-4 text-center">
+            @if($prorationPreview)
+                <p class="fw-bold fs-5 mb-3">
+                    @if($prorationPreview['total'] > 0)
+                        <span class="text-danger">Total to charge now: &pound;{{ number_format($prorationPreview['total'] / 100, 2) }}</span>
+                    @elseif($prorationPreview['total'] < 0)
+                        <span class="text-success">Credit of &pound;{{ number_format(abs($prorationPreview['total']) / 100, 2) }} — no charge now</span>
+                    @else
+                        <span class="text-muted">No immediate charge</span>
+                    @endif
+                </p>
+            @endif
             <form method="POST" action="{{ route('subscription.checkout', $plan) }}" class="d-inline">
                 @csrf
                 <button type="submit" class="btn btn-primary btn-lg px-5 me-3 py-3">
                     @if($plan->is_free)
                         Confirm Downgrade to Free
+                    @elseif($prorationPreview && $prorationPreview['total'] > 0)
+                        Pay &pound;{{ number_format($prorationPreview['total'] / 100, 2) }} &amp; Switch
+                    @elseif($prorationPreview && $prorationPreview['total'] < 0)
+                        Switch &amp; Get Credit
                     @else
-                        Confirm Change - {{ $plan->price_formatted }} / {{ $plan->duration_label }}
+                        Confirm Switch
                     @endif
                 </button>
             </form>

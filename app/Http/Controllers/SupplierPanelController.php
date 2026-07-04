@@ -405,6 +405,11 @@ class SupplierPanelController extends Controller
 
         try {
             $subscription->swapAndInvoice($plan->stripe_price_id);
+
+            $invoice = $subscription->latestInvoice();
+            $charged = $invoice && $invoice->rawTotal() > 0
+                ? ' Your card was charged ' . $invoice->total() . '.'
+                : '';
         } catch (IncompletePayment $e) {
             return redirect()->route('cashier.payment', [
                 'id' => $e->payment->id,
@@ -417,7 +422,7 @@ class SupplierPanelController extends Controller
         }
 
         return redirect()->route('supplier-panel.subscription.index')
-            ->with('success', 'Subscription changed to ' . $plan->name . ' successfully.');
+            ->with('success', 'Subscription changed to ' . $plan->name . ' successfully.' . $charged);
     }
 
     public function subscriptionCancel(Request $request)
