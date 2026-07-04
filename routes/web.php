@@ -147,10 +147,8 @@ Route::middleware(['auth', 'verified'])->prefix('subscription')->name('subscript
 
 Route::middleware(['auth', 'verified', 'role:supplier'])->prefix('supplier-panel')->name('supplier-panel.')->group(function () {
     Route::get('/dashboard', [SupplierPanelController::class, 'dashboard'])->name('dashboard');
-    Route::middleware('feature:view_job_details')->group(function () {
-        Route::get('/jobs', [SupplierPanelController::class, 'jobs'])->name('jobs');
-        Route::post('/jobs/{job}/quotes', [QuoteController::class, 'store'])->name('quotes.store');
-    });
+    Route::get('/jobs', [SupplierPanelController::class, 'jobs'])->name('jobs');
+    Route::post('/jobs/{job}/quotes', [QuoteController::class, 'store'])->name('quotes.store');
     Route::get('/reports', [SupplierPanelController::class, 'reports'])->name('reports');
     Route::get('/activity', [SupplierPanelController::class, 'activity'])->name('activity');
     Route::get('/profile', [SupplierPanelController::class, 'profile'])->name('profile');

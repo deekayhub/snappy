@@ -3,6 +3,7 @@
 
 @php
     $endingSoonThresholdSeconds = 86400;
+    $usage = auth()->user()->subscriptionUsage();
 
     $jobMeta = function ($job) use ($endingSoonThresholdSeconds) {
         $neededBy = $job->needed_by;
@@ -112,7 +113,19 @@
                         @endif
                         <div class="mt-auto d-flex gap-2">
                             <button class="btn btn-outline-dark rounded-4 flex-fill" type="button" data-bs-toggle="modal" data-bs-target="#jobModal{{ $job->id }}">View details</button>
-                            <button class="btn btn-primary rounded-4 flex-fill" type="button" data-bs-toggle="modal" data-bs-target="#quoteModal{{ $job->id }}">{{ $existingQuote ? 'Update Quote' : 'Send Quote' }}</button>
+                            @if($usage['can_submit_quote'])
+                                <button class="btn btn-primary rounded-4 flex-fill" type="button" data-bs-toggle="modal" data-bs-target="#quoteModal{{ $job->id }}">{{ $existingQuote ? 'Update Quote' : 'Send Quote' }}</button>
+                            @else
+                                <button class="btn btn-secondary rounded-4 flex-fill" type="button" disabled
+                                    @if($usage['quotes_remaining_this_month'] <= 0 && $usage['quotes_remaining_this_year'] <= 0)
+                                        title="Quote limit reached. Upgrade to submit more quotes."
+                                    @else
+                                        title="Upgrade to submit quotes."
+                                    @endif
+                                >
+                                    <i class="mdi mdi-lock me-1"></i>Upgrade to Quote
+                                </button>
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -131,7 +131,7 @@
         <div class="mt-4 text-center">
             <form method="POST" action="{{ route('subscription.checkout', $plan) }}" class="d-inline">
                 @csrf
-                <button type="submit" class="btn btn-primary btn-lg px-5 me-3">
+                <button type="submit" class="btn btn-primary btn-lg px-5 me-3 py-3">
                     @if($plan->is_free)
                         Confirm Downgrade to Free
                     @else
@@ -139,7 +139,7 @@
                     @endif
                 </button>
             </form>
-            <a href="{{ route('subscription.index') }}" class="btn btn-outline-secondary btn-lg px-5">Cancel</a>
+            <a href="{{ route('subscription.index') }}" class="btn btn-outline-secondary btn-lg px-5 py-3">Cancel</a>
         </div>
     </div>
 @endsection
