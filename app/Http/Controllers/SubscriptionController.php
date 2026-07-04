@@ -16,7 +16,29 @@ class SubscriptionController extends Controller
         $subscription = $user->subscription('default');
         $portalUrl = $user->stripe_id ? $user->billingPortalUrl(route('subscription.index')) : null;
 
-        return view('subscription.index', compact('plans', 'subscription', 'portalUrl'));
+        $currentPlan = null;
+        $stripePriceInfo = null;
+
+        if ($subscription && $subscription->stripe_price) {
+            $currentPlan = $plans->firstWhere('stripe_price_id', $subscription->stripe_price);
+
+            if (!$currentPlan) {
+                try {
+                    $stripe = new StripeClient(config('cashier.secret'));
+                    $price = $stripe->prices->retrieve($subscription->stripe_price);
+                    $stripePriceInfo = [
+                        'amount' => $price->unit_amount,
+                        'currency' => $price->currency,
+                        'interval' => $price->recurring->interval,
+                        'interval_count' => $price->recurring->interval_count,
+                    ];
+                } catch (\Exception $e) {
+                    Log::warning('Failed to retrieve Stripe price', ['error' => $e->getMessage()]);
+                }
+            }
+        }
+
+        return view('subscription.index', compact('plans', 'subscription', 'portalUrl', 'currentPlan', 'stripePriceInfo'));
     }
 
     public function preview(Request $request, Plan $plan)
@@ -106,23 +128,21 @@ class SubscriptionController extends Controller
         }
 
         try {
-            $subscription->swapAndInvoice($plan->stripe_price_id);
+            $checkout = $user->checkout($plan->stripe_price_id, [
+                'mode' => 'subscription',
+                'subscription_data' => [
+                    'existing_subscription_id' => $subscription->stripe_id,
+                ],
+                'success_url' => route('subscription.success') . '?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => route('subscription.index'),
+            ]);
+
+            return redirect($checkout->url);
         } catch (\Exception $e) {
-            Log::error('Subscription swap failed', ['error' => $e->getMessage()]);
+            Log::error('Subscription checkout failed', ['error' => $e->getMessage()]);
             return redirect()->route('subscription.index')
                 ->with('error', 'Failed to change subscription: ' . $e->getMessage());
         }
-
-        $subscription->refresh();
-
-        if ($subscription->stripe_status === 'incomplete' || $subscription->stripe_status === 'past_due') {
-            return redirect()->route('subscription.index')
-                ->with('warning', 'Subscription changed to ' . $plan->name . ', but your payment method needs attention.')
-                ->with('portal_url', $user->billingPortalUrl(route('subscription.index')));
-        }
-
-        return redirect()->route('subscription.index')
-            ->with('success', 'Subscription changed to ' . $plan->name . ' successfully.');
     }
 
     public function cancel(Request $request)

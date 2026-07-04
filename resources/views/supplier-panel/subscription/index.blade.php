@@ -39,10 +39,6 @@
             </div>
         @endif
 
-        @php
-            $currentPlan = $subscription ? $plans->firstWhere('stripe_price_id', $subscription->stripe_price) : null;
-        @endphp
-
         @if($subscription)
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body p-4 p-lg-5">
@@ -52,15 +48,25 @@
                             <h4 class="mb-1">
                                 @if($currentPlan)
                                     {{ $currentPlan->name }}
+                                @elseif($stripePriceInfo)
+                                    Active Subscription
                                 @else
-                                    Active subscription
+                                    Active Subscription
                                 @endif
                             </h4>
                             <p class="text-muted mb-0">
                                 @if($currentPlan)
                                     {{ $currentPlan->price_formatted }} / {{ $currentPlan->duration_label }}
+                                @elseif($stripePriceInfo)
+                                    &pound;{{ number_format($stripePriceInfo['amount'] / 100, 2) }}
+                                    /
+                                    @if($stripePriceInfo['interval_count'] > 1)
+                                        {{ $stripePriceInfo['interval_count'] }} {{ $stripePriceInfo['interval'] }}s
+                                    @else
+                                        {{ $stripePriceInfo['interval'] }}
+                                    @endif
                                 @else
-                                    Active subscription
+                                    Active Subscription
                                 @endif
                             </p>
                         </div>
@@ -129,7 +135,7 @@
                             @endif
 
                             @php
-                                $isCurrentPlan = $subscription && $subscription->stripe_price === $plan->stripe_price_id;
+                                $isCurrentPlan = $currentPlan && $currentPlan->id === $plan->id;
                                 $isFreeCurrent = $plan->is_free && ! $subscription;
                             @endphp
 

@@ -42,9 +42,6 @@
         @endif
 
         @if($subscription)
-            @php
-                $currentPlan = $plans->firstWhere('stripe_price_id', $subscription->stripe_price);
-            @endphp
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
@@ -54,6 +51,15 @@
                                 @if($currentPlan)
                                     <span class="badge bg-primary fs-6 me-2">{{ $currentPlan->name }}</span>
                                     {{ $currentPlan->price_formatted }} / {{ $currentPlan->duration_label }}
+                                @elseif($stripePriceInfo)
+                                    <span class="badge bg-secondary fs-6">Active Subscription</span>
+                                    &pound;{{ number_format($stripePriceInfo['amount'] / 100, 2) }}
+                                    /
+                                    @if($stripePriceInfo['interval_count'] > 1)
+                                        {{ $stripePriceInfo['interval_count'] }} {{ $stripePriceInfo['interval'] }}s
+                                    @else
+                                        {{ $stripePriceInfo['interval'] }}
+                                    @endif
                                 @else
                                     <span class="badge bg-secondary fs-6">Active Subscription</span>
                                 @endif
@@ -119,7 +125,7 @@
 
                             <div class="mt- auto">
                                 @php
-                                    $isCurrentPlan = $subscription && $subscription->stripe_price === $plan->stripe_price_id;
+                                    $isCurrentPlan = $currentPlan && $currentPlan->id === $plan->id;
                                     $isFreeCurrent = $plan->is_free && !$subscription;
                                 @endphp
 
