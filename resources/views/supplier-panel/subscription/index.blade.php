@@ -60,7 +60,7 @@
                                 @if($currentPlan)
                                     {{ $currentPlan->price_formatted }} / {{ $currentPlan->duration_label }}
                                 @else
-                                    {{ $subscription->stripe_price }}
+                                    Active subscription
                                 @endif
                             </p>
                         </div>

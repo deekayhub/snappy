@@ -55,7 +55,7 @@
                                     <span class="badge bg-primary fs-6 me-2">{{ $currentPlan->name }}</span>
                                     {{ $currentPlan->price_formatted }} / {{ $currentPlan->duration_label }}
                                 @else
-                                    <span class="badge bg-secondary fs-6">{{ $subscription->stripe_price }}</span>
+                                    <span class="badge bg-secondary fs-6">Active Subscription</span>
                                 @endif
                             </p>
                         </div>

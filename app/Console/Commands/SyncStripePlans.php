@@ -25,6 +25,19 @@ class SyncStripePlans extends Command
                 'description' => $plan->description,
             ];
 
+            if ($plan->stripe_price_id) {
+                try {
+                    $existingPrice = $stripe->prices->retrieve($plan->stripe_price_id);
+
+                    $stripe->products->update($existingPrice->product, $productData);
+
+                    $this->info("  Updated: Product={$existingPrice->product}, Price={$plan->stripe_price_id}");
+                    continue;
+                } catch (\Exception $e) {
+                    $this->warn("  Existing price not found, creating new one for: {$plan->name}");
+                }
+            }
+
             $product = $stripe->products->create($productData);
 
             $price = $stripe->prices->create([
