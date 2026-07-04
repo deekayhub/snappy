@@ -6,7 +6,7 @@
     @endphp
     <div class="container py-5">
         <div class="mb-4">
-            <h1 class="fw-bold">Subscription</h1>
+            <h1 class="fw-bold fs-1">Subscription</h1>
             <p class="text-muted">Manage your subscription plan.</p>
         </div>
 

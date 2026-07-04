@@ -33,9 +33,9 @@
                                     <td>{{ $invoice->total() }}</td>
                                     <td>
                                         @if($invoice->paid)
-                                            <span class="badge bg-success">Paid</span>
+                                            <span class="badge rounded bg-success">Paid</span>
                                         @else
-                                            <span class="badge bg-warning">Open</span>
+                                            <span class="badge rounded bg-warning">Open</span>
                                         @endif
                                     </td>
                                     <td class="text-end">

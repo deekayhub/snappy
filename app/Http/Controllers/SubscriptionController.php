@@ -106,7 +106,7 @@ class SubscriptionController extends Controller
         }
 
         try {
-            $subscription->swap($plan->stripe_price_id);
+            $subscription->swapAndInvoice($plan->stripe_price_id);
         } catch (\Exception $e) {
             Log::error('Subscription swap failed', ['error' => $e->getMessage()]);
             return redirect()->route('subscription.index')
