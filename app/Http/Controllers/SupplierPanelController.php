@@ -8,6 +8,7 @@ use App\Models\OrganisationCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Laravel\Cashier\Exceptions\IncompletePayment;
 use Stripe\StripeClient;
 
 class SupplierPanelController extends Controller
@@ -403,21 +404,20 @@ class SupplierPanelController extends Controller
         }
 
         try {
-            $checkout = $user->checkout($plan->stripe_price_id, [
-                'mode' => 'subscription',
-                'subscription_data' => [
-                    'existing_subscription_id' => $subscription->stripe_id,
-                ],
-                'success_url' => route('supplier-panel.subscription.success') . '?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => route('supplier-panel.subscription.index'),
+            $subscription->swapAndInvoice($plan->stripe_price_id);
+        } catch (IncompletePayment $e) {
+            return redirect()->route('cashier.payment', [
+                'id' => $e->payment->id,
+                'redirect' => route('supplier-panel.subscription.index'),
             ]);
-
-            return redirect($checkout->url);
         } catch (\Exception $e) {
-            Log::error('Subscription checkout failed', ['error' => $e->getMessage()]);
+            Log::error('Subscription swap failed', ['error' => $e->getMessage()]);
             return redirect()->route('supplier-panel.subscription.index')
                 ->with('error', 'Failed to change subscription: ' . $e->getMessage());
         }
+
+        return redirect()->route('supplier-panel.subscription.index')
+            ->with('success', 'Subscription changed to ' . $plan->name . ' successfully.');
     }
 
     public function subscriptionCancel(Request $request)
