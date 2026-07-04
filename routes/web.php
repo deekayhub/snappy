@@ -136,6 +136,7 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
 
 Route::middleware(['auth', 'verified'])->prefix('subscription')->name('subscription.')->group(function () {
     Route::get('/', [SubscriptionController::class, 'index'])->name('index');
+    Route::get('/preview/{plan}', [SubscriptionController::class, 'preview'])->name('preview');
     Route::post('/checkout/{plan}', [SubscriptionController::class, 'checkout'])->name('checkout');
     Route::post('/cancel', [SubscriptionController::class, 'cancel'])->name('cancel');
     Route::post('/resume', [SubscriptionController::class, 'resume'])->name('resume');
@@ -154,6 +155,7 @@ Route::middleware(['auth', 'verified', 'role:supplier'])->prefix('supplier-panel
     Route::get('/activity', [SupplierPanelController::class, 'activity'])->name('activity');
     Route::get('/profile', [SupplierPanelController::class, 'profile'])->name('profile');
     Route::get('/subscription', [SupplierPanelController::class, 'subscriptionIndex'])->name('subscription.index');
+    Route::get('/subscription/preview/{plan}', [SupplierPanelController::class, 'subscriptionPreview'])->name('subscription.preview');
     Route::post('/subscription/checkout/{plan}', [SupplierPanelController::class, 'subscriptionCheckout'])->name('subscription.checkout');
     Route::post('/subscription/cancel', [SupplierPanelController::class, 'subscriptionCancel'])->name('subscription.cancel');
     Route::post('/subscription/resume', [SupplierPanelController::class, 'subscriptionResume'])->name('subscription.resume');

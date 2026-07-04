@@ -29,6 +29,16 @@
             </div>
         @endif
 
+        @if(session('warning'))
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {!! session('warning') !!}
+                @if(session('portal_url'))
+                    <a href="{{ session('portal_url') }}" class="alert-link ms-2">Update Payment Method</a>
+                @endif
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
         @php
             $currentPlan = $subscription ? $plans->firstWhere('stripe_price_id', $subscription->stripe_price) : null;
         @endphp
@@ -75,10 +85,15 @@
                 </div>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-4 d-flex gap-2 flex-wrap">
                 <a href="{{ route('supplier-panel.subscription.invoices') }}" class="btn btn-outline-primary rounded-4">
                     <i class="mdi mdi-receipt me-1"></i> View Invoices
                 </a>
+                @if($portalUrl)
+                    <a href="{{ $portalUrl }}" class="btn btn-outline-secondary rounded-4">
+                        <i class="mdi mdi-credit-card me-1"></i> Billing Portal
+                    </a>
+                @endif
             </div>
         @else
             <div class="alert alert-info border-0 shadow-sm rounded-4 mb-4">
@@ -128,18 +143,10 @@
                                         @csrf
                                         <button type="submit" class="btn btn-outline-primary w-100 mb-3 rounded-4">Downgrade to Free</button>
                                     </form>
-                                @elseif($currentPlan?->slug === 'bronze' && $subscription && $subscription->stripe_price !== $plan->stripe_price_id)
-                                    <form method="POST" action="{{ route('supplier-panel.subscription.checkout', $plan) }}">
-                                        @csrf
-                                        <button type="submit" class="btn btn-primary w-100 mb-3 rounded-4">Cancel Bronze & Start New Payment</button>
-                                    </form>
                                 @else
-                                    <form method="POST" action="{{ route('supplier-panel.subscription.checkout', $plan) }}">
-                                        @csrf
-                                        <button type="submit" class="btn btn-{{ $plan->slug === 'gold' ? 'primary' : 'outline-primary' }} w-100 mb-3 rounded-4">
-                                            {{ $subscription ? 'Switch Plan' : 'Subscribe' }}
-                                        </button>
-                                    </form>
+                                    <a href="{{ route('supplier-panel.subscription.preview', $plan) }}" class="btn btn-{{ $plan->slug === 'gold' ? 'primary' : 'outline-primary' }} w-100 mb-3 rounded-4 d-block">
+                                        {{ $subscription ? 'Switch Plan' : 'Subscribe' }}
+                                    </a>
                                 @endif
 
                                 <ul class="list-unstyled small mb-0">

@@ -31,6 +31,16 @@
             </div>
         @endif
 
+        @if(session('warning'))
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {!! session('warning') !!}
+                @if(session('portal_url'))
+                    <a href="{{ session('portal_url') }}" class="alert-link ms-2">Update Payment Method</a>
+                @endif
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
         @if($subscription)
             @php
                 $currentPlan = $plans->firstWhere('stripe_price_id', $subscription->stripe_price);
@@ -70,16 +80,15 @@
                 </div>
             </div>
 
-            @if($currentPlan?->slug === 'bronze')
-                <div class="alert alert-warning border-0 shadow-sm mb-4">
-                    Changing away from Bronze will end the current subscription first, then create a fresh checkout for the new plan. No swap settlement will be used.
-                </div>
-            @endif
-
-            <div class="mb-4">
+            <div class="mb-4 d-flex gap-2 flex-wrap">
                 <a href="{{ route('subscription.invoices') }}" class="btn btn-outline-primary py-2">
                     <i class="bi bi-receipt me-2"></i>View Invoices
                 </a>
+                @if($portalUrl)
+                    <a href="{{ $portalUrl }}" class="btn btn-outline-secondary py-2">
+                        <i class="bi bi-credit-card me-2"></i>Billing Portal
+                    </a>
+                @endif
             </div>
         @else
             <div class="alert alert-info">
@@ -123,20 +132,10 @@
                                         @csrf
                                         <button type="submit" class="btn btn-outline-primary w-100 mb-3">Downgrade to Free</button>
                                     </form>
-                                @elseif($currentPlan?->slug === 'bronze' && $subscription && $subscription->stripe_price !== $plan->stripe_price_id)
-                                    <form method="POST" action="{{ route('subscription.checkout', $plan) }}">
-                                        @csrf
-                                        <button type="submit" class="btn btn-primary w-100 mb-3">
-                                            Cancel Bronze & Start New Payment
-                                        </button>
-                                    </form>
                                 @else
-                                    <form method="POST" action="{{ route('subscription.checkout', $plan) }}">
-                                        @csrf
-                                        <button type="submit" class="btn btn-{{ $plan->slug === 'gold' ? 'primary' : 'outline-primary' }} w-100 mb-3">
-                                            @if($subscription) Switch Plan @else Subscribe @endif
-                                        </button>
-                                    </form>
+                                    <a href="{{ route('subscription.preview', $plan) }}" class="btn btn-{{ $plan->slug === 'gold' ? 'primary' : 'outline-primary' }} w-100 mb-3 d-block">
+                                        @if($subscription) Switch Plan @else Subscribe @endif
+                                    </a>
                                 @endif
 
                                 <ul class="list-unstyled feature-list small">

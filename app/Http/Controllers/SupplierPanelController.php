@@ -6,7 +6,9 @@ use App\Models\Plan;
 use App\Models\CustomerJob;
 use App\Models\OrganisationCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Stripe\StripeClient;
 
 class SupplierPanelController extends Controller
 {
@@ -284,15 +286,68 @@ class SupplierPanelController extends Controller
     public function subscriptionIndex(Request $request): View
     {
         $plans = Plan::active()->ordered()->get();
-        $subscription = $request->user()->subscription('default');
+        $user = $request->user();
+        $subscription = $user->subscription('default');
+        $portalUrl = $user->stripe_id ? $user->billingPortalUrl(route('supplier-panel.subscription.index')) : null;
 
-        return view('supplier-panel.subscription.index', compact('plans', 'subscription'));
+        return view('supplier-panel.subscription.index', compact('plans', 'subscription', 'portalUrl'));
+    }
+
+    public function subscriptionPreview(Request $request, Plan $plan): View|\Illuminate\Http\RedirectResponse
+    {
+        $user = $request->user();
+        $subscription = $user->subscription('default');
+        $currentPlan = $user->currentPlan();
+
+        if ($plan->is_free) {
+            return view('supplier-panel.subscription.preview', compact('plan', 'currentPlan', 'subscription'));
+        }
+
+        if (! $plan->stripe_price_id) {
+            return redirect()->route('supplier-panel.subscription.index')
+                ->with('error', 'This plan is not yet configured for billing.');
+        }
+
+        $prorationPreview = null;
+        if ($subscription && $subscription->valid()) {
+            try {
+                $stripe = new StripeClient(config('cashier.secret'));
+                $upcomingInvoice = $stripe->invoices->upcoming([
+                    'customer' => $user->stripe_id,
+                    'subscription' => $subscription->stripe_id,
+                    'subscription_items' => [
+                        [
+                            'id' => $subscription->items->first()->stripe_id,
+                            'price' => $plan->stripe_price_id,
+                        ],
+                    ],
+                ]);
+
+                $lines = [];
+                foreach ($upcomingInvoice->lines->data as $line) {
+                    $lines[] = [
+                        'description' => $line->description ?? 'Line item',
+                        'amount' => $line->amount,
+                    ];
+                }
+
+                $prorationPreview = [
+                    'total' => $upcomingInvoice->total,
+                    'subtotal' => $upcomingInvoice->subtotal,
+                    'currency' => $upcomingInvoice->currency,
+                    'lines' => $lines,
+                ];
+            } catch (\Exception $e) {
+                Log::warning('Failed to fetch proration preview', ['error' => $e->getMessage()]);
+            }
+        }
+
+        return view('supplier-panel.subscription.preview', compact('plan', 'currentPlan', 'subscription', 'prorationPreview'));
     }
 
     public function subscriptionCheckout(Request $request, Plan $plan)
     {
         $user = $request->user();
-        $currentPlan = $user->currentPlan();
 
         if ($plan->is_free) {
             if ($user->subscribed('default')) {
@@ -300,58 +355,46 @@ class SupplierPanelController extends Controller
             }
 
             return redirect()->route('supplier-panel.subscription.index')
-                ->with('success', 'You are now on the Basic (Free) plan.');
+                ->with('success', 'You are now on the Free plan.');
         }
-
-        if (! $plan->stripe_price_id) {
-            return redirect()->route('supplier-panel.subscription.index')
-                ->with('error', 'This plan is not yet configured for billing. Please run "php artisan stripe:sync-plans" to set up Stripe products.');
-        }
-
-        if ($currentPlan?->slug === 'bronze' && $plan->stripe_price_id !== $currentPlan->stripe_price_id) {
-            if ($user->subscribed('default')) {
-                $user->subscription('default')->cancelNow();
-            }
-
-            $checkout = $user->newSubscription('default', $plan->stripe_price_id)
-                ->checkout([
-                    'success_url' => route('supplier-panel.subscription.success') . '?session_id={CHECKOUT_SESSION_ID}',
-                    'cancel_url' => route('supplier-panel.subscription.index'),
-                ]);
-
-            return redirect($checkout->url)
-                ->with('info', 'Your Bronze subscription was ended first, and a new checkout was created for the selected plan.');
-        }
-
-        if ($user->subscribed('default')) {
-            return $this->subscriptionSwap($request, $plan);
-        }
-
-        $checkout = $user->newSubscription('default', $plan->stripe_price_id)
-            ->checkout([
-                'success_url' => route('supplier-panel.subscription.success') . '?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => route('supplier-panel.subscription.index'),
-            ]);
-
-        return redirect($checkout->url);
-    }
-
-    protected function subscriptionSwap(Request $request, Plan $plan)
-    {
-        $user = $request->user();
-        $subscription = $user->subscription('default');
 
         if (! $plan->stripe_price_id) {
             return redirect()->route('supplier-panel.subscription.index')
                 ->with('error', 'This plan is not yet configured for billing.');
         }
 
+        if (! $user->subscribed('default')) {
+            $checkout = $user->newSubscription('default', $plan->stripe_price_id)
+                ->checkout([
+                    'success_url' => route('supplier-panel.subscription.success') . '?session_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url' => route('supplier-panel.subscription.index'),
+                ]);
+
+            return redirect($checkout->url);
+        }
+
+        $subscription = $user->subscription('default');
+
         if ($subscription->stripe_price === $plan->stripe_price_id) {
             return redirect()->route('supplier-panel.subscription.index')
                 ->with('info', 'You are already on this plan.');
         }
 
-        $subscription->swap($plan->stripe_price_id);
+        try {
+            $subscription->swap($plan->stripe_price_id);
+        } catch (\Exception $e) {
+            Log::error('Subscription swap failed', ['error' => $e->getMessage()]);
+            return redirect()->route('supplier-panel.subscription.index')
+                ->with('error', 'Failed to change subscription: ' . $e->getMessage());
+        }
+
+        $subscription->refresh();
+
+        if ($subscription->stripe_status === 'incomplete' || $subscription->stripe_status === 'past_due') {
+            return redirect()->route('supplier-panel.subscription.index')
+                ->with('warning', 'Subscription changed to ' . $plan->name . ', but your payment method needs attention.')
+                ->with('portal_url', $user->billingPortalUrl(route('supplier-panel.subscription.index')));
+        }
 
         return redirect()->route('supplier-panel.subscription.index')
             ->with('success', 'Subscription changed to ' . $plan->name . ' successfully.');

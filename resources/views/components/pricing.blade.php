@@ -38,22 +38,12 @@
                                         @csrf
                                         <button type="submit" class="btn btn-outline-primary btn-lg w-100 mb-3">Downgrade to Free</button>
                                     </form>
-                                @elseif($userSub && optional(auth()->user()->currentPlan())->slug === 'bronze' && $userSub->stripe_price !== $plan->stripe_price_id)
-                                    <form method="POST" action="{{ route('subscription.checkout', $plan) }}" class="mt-auto">
-                                        @csrf
-                                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
-                                            Cancel Bronze & Start New Payment
-                                        </button>
-                                    </form>
                                 @elseif($userSub && $userSub->stripe_price === $plan->stripe_price_id)
                                     <button class="btn btn-outline-secondary btn-lg w-100 mb-3" disabled>Current Plan</button>
                                 @else
-                                    <form method="POST" action="{{ route('subscription.checkout', $plan) }}" class="mt-auto">
-                                        @csrf
-                                        <button type="submit" class="btn btn-{{ $plan->slug === 'gold' ? 'primary' : 'outline-primary' }} btn-lg w-100 mb-3">
-                                            @if($userSub) Switch to {{ $plan->name }} @else Subscribe @endif
-                                        </button>
-                                    </form>
+                                    <a href="{{ route('subscription.preview', $plan) }}" class="btn btn-{{ $plan->slug === 'gold' ? 'primary' : 'outline-primary' }} btn-lg w-100 mb-3 d-block">
+                                        @if($userSub) Switch to {{ $plan->name }} @else Subscribe @endif
+                                    </a>
                                 @endif
                             @else
                                 <a href="{{ route('register.supplier') }}" class="btn btn-{{ $plan->slug === 'gold' ? 'primary' : 'outline-primary' }} btn-lg w-100 mb-3 mt-auto">

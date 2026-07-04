@@ -59,6 +59,55 @@ class WebhookController extends CashierWebhookController
         return $this->successMethod();
     }
 
+    protected function handleCustomerSubscriptionUpdated(array $payload)
+    {
+        $subscriptionData = $payload['data']['object'];
+        $subscriptionId = $subscriptionData['id'];
+        $customerId = $subscriptionData['customer'] ?? null;
+        $status = $subscriptionData['status'] ?? null;
+        $priceId = $subscriptionData['items']['data'][0]['price']['id'] ?? null;
+
+        Log::info('Stripe subscription updated', [
+            'subscription_id' => $subscriptionId,
+            'customer' => $customerId,
+            'status' => $status,
+            'price' => $priceId,
+        ]);
+
+        if ($customerId) {
+            $user = Cashier::findBillable($customerId);
+
+            if ($user) {
+                $subscription = $user->subscriptions()
+                    ->where('stripe_id', $subscriptionId)
+                    ->first();
+
+                if ($subscription) {
+                    $updateData = ['stripe_status' => $status];
+
+                    if ($priceId) {
+                        $updateData['stripe_price'] = $priceId;
+                    }
+
+                    if (isset($subscriptionData['canceled_at'])) {
+                        $updateData['ends_at'] = $subscriptionData['canceled_at']
+                            ? now()->createFromTimestamp($subscriptionData['canceled_at'])
+                            : null;
+                    }
+
+                    $subscription->update($updateData);
+
+                    Log::info('Local subscription synced after Stripe update', [
+                        'subscription_id' => $subscriptionId,
+                        'user_id' => $user->id,
+                    ]);
+                }
+            }
+        }
+
+        return $this->successMethod();
+    }
+
     protected function handleInvoicePaymentFailed(array $payload)
     {
         $invoice = $payload['data']['object'];
