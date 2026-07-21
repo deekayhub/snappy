@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 
 class Plan extends Model
@@ -12,6 +13,7 @@ class Plan extends Model
         'name',
         'slug',
         'stripe_price_id',
+        'stripe_product_id',
         'description',
         'features',
         'price',
@@ -39,6 +41,16 @@ class Plan extends Model
             if (empty($plan->slug)) {
                 $plan->slug = Str::slug($plan->name);
             }
+        });
+
+        static::saved(function (Plan $plan) {
+            if (!$plan->is_free) {
+                Artisan::call('stripe:sync-plans');
+            }
+        });
+
+        static::deleted(function () {
+            Artisan::call('stripe:sync-plans');
         });
     }
 

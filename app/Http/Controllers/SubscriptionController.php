@@ -20,24 +20,26 @@ class SubscriptionController extends Controller
         $currentPlan = null;
         $stripePriceInfo = null;
 
-        if ($subscription && $subscription->stripe_price) {
-            $currentPlan = $plans->firstWhere('stripe_price_id', $subscription->stripe_price);
+            if ($subscription && $subscription->stripe_price) {
+                $currentPlan = $plans->firstWhere('stripe_price_id', $subscription->stripe_price);
 
-            if (!$currentPlan) {
-                try {
-                    $stripe = new StripeClient(config('cashier.secret'));
-                    $price = $stripe->prices->retrieve($subscription->stripe_price);
-                    $stripePriceInfo = [
-                        'amount' => $price->unit_amount,
-                        'currency' => $price->currency,
-                        'interval' => $price->recurring->interval,
-                        'interval_count' => $price->recurring->interval_count,
-                    ];
-                } catch (\Exception $e) {
-                    Log::warning('Failed to retrieve Stripe price', ['error' => $e->getMessage()]);
+                if (!$currentPlan) {
+                    try {
+                        $stripe = new StripeClient(config('cashier.secret'));
+                        $price = $stripe->prices->retrieve($subscription->stripe_price);
+                        $stripePriceInfo = [
+                            'amount' => $price->unit_amount,
+                            'currency' => $price->currency,
+                            'interval' => $price->recurring->interval,
+                            'interval_count' => $price->recurring->interval_count,
+                        ];
+
+                        $currentPlan = $plans->firstWhere('stripe_product_id', $price->product);
+                    } catch (\Exception $e) {
+                        Log::warning('Failed to retrieve Stripe price', ['error' => $e->getMessage()]);
+                    }
                 }
             }
-        }
 
         return view('subscription.index', compact('plans', 'subscription', 'portalUrl', 'currentPlan', 'stripePriceInfo'));
     }

@@ -32,6 +32,12 @@ class SyncStripePlans extends Command
 
                     $intervalCount = $existingPrice->recurring->interval_count ?? 1;
 
+                    if (empty($plan->stripe_product_id)) {
+                        Plan::withoutEvents(function () use ($plan, $existingPrice) {
+                            $plan->update(['stripe_product_id' => $existingPrice->product]);
+                        });
+                    }
+
                     if ($intervalCount !== $plan->duration_months) {
                         $this->warn("  Duration changed for {$plan->name} ({$intervalCount}mo → {$plan->duration_months}mo), creating new price...");
 
@@ -45,7 +51,12 @@ class SyncStripePlans extends Command
                             ],
                         ]);
 
-                        $plan->update(['stripe_price_id' => $price->id]);
+                        Plan::withoutEvents(function () use ($plan, $price) {
+                            $plan->update([
+                                'stripe_price_id' => $price->id,
+                                'stripe_product_id' => $price->product,
+                            ]);
+                        });
 
                         $stripe->prices->update($existingPrice->id, ['active' => false]);
 
@@ -71,7 +82,12 @@ class SyncStripePlans extends Command
                 ],
             ]);
 
-            $plan->update(['stripe_price_id' => $price->id]);
+            Plan::withoutEvents(function () use ($plan, $product, $price) {
+                $plan->update([
+                    'stripe_price_id' => $price->id,
+                    'stripe_product_id' => $product->id,
+                ]);
+            });
 
             $this->info("  Created: Product={$product->id}, Price={$price->id}");
         }

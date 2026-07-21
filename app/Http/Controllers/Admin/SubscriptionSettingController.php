@@ -7,7 +7,6 @@ use App\Models\Feature;
 use App\Models\Plan;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -49,8 +48,6 @@ class SubscriptionSettingController extends Controller
             $plan->featureModels()->sync($validated['feature_ids']);
         }
 
-        Artisan::call('stripe:sync-plans');
-
         return response()->json([
             'message' => 'Plan created and synced with Stripe.',
             'plan'    => $this->formatPlan($plan),
@@ -88,8 +85,6 @@ class SubscriptionSettingController extends Controller
             $plan->featureModels()->sync($validated['feature_ids']);
         }
 
-        Artisan::call('stripe:sync-plans');
-
         return response()->json([
             'message' => 'Plan updated and synced with Stripe.',
             'plan'    => $this->formatPlan($plan->fresh()),
@@ -99,8 +94,6 @@ class SubscriptionSettingController extends Controller
     public function destroy(Plan $plan): JsonResponse
     {
         $plan->delete();
-
-        Artisan::call('stripe:sync-plans');
 
         return response()->json([
             'message' => 'Plan deleted and Stripe synced.',
