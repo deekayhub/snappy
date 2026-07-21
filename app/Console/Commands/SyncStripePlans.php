@@ -28,10 +28,31 @@ class SyncStripePlans extends Command
             if ($plan->stripe_price_id) {
                 try {
                     $existingPrice = $stripe->prices->retrieve($plan->stripe_price_id);
-
                     $stripe->products->update($existingPrice->product, $productData);
 
-                    $this->info("  Updated: Product={$existingPrice->product}, Price={$plan->stripe_price_id}");
+                    $intervalCount = $existingPrice->recurring->interval_count ?? 1;
+
+                    if ($intervalCount !== $plan->duration_months) {
+                        $this->warn("  Duration changed for {$plan->name} ({$intervalCount}mo → {$plan->duration_months}mo), creating new price...");
+
+                        $price = $stripe->prices->create([
+                            'product' => $existingPrice->product,
+                            'unit_amount' => $plan->price,
+                            'currency' => 'gbp',
+                            'recurring' => [
+                                'interval' => 'month',
+                                'interval_count' => $plan->duration_months,
+                            ],
+                        ]);
+
+                        $plan->update(['stripe_price_id' => $price->id]);
+
+                        $stripe->prices->update($existingPrice->id, ['active' => false]);
+
+                        $this->info("  Created: New Price={$price->id}, Archived Old Price={$existingPrice->id}");
+                    } else {
+                        $this->info("  Synced: Product={$existingPrice->product}, Price={$plan->stripe_price_id}");
+                    }
                     continue;
                 } catch (\Exception $e) {
                     $this->warn("  Existing price not found, creating new one for: {$plan->name}");
