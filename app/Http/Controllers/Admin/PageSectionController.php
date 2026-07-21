@@ -86,6 +86,7 @@ class PageSectionController extends Controller
         $request->validate([
             'image'  => 'nullable|image|mimes:jpeg,png,jpg|max:20480',
             'status' => 'required|in:active,inactive',
+            'coming_soon' => 'nullable|boolean',
         ]);
 
         $setting = OrganisationCategorySetting::firstOrNew([
@@ -107,6 +108,7 @@ class PageSectionController extends Controller
         }
 
         $setting->status = $request->status;
+        $setting->coming_soon = $request->boolean('coming_soon');
         $setting->save();
 
         return response()->json([

@@ -72,6 +72,7 @@
                                             <th>Name</th>
                                             <th>Image</th>
                                             <th>Status</th>
+                                            <th class="text-center">Coming Soon</th>
                                             <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
@@ -93,6 +94,11 @@
                                                         <option value="active" {{ $category->categorySetting?->status == 'active' ? 'selected' : '' }}>Active</option>
                                                         <option value="inactive" {{ $category->categorySetting?->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
                                                     </select>
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="form-check form-switch d-inline-block mb-0">
+                                                        <input type="checkbox" class="form-check-input coming-soon-checkbox" role="switch" data-category-id="{{ $category->id }}" {{ $category->categorySetting?->coming_soon ? 'checked' : '' }}>
+                                                    </div>
                                                 </td>
                                                 <td class="text-center">
                                                     <button type="button" class="btn btn-primary rounded save-category" data-category-id="{{ $category->id }}">
@@ -323,12 +329,14 @@
             let row = $(this).closest('tr');
             let imageInput = row.find(`input[name="image"]`)[0];
             let statusSelect = row.find(`select[name="status"]`);
+            let comingSoonCheckbox = row.find(`.coming-soon-checkbox`);
             let formData = new FormData();
             formData.append('category_id', categoryId);
             if (imageInput.files[0]) {
                 formData.append('image', imageInput.files[0]);
             }
             formData.append('status', statusSelect.val());
+            formData.append('coming_soon', comingSoonCheckbox.is(':checked') ? '1' : '0');
 
             $.ajax({
                 url: '{{ route("admin.organisation-category.update", ["category" => ":category"]) }}'.replace(':category', categoryId),

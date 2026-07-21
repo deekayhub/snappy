@@ -10,6 +10,7 @@ class OrganisationCategorySetting extends Model
         'organisation_category_id',
         'image',
         'status',
+        'coming_soon',
     ];
 
     public function organisationCategory()
