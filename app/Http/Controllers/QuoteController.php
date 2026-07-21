@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Mail\JobQuoteSubmittedMail;
 use App\Mail\QuoteAcceptedMail;
 use App\Mail\QuoteCompletedMail;
+use App\Mail\QuotePendingMail;
+use App\Mail\QuoteRejectedMail;
 use App\Models\CustomerJob;
 use App\Models\Quote;
 use App\Models\UserNotification;
@@ -139,30 +141,21 @@ class QuoteController extends Controller
             'status' => $validated['status'],
         ]);
 
-        if ($validated['status'] === 'accepted') {
-            try {
-                Mail::to($quote->supplier->email)
-                    ->send(new QuoteAcceptedMail($quote));
-            } catch (\Throwable $e) {
-                Log::error('Failed to send quote accepted email.', [
-                    'quote_id' => $quote->id,
-                    'supplier_email' => $quote->supplier->email,
-                    'error' => $e->getMessage(),
-                ]);
-            }
-        }
+        try {
+            $mailable = match ($validated['status']) {
+                'accepted' => new QuoteAcceptedMail($quote),
+                'completed' => new QuoteCompletedMail($quote),
+                'rejected' => new QuoteRejectedMail($quote),
+                'submitted' => new QuotePendingMail($quote),
+            };
 
-        if ($validated['status'] === 'completed') {
-            try {
-                Mail::to($quote->supplier->email)
-                    ->send(new QuoteCompletedMail($quote));
-            } catch (\Throwable $e) {
-                Log::error('Failed to send quote completed email.', [
-                    'quote_id' => $quote->id,
-                    'supplier_email' => $quote->supplier->email,
-                    'error' => $e->getMessage(),
-                ]);
-            }
+            Mail::to($quote->supplier->email)->send($mailable);
+        } catch (\Throwable $e) {
+            Log::error("Failed to send quote {$validated['status']} email.", [
+                'quote_id' => $quote->id,
+                'supplier_email' => $quote->supplier->email,
+                'error' => $e->getMessage(),
+            ]);
         }
 
         return back()->with('success', 'Quote status updated successfully.');
