@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\JobQuoteSubmittedMail;
 use App\Mail\QuoteAcceptedMail;
+use App\Mail\QuoteCompletedMail;
 use App\Models\CustomerJob;
 use App\Models\Quote;
 use App\Models\UserNotification;
@@ -144,6 +145,19 @@ class QuoteController extends Controller
                     ->send(new QuoteAcceptedMail($quote));
             } catch (\Throwable $e) {
                 Log::error('Failed to send quote accepted email.', [
+                    'quote_id' => $quote->id,
+                    'supplier_email' => $quote->supplier->email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ($validated['status'] === 'completed') {
+            try {
+                Mail::to($quote->supplier->email)
+                    ->send(new QuoteCompletedMail($quote));
+            } catch (\Throwable $e) {
+                Log::error('Failed to send quote completed email.', [
                     'quote_id' => $quote->id,
                     'supplier_email' => $quote->supplier->email,
                     'error' => $e->getMessage(),
