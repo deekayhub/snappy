@@ -10,7 +10,7 @@ Congratulations! The customer has accepted your quote for **{{ $quote->job->titl
 - Your Price: ${{ number_format($quote->total_price, 2) }}
 - Customer: {{ $quote->job->user->name }}
 
-@component('mail::button', ['url' => route('supplier-panel.quotes')])
+@component('mail::button', ['url' => route('supplier-panel.jobs')])
 View Your Quotes
 @endcomponent
 
