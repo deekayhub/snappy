@@ -19,7 +19,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('customer-panel.quotes') ? 'active' : '' }}" href="{{ route('customer-panel.quotes') }}">
+            <a class="nav-link" href="{{ route('customer-panel.quotes') }}">
                 <i class="mdi mdi-email-outline menu-icon"></i>
                 <span class="menu-title">Supplier Quotes</span>
             </a>
