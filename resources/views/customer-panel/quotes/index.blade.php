@@ -40,7 +40,7 @@
             <h2 class="mt-2 mb-1">Supplier quotes for your jobs</h2>
             <p class="text-muted mb-0">Compare prices, update quote status, and email suppliers from one screen.</p>
         </div>
-        {{-- <a href="{{ route('customer.jobs.create') }}" class="btn btn-primary rounded-4">Post New Quote Request</a> --}}
+        {{-- <a href="{{ route('customer.jobs.create') }}" class="btn btn-primary rounded-3">Post New Quote Request</a> --}}
     </div> 
     {{-- @dump($jobs->toArray()) --}}
 
@@ -48,7 +48,7 @@
         @php
             $supplierCount = $job->quotes->pluck('supplier_user_id')->filter()->unique()->count();
         @endphp
-        <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card border-0 shadow-sm rounded-3 mb-4">
             <div class="card-body p-4">
                 <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-3 mb-4">
                     <div>
@@ -70,7 +70,7 @@
                             $mailBody = rawurlencode('Hello '.$supplierName.",\n\nI am contacting you regarding your quote for ".$job->title.".\n\nThank you.");
                         @endphp
                         <div class=" col-md-4">
-                            <div class="border rounded-4 p-4 mb-3" style="background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);">
+                            <div class="border rounded-3 p-4 mb-3" style="background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);">
                                 <div class="mb-3">
                                     <div class="d-flex align-items-center gap-2 mb-2">
                                         <span class="badge bg-primary rounded">Supplier quote</span>
@@ -125,8 +125,10 @@
                                     </ul>
                                 </div>
                                 
-                                @if ($quote->status === 'completed')
-                                    <div class="border rounded-4 p-3 mt-3">
+                                @php $status = $quote->status; @endphp
+
+                                @if ($status === 'completed')
+                                    <div class="border rounded-3 p-3 mt-3">
                                         <div class="fw-semibold mb-2">Rate this supplier</div>
                                         <form method="POST" action="{{ route('customer.quotes.rating', $quote) }}" class=" ">
                                             @csrf
@@ -154,65 +156,83 @@
                                                 <input
                                                     type="text"
                                                     name="customer_review"
-                                                    class="form-control rounded-4"
+                                                    class="form-control rounded-3"
                                                     maxlength="1000"
                                                     value="{{ old('customer_review', $quote->customer_review) }}"
                                                     placeholder="Share your experience with this supplier"
                                                 >
                                             </div>
                                             <div class="co l-md-2">
-                                                <button class="btn btn-primary rounded-4 w-100">{{ $quote->customer_rating ? 'Update' : 'Submit' }}</button>
+                                                <button class="btn btn-primary rounded-3 w-100">{{ $quote->customer_rating ? 'Update' : 'Submit' }}</button>
                                             </div>
                                         </form>
                                     </div>
-                                @else
-                                    <div class="mb-3">
-                                        <div class="d-flex gap-2 flex-wrap">
+                                @endif
+
+                                <div class="mt-3 d-flex flex-column gap-2">
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        @if ($status === 'submitted')
                                             <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
-                                                @csrf
-                                                @method('PATCH')
+                                                @csrf @method('PATCH')
                                                 <input type="hidden" name="status" value="accepted">
-                                                <button class="btn btn-success rounded-4 w-100">Accept Quote</button>
+                                                <button class="btn btn-success btn-sm rounded-3" title="Accept"><i class="mdi mdi-check-circle"></i> Accept</button>
                                             </form>
                                             <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
-                                                @csrf
-                                                @method('PATCH')
+                                                @csrf @method('PATCH')
                                                 <input type="hidden" name="status" value="rejected">
-                                                <button class="btn btn-outline-danger rounded-4 w-100">Reject Quote</button>
+                                                <button class="btn btn-outline-danger btn-sm rounded-3" title="Reject"><i class="mdi mdi-close-circle"></i> Reject</button>
+                                            </form>
+                                        @elseif ($status === 'accepted')
+                                            @unless(in_array($status, ['rejected', 'completed']))
+                                            <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="status" value="completed">
+                                                <button class="btn btn-success btn-sm rounded-3" title="Completed"><i class="mdi mdi-check-all"></i> Completed</button>
+                                            </form>
+                                            @endunless
+                                            <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="status" value="submitted">
+                                                <button class="btn btn-outline-secondary btn-sm rounded-3" title="Pending"><i class="mdi mdi-clock-outline"></i> Pending</button>
                                             </form>
                                             <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input type="hidden" name="status" value="submitted">
-                                                <button class="btn btn-outline-secondary rounded-4 w-100">Mark Pending</button>
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="status" value="rejected">
+                                                <button class="btn btn-outline-danger btn-sm rounded-3" title="Reject"><i class="mdi mdi-close-circle"></i> Reject</button>
                                             </form>
-                                            @if (in_array($quote->status, ['accepted', 'completed']))
-                                                <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <input type="hidden" name="status" value="completed">
-                                                    <button class="btn btn-outline-dark rounded-4 w-100">Mark Completed</button>
-                                                </form>
-                                            @endif
+                                        @elseif ($status === 'rejected')
+                                            <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="status" value="accepted">
+                                                <button class="btn btn-success btn-sm rounded-3" title="Accept"><i class="mdi mdi-check-circle"></i> Accept</button>
+                                            </form>
+                                            <form method="POST" action="{{ route('customer.quotes.status', $quote) }}">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="status" value="submitted">
+                                                <button class="btn btn-outline-secondary btn-sm rounded-3" title="Pending"><i class="mdi mdi-clock-outline"></i> Pending</button>
+                                            </form>
+                                        @endif
+
+                                        @unless($status === 'completed')
                                             @if ($quote->supplier?->email)
-                                                <a class="btn btn-outline-primary rounded-4 w-100" href="mailto:{{ $quote->supplier->email }}?subject={{ $mailSubject }}&body={{ $mailBody }}">
-                                                    Email Supplier
+                                                <a class="btn btn-outline-primary btn-sm rounded-3" href="mailto:{{ $quote->supplier->email }}?subject={{ $mailSubject }}&body={{ $mailBody }}" title="Email Supplier">
+                                                    <i class="mdi mdi-email"></i> Email
                                                 </a>
                                             @endif
-                                        </div>
+                                        @endunless
                                     </div>
-                                @endif
+                                </div>
                             </div>
 
                         </div>
                     @empty
-                        <div class="alert alert-light border rounded-4 mb-0">No supplier quotes have been submitted for this job yet.</div>
+                        <div class="alert alert-light border rounded-3 mb-0">No supplier quotes have been submitted for this job yet.</div>
                     @endforelse
                 </div>
             </div>
         </div>
     @empty
-        <div class="alert alert-light border rounded-4">You have not posted any jobs yet, so there are no quotes to review.</div>
+        <div class="alert alert-light border rounded-3">You have not posted any jobs yet, so there are no quotes to review.</div>
     @endforelse
 </div>
 @endsection
