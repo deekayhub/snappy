@@ -27,7 +27,7 @@
             <input type="search" class="form-control" placeholder="Search Here" title="Search here">
             </form>
         </li> --}}
-        <li class="nav-item dropdown">
+        {{-- <li class="nav-item dropdown">
             <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
             <i class="icon-bell"></i>
             <span class="count"></span>
@@ -65,7 +65,7 @@
                 </div>
             </a>
             </div>
-        </li> 
+        </li>  --}}
         <li class="nav-item dropdown user-dropdown">
             <a class="nav-link dropdown-toggle border rounded-pill px-2 px-lg-3 py-2 d-flex align-items-center gap-2" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                 <img class="rounded-circle" src="{{ $adminHeaderAvatar }}" alt="Profile image" style="width: 32px; height: 32px; object-fit: cover;">

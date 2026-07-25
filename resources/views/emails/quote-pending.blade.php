@@ -7,7 +7,7 @@ The customer has reviewed your quote for **{{ $quote->job->title }}** and moved 
 
 **Quote Summary:**
 - Job: {{ $quote->job->title }}
-- Your Price: ${{ number_format($quote->total_price, 2) }}
+- Your Price: £{{ number_format($quote->total_price, 2) }}
 - Customer: {{ $quote->job->user->name }}
 
 @component('mail::button', ['url' => route('supplier-panel.jobs')])

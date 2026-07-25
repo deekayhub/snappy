@@ -369,6 +369,7 @@ class CustomerPanelController extends Controller
                     ->role('supplier')
                     ->where('is_active', true)
                     ->with('supplierProfile')
+                    ->with('organisationCategories')
                     ->withAvg([
                         'supplierQuotes as avg_rating' => function ($q) {
                             $q->whereNotNull('customer_rating');
@@ -380,35 +381,85 @@ class CustomerPanelController extends Controller
                         }
                     ]);
 
+            if ($request->filled('search')) {
+                $s = $request->search;
+                $query->where(function ($q) use ($s) {
+                    $q->where('email', 'like', "%{$s}%")
+                      ->orWhere('phone', 'like', "%{$s}%")
+                      ->orWhereHas('supplierProfile', function ($q) use ($s) {
+                          $q->where('company_name', 'like', "%{$s}%");
+                      });
+                });
+            }
+
+            if ($request->filled('category')) {
+                $query->whereHas('organisationCategories', function ($q) use ($request) {
+                    $q->where('organisation_category_id', $request->category);
+                });
+            }
+
+            if ($request->filled('rating')) {
+                $query->havingRaw('COALESCE(avg_rating, 0) >= ?', [$request->rating]);
+            }
+
             return datatables()->of($query)
                 ->addIndexColumn()
                 ->addColumn('company_logo', function ($row) {
                     if ($row->supplierProfile && $row->supplierProfile->company_logo) {
                         $url = asset($row->supplierProfile->company_logo);
-                        return '<img src="'.$url.'"  style="width:50px;height:50px;object-fit:cover;border-radius:6px;" />';
+                        return '<img src="'.$url.'" style="width:46px;height:46px;object-fit:cover;border-radius:8px;" />';
                     }
-                    return '<img src="https://placehold.net/default.png"  style="width:50px;height:50px;object-fit:cover;border-radius:6px;" />';
+                    return '<div style="width:46px;height:46px;border-radius:8px;background:#e9ecef;display:flex;align-items:center;justify-content:center;font-size:18px;color:#adb5bd;"><i class="fa fa-building"></i></div>';
                 })
                 ->addColumn('company_name', function ($row) {
-                    return $row->supplierProfile ? $row->supplierProfile->company_name : 'N/A';
+                    $html = '<div class="fw-semibold">' . e($row->supplierProfile->company_name ?? 'N/A') . '</div>';
+                    if ($row->hasFeature('recommended_badge') && $row->isRecommended()) {
+                        $html .= '<span class="badge bg-warning text-dark mt-1" style="font-size:10px;"><i class="fa fa-star me-1"></i>Recommended</span>';
+                    }
+                    return $html;
+                })
+                ->addColumn('categories', function ($row) {
+                    $cats = $row->organisationCategories;
+                    if ($cats->isEmpty()) {
+                        return '<span class="text-muted small">—</span>';
+                    }
+                    $badges = '';
+                    foreach ($cats as $cat) {
+                        $badges .= '<span class="badge bg-secondary rounded-pill me-1 mb-1" style="font-size:10px;">' . e(ucfirst($cat->name)) . '</span>';
+                    }
+                    return '<div style="max-width:400px;white-space:normal;line-height:1.6">' . $badges . '</div>';
                 })
                 ->addColumn('avg_rating', function ($row) {
-                    return  number_format($row->avg_rating ?? 0, 1) . ' / 5 (' . ($row->total_reviews ?? 0) . ' reviews)';
+                    $rating = round($row->avg_rating ?? 0);
+                    $stars = str_repeat('★', $rating) . str_repeat('☆', 5 - $rating);
+                    return '<span class="text-warning">' . $stars . '</span> <span class="text-muted small">(' . number_format($row->avg_rating ?? 0, 1) . ')</span>';
+                })
+                ->addColumn('total_reviews', function ($row) {
+                    return '<span class="badge bg-light text-dark">' . ($row->total_reviews ?? 0) . '</span>';
+                })
+                ->addColumn('website', function ($row) {
+                    $url = $row->supplierProfile?->website;
+                    if (!$url) {
+                        return '<span class="text-muted small">—</span>';
+                    }
+                    return '<a href="' . e($url) . '" target="_blank" class="text-decoration-none small" style="max-width:180px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><i class="mdi mdi-web me-1"></i>' . e($url) . '</a>';
                 })
                 ->addColumn('actions', function ($row) {
-                    return '<button type="button" class="supplier-action-btn view btn p-2" data-id="' . $row->id . '" data-toggle="tooltip" data-placement="top" title="View"><i class="fa fa-eye"></i></button>';
+                    return '<button type="button" class="btn btn-sm btn-outline-primary supplier-action-btn view" data-id="' . $row->id . '" title="View"><i class="fa fa-eye"></i></button>';
                 })
-                 ->rawColumns(['actions', 'company_logo'])
+                ->rawColumns(['actions', 'company_logo', 'company_name', 'categories', 'avg_rating', 'total_reviews', 'website'])
                 ->make(true);
         }
 
-        return view('customer-panel.supplier.index');
+        $categories = OrganisationCategory::where('type', 'supplier')->get();
+        return view('customer-panel.supplier.index', compact('categories'));
     }
 
     public function suppliersDetails($id)
     {
         $suppliers = User::where('is_active', true)
                     ->with('supplierProfile')
+                    ->with('organisationCategories')
                     ->withAvg([
                         'supplierQuotes as avg_rating' => function ($q) {
                             $q->whereNotNull('customer_rating');

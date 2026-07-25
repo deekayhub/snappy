@@ -14,7 +14,7 @@
     </div>
 
     {{-- ───────────── Plan Cards ───────────── --}}
-    <div class="row g-4" id="plansRow">
+    <div class="row g-4 mb-4" id="plansRow">
         @foreach($plans as $plan)
         <div class="col-12 col-lg-4" data-plan-id="{{ $plan->id }}" id="plan-card-{{ $plan->id }}">
             <div class="card border-0 shadow-sm rounded-4 h-100 {{ $plan->is_popular ? 'border border-primary' : '' }}">
