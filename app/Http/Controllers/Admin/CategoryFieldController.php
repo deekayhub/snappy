@@ -17,7 +17,7 @@ class CategoryFieldController extends Controller
             ->orderBy('category_id')
             ->orderBy('sort_order')
             ->latest()
-            ->paginate(20);
+            ->get();
 
         return view('admin.categories.fields-setting', compact('categories', 'fields'));
     }

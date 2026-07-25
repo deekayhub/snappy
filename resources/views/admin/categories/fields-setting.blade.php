@@ -46,6 +46,28 @@
         border-radius: 8px;
         min-height: 40px;
     }
+
+    .fields-table-card .dataTables_wrapper .dataTables_filter {
+        display: none;
+    }
+    .fields-table-card .dataTables_wrapper .dataTables_length {
+        margin-bottom: 1rem;
+    }
+        height: 40px;
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        padding: 0.375rem 0.75rem;
+    }
+    .fields-table-card .dataTables_wrapper .dataTables_info {
+        padding-top: 1rem;
+    }
+    .fields-table-card .dataTables_wrapper .dataTables_paginate {
+        padding-top: 1rem;
+    }
+    .fields-table-card .table tbody td {
+        border-color: #eef2f7;
+        vertical-align: middle;
+    }
 </style>
 @endpush
 
@@ -184,7 +206,7 @@
    
 
     {{-- {{─ ─────── Table Section ─────── ─}} --}}
-    <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+    <div class="card border-0 shadow-sm fields-table-card" style="border-radius: 12px;">
         <div class="card-header bg-white border-0 px-4 pt-4 pb-0 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
             <h5 class="fw-bold mb-0">All Dynamic Fields</h5>
             <div class="d-flex gap-2">
@@ -255,7 +277,7 @@
         </div>
 
         <div class="collapse px-4" id="duplicateCollapse">
-            <div class="border rounded-3 p-3 mb-4" style="background:#f8f9fa;">
+            <div class="border rounded-3 p-3 my-4 " style="background:#f8f9fa;">
                 <form method="POST" action="{{ route('admin.category-fields.duplicate') }}">
                     @csrf
                     <div class="row g-3 align-items-end">
@@ -303,9 +325,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($fields as $field)
-                            <tr class="field-row">
-                                <td class="ps-0 py-3 text-muted">{{ $fields->firstItem() + $loop->index }}</td>
+                        @foreach($fields as $field)
+                            <tr>
+                                <td class="ps-0 py-3 text-muted">{{ $loop->iteration }}</td>
                                 <td class="py-3">{{ ucfirst($field->categoryId?->name) ?? 'N/A' }}</td>
                                 <td class="py-3 fw-medium">{{ $field->field_label }}</td>
                                 <td class="py-3">
@@ -352,26 +374,11 @@
                                     </div>
                                 </td>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="9" class="text-center py-5 text-muted">No fields found.</td>
-                            </tr>
-                        @endforelse
+                        @endforeach
                     </tbody>
                 </table>
             </div>
 
-            {{-- Pagination Info + Links --}}
-            @if($fields->hasPages() || $fields->total() > 0)
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 mt-4">
-                    <div class="text-muted small">
-                        Showing {{ $fields->firstItem() }} to {{ $fields->lastItem() }} of {{ $fields->total() }} entries
-                    </div>
-                    <div>
-                        {{ $fields->links() }}
-                    </div>
-                </div>
-            @endif
         </div>
     </div>
 </div>
@@ -379,43 +386,64 @@
 
 @push('scripts')
 <script>
-    // ─── Client-side search + column filters ───
-    function applyFilters() {
-        var query = $('#tableSearch').val().toLowerCase();
-        var catFilter = $('#filterCategory').val().toLowerCase();
-        var typeFilter = $('#filterType').val().toLowerCase();
-        var statusFilter = $('#filterStatus').val().toLowerCase();
-        var reqFilter = $('#filterRequired').val().toLowerCase();
-
-        $('#fieldsTable tbody .field-row').each(function () {
-            var row = $(this);
-            var text = row.text().toLowerCase();
-            var cat = row.find('td:eq(1)').text().trim().toLowerCase();
-            var type = row.find('td:eq(3) .badge').text().trim().toLowerCase();
-            var statusEl = row.find('td:eq(7)');
-            var isActive = statusEl.text().trim().toLowerCase() === 'active';
-            var reqEl = row.find('td:eq(4)');
-            var isRequired = reqEl.text().trim().toLowerCase() === 'yes';
-
-            var match = true;
-            if (query && text.indexOf(query) === -1) match = false;
-            if (catFilter && cat.indexOf(catFilter) === -1) match = false;
-            if (typeFilter && type.indexOf(typeFilter) === -1) match = false;
-            if (statusFilter === 'active' && !isActive) match = false;
-            if (statusFilter === 'inactive' && isActive) match = false;
-            if (reqFilter === 'yes' && !isRequired) match = false;
-            if (reqFilter === 'no' && isRequired) match = false;
-
-            row.toggle(match);
+    $(function () {
+        var table = $('#fieldsTable').DataTable({
+            processing: false,
+            serverSide: false,
+            responsive: true,
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+            order: [[0, 'asc']],
+            language: {
+                paginate: {
+                    previous: 'Prev',
+                    next: 'Next'
+                }
+            }
         });
-    }
 
-    $('#tableSearch, #filterCategory, #filterType, #filterStatus, #filterRequired').on('change keyup', applyFilters);
+        // ─── Custom search + column filters ───
+        function applyFilters() {
+            var query = $('#tableSearch').val().toLowerCase();
+            var catFilter = $('#filterCategory').val().toLowerCase();
+            var typeFilter = $('#filterType').val().toLowerCase();
+            var statusFilter = $('#filterStatus').val().toLowerCase();
+            var reqFilter = $('#filterRequired').val().toLowerCase();
 
-    $('#clearFilters').on('click', function () {
-        $('#filterCategory, #filterType, #filterStatus, #filterRequired').val('');
-        $('#tableSearch').val('');
-        applyFilters();
+            $.fn.dataTable.ext.search = [];
+
+            $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                var row = table.row(dataIndex).node();
+                var text = $(row).text().toLowerCase();
+                var cat = $(row).find('td:eq(1)').text().trim().toLowerCase();
+                var type = $(row).find('td:eq(3) .badge').text().trim().toLowerCase();
+                var statusEl = $(row).find('td:eq(7)');
+                var isActive = statusEl.text().trim().toLowerCase() === 'active';
+                var reqEl = $(row).find('td:eq(4)');
+                var isRequired = reqEl.text().trim().toLowerCase() === 'yes';
+
+                var match = true;
+                if (query && text.indexOf(query) === -1) match = false;
+                if (catFilter && cat.indexOf(catFilter) === -1) match = false;
+                if (typeFilter && type.indexOf(typeFilter) === -1) match = false;
+                if (statusFilter === 'active' && !isActive) match = false;
+                if (statusFilter === 'inactive' && isActive) match = false;
+                if (reqFilter === 'yes' && !isRequired) match = false;
+                if (reqFilter === 'no' && isRequired) match = false;
+
+                return match;
+            });
+
+            table.draw();
+        }
+
+        $('#tableSearch, #filterCategory, #filterType, #filterStatus, #filterRequired').on('change keyup', applyFilters);
+
+        $('#clearFilters').on('click', function () {
+            $('#filterCategory, #filterType, #filterStatus, #filterRequired').val('');
+            $('#tableSearch').val('');
+            applyFilters();
+        });
     });
 
     // ─── Edit button ───
