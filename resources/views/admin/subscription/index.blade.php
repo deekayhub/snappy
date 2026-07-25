@@ -16,10 +16,13 @@
     {{-- ───────────── Plan Cards ───────────── --}}
     <div class="row g-4" id="plansRow">
         @foreach($plans as $plan)
-        <div class="col-12 col-lg-4" id="plan-card-{{ $plan->id }}">
+        <div class="col-12 col-lg-4" data-plan-id="{{ $plan->id }}" id="plan-card-{{ $plan->id }}">
             <div class="card border-0 shadow-sm rounded-4 h-100 {{ $plan->is_popular ? 'border border-primary' : '' }}">
-                <div class="card-body p-4 d-flex flex-column">
+                <div class="card-body p-4 d-flex flex-column position-relative">
 
+                    <div class="drag-handle" style="position:absolute;top:12px;right:12px;cursor:grab;z-index:2">
+                        <i class="mdi mdi-drag-vertical text-muted" style="font-size:1.2rem"></i>
+                    </div>
                     @if($plan->is_popular)
                         <span class="badge bg-primary align-self-start mb-3">POPULAR</span>
                     @endif
@@ -53,6 +56,7 @@
                                 data-duration="{{ $plan->duration ?? '' }}"
                                 data-is_free="{{ $plan->is_free ? '1' : '0' }}"
                                 data-is_popular="{{ $plan->is_popular ? '1' : '0' }}"
+                                data-sort_order="{{ $plan->sort_order ?? 0 }}"
                                 data-features="{{ implode("\n", $plan->features ?? []) }}"
                                 data-feature_ids="{{ json_encode($plan->featureModels->pluck('id')->toArray()) }}"
                             >
@@ -230,15 +234,52 @@
 </div>
 
 
+@push('styles')
+<style>
+.sortable-ghost {
+    opacity: 0.4;
+    background: #f0f0f0;
+}
+.sortable-chosen {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+</style>
+@endpush
+
 {{-- ═══════════════════════════════════════════
      JQUERY — MODAL & AJAX LOGIC
 ═══════════════════════════════════════════ --}}
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
 <script>
 $(function () {
 
     /* ── CSRF token for all jQuery AJAX calls ───────────────────────── */
     $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
+
+    /* ── Drag & Drop reorder ──────────────────────────────────────── */
+    const reorderUrl = "{{ route('admin.subscription.reorder') }}";
+
+    function initSortable() {
+        Sortable.create(document.getElementById('plansRow'), {
+            handle: '.drag-handle',
+            animation: 200,
+            ghostClass: 'sortable-ghost',
+            onEnd: function () {
+                const ids = [];
+                document.querySelectorAll('#plansRow > [data-plan-id]').forEach(el => {
+                    ids.push(parseInt(el.dataset.planId));
+                });
+                $.ajax({
+                    url: reorderUrl,
+                    method: 'POST',
+                    data: JSON.stringify({ ids }),
+                    contentType: 'application/json',
+                });
+            }
+        });
+    }
+    initSortable();
 
     const planModal   = new bootstrap.Modal('#planModal');
     const deleteModal = new bootstrap.Modal('#deletePlanModal');
@@ -454,6 +495,7 @@ $(function () {
             .data('duration',    plan.duration)
             .data('is_free',     plan.is_free ? '1' : '0')
             .data('is_popular',  plan.is_popular ? '1' : '0')
+            .data('sort_order',  plan.sort_order ?? 0)
             .data('features',    features.join('\n'))
             .data('feature_ids', plan.feature_ids || []);
     }
@@ -474,9 +516,12 @@ $(function () {
             ? '' : `<p class="text-muted small mb-3">/ ${plan.duration_label ?? plan.duration}</p>`;
 
         return `
-        <div class="col-12 col-lg-4" id="plan-card-${plan.id}">
+        <div class="col-12 col-lg-4" data-plan-id="${plan.id}" id="plan-card-${plan.id}">
             <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body p-4 d-flex flex-column">
+                <div class="card-body p-4 d-flex flex-column position-relative">
+                    <div class="drag-handle" style="position:absolute;top:12px;right:12px;cursor:grab;z-index:2">
+                        <i class="mdi mdi-drag-vertical text-muted" style="font-size:1.2rem"></i>
+                    </div>
                     ${popularBadge}
                     <h5 class="text-uppercase text-muted fw-bold">${$('<span>').text(plan.name).html()}</h5>
                     <p class="text-muted small">${$('<span>').text(plan.description).html()}</p>
@@ -494,6 +539,7 @@ $(function () {
                                 data-duration="${plan.duration ?? ''}"
                                 data-is_free="${plan.is_free ? '1' : '0'}"
                                 data-is_popular="${plan.is_popular ? '1' : '0'}"
+                                data-sort_order="${plan.sort_order ?? 0}"
                                 data-features="${$('<span>').text(features.join('\n')).html()}"
                                 data-feature_ids='${JSON.stringify(plan.feature_ids || [])}'>
                                 <i class="mdi mdi-pencil me-1"></i>Edit

@@ -14,8 +14,7 @@ class SubscriptionSettingController extends Controller
 {
     public function index(Request $request)
     {
-        // $plans = Plan::active()->ordered()->get();
-        $plans = Plan::active()->get();
+        $plans = Plan::active()->ordered()->get();
         $features = Feature::active()->ordered()->get();
 
         return view('admin.subscription.index', compact('plans', 'features'));
@@ -35,12 +34,14 @@ class SubscriptionSettingController extends Controller
             'features.*'  => ['string', 'max:200'],
             'feature_ids' => ['nullable', 'array'],
             'feature_ids.*' => ['integer', 'exists:features,id'],
+            'sort_order'  => ['nullable', 'integer', 'min:0'],
         ]);
 
         $validated['slug']     = Str::slug($validated['slug'], '_');
         $validated['is_free']  = (bool) ($validated['is_free']  ?? false);
         $validated['price']    = $validated['is_free'] ? 0 : (int) (($validated['price'] ?? 0) * 100);
         $validated['features'] = $validated['features'] ?? [];
+        $validated['sort_order'] ??= Plan::max('sort_order') + 1;
 
         $plan = Plan::create($validated);
 
@@ -68,12 +69,14 @@ class SubscriptionSettingController extends Controller
             'features.*'  => ['string', 'max:200'],
             'feature_ids' => ['nullable', 'array'],
             'feature_ids.*' => ['integer', 'exists:features,id'],
+            'sort_order'  => ['nullable', 'integer', 'min:0'],
         ]);
 
         $validated['slug']     = Str::slug($validated['slug'], '_');
         $validated['is_free']  = (bool) ($validated['is_free']  ?? false);
         $validated['price']    = $validated['is_free'] ? 0 : (int) (($validated['price'] ?? 0) * 100);
         $validated['features'] = $validated['features'] ?? [];
+        $validated['sort_order'] ??= 0;
 
         if (! empty($validated['is_popular'])) {
             Plan::where('id', '!=', $plan->id)->update(['is_popular' => false]);
@@ -89,6 +92,20 @@ class SubscriptionSettingController extends Controller
             'message' => 'Plan updated and synced with Stripe.',
             'plan'    => $this->formatPlan($plan->fresh()),
         ]);
+    }
+
+    public function reorder(Request $request): JsonResponse
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:plans,id',
+        ]);
+
+        foreach ($request->ids as $index => $id) {
+            Plan::where('id', $id)->update(['sort_order' => $index]);
+        }
+
+        return response()->json(['message' => 'Order updated.']);
     }
 
     public function destroy(Plan $plan): JsonResponse
@@ -115,6 +132,7 @@ class SubscriptionSettingController extends Controller
             'duration_label'  => $plan->duration_label,
             'is_free'         => $plan->is_free,
             'is_popular'      => $plan->is_popular,
+            'sort_order'      => $plan->sort_order,
             'features'        => $plan->features ?? [],
             'feature_ids'     => $plan->featureModels->pluck('id')->toArray(),
             'feature_names'   => $plan->featureModels->pluck('name')->toArray(),

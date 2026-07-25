@@ -123,6 +123,7 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
     Route::post('/subscription/add', [SubscriptionSettingController::class, 'store'])->name('subscription.add');
     Route::put('/subscription/update/{plan}', [SubscriptionSettingController::class, 'update'])->name('subscription.update');
     Route::delete('/subscription/delete/{plan}', [SubscriptionSettingController::class, 'destroy'])->name('subscription.destroy');
+    Route::post('/subscription/reorder', [SubscriptionSettingController::class, 'reorder'])->name('subscription.reorder');
 
     Route::get('/features', [FeatureController::class, 'index'])->name('features.index');
     Route::post('/features', [FeatureController::class, 'store'])->name('features.store');
