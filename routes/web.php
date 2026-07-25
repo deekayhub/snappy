@@ -113,6 +113,7 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
     Route::get('/category-fields/edit/{id}', [CategoryFieldController::class, 'edit'])->name('categories.fields.edit');
     Route::put('/category-fields/update/{id}', [CategoryFieldController::class, 'update'])->name('categories.fields.update');
     Route::delete('/category-fields/destroy/{id}', [CategoryFieldController::class, 'destroy'])->name('categories.fields.destroy');
+    Route::post('/category-fields/duplicate', [CategoryFieldController::class, 'duplicate'])->name('category-fields.duplicate');
     
     Route::get('/page-sections', [PageSectionController::class, 'index'])->name('page-sections');
     Route::post('/page-sections', [PageSectionController::class, 'store'])->name('page-sections.store');

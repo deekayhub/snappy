@@ -19,6 +19,33 @@
     .badge-pill-inactive { background: #fee2e2; color: #dc2626; padding: 4px 14px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
     .badge-yes { background: #d1fae5; color: #059669; padding: 2px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
     .badge-no { background: #f3f4f6; color: #6b7280; padding: 2px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
+
+    .source-category-select + .select2-container .select2-selection--single {
+        border: 1px solid #ced4da;
+        height: 40px;
+        border-radius: 8px;
+        padding: 0;
+    }
+    .source-category-select + .select2-container .select2-selection--single .select2-selection__rendered {
+        line-height: 38px;
+        padding-left: 12px;
+        padding-right: 12px;
+        color: #6c757d;
+    }
+    .source-category-select + .select2-container .select2-selection--single .select2-selection__rendered:not([title]) {
+        padding-left: 12px;
+    }
+    .source-category-select + .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #6c757d;
+    }
+    .target-category-select + .select2-container {
+        width: 100% !important;
+    }
+    .target-category-select + .select2-container .select2-selection--multiple {
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        min-height: 40px;
+    }
 </style>
 @endpush
 
@@ -161,6 +188,10 @@
         <div class="card-header bg-white border-0 px-4 pt-4 pb-0 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
             <h5 class="fw-bold mb-0">All Dynamic Fields</h5>
             <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary d-inline-flex align-items-center gap-2" type="button" data-bs-toggle="collapse" data-bs-target="#duplicateCollapse" aria-expanded="false" aria-controls="duplicateCollapse" style="height: 40px; border-radius: 8px; white-space: nowrap;">
+                    <i class="mdi mdi-content-copy"></i>
+                    Duplicate Fields
+                </button>
                 <div class="d-flex gap-2">
                     <div class="position-relative">
                         <i class="mdi mdi-magnify position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" style="font-size: 1.1rem;"></i>
@@ -220,6 +251,38 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="collapse px-4" id="duplicateCollapse">
+            <div class="border rounded-3 p-3 mb-4" style="background:#f8f9fa;">
+                <form method="POST" action="{{ route('admin.category-fields.duplicate') }}">
+                    @csrf
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-5">
+                            <label class="form-label fw-semibold small text-muted">Source Category</label>
+                            <select name="source_category_id" class="form-select source-category-select" required>
+                                <option value=""></option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->id }}">{{ ucfirst($cat->name) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label fw-semibold small text-muted">Target Categories</label>
+                            <select name="target_category_ids[]" class="form-select target-category-select" multiple="multiple">
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->id }}">{{ ucfirst($cat->name) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2" style="height: 40px; border-radius: 8px;">
+                                <i class="mdi mdi-content-copy"></i> Duplicate
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -456,6 +519,25 @@
         $('input[name="_method"]').remove();
         $('#saveBtnLabel').text('Save Field');
         $('select[name="status"]').val('1');
+    });
+
+    // ─── Duplicate fields Select2 ───
+    $('#duplicateCollapse').on('shown.bs.collapse', function () {
+        $('.source-category-select').select2({
+            dropdownParent: $('#duplicateCollapse'),
+            minimumResultsForSearch: -1,
+            placeholder: 'Select source category',
+        });
+        $('.target-category-select').select2({
+            dropdownParent: $('#duplicateCollapse'),
+            placeholder: 'Select target categories',
+            closeOnSelect: false,
+        });
+    });
+    $('#duplicateCollapse').on('hidden.bs.collapse', function () {
+        if ($.fn.select2) {
+            $('.source-category-select, .target-category-select').select2('destroy');
+        }
     });
 </script>
 @endpush

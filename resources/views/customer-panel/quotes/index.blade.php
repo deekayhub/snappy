@@ -76,7 +76,11 @@
                                         <span class="badge bg-primary rounded">Supplier quote</span>
                                         <span class="badge bg-success rounded text-white text-uppercase">{{ $quote->status }}</span>
                                     </div>
-                                    <h5 class="mb-1">{{ $supplierName }}</h5>
+                                    <h5 class="mb-1">
+                                        <a href="javascript:void(0)" class="text-decoration-none text-dark quote-supplier-link" data-id="{{ $quote->supplier?->id }}">
+                                            {{ $supplierName }}
+                                        </a>
+                                    </h5>
                                     <div class="small text-muted mb-2">{{ $quote->supplier?->email ?: 'No email address' }}</div>
                                     @php
                                         $avgRating = $quote->supplier?->supplier_average_rating ? round((float) $quote->supplier->supplier_average_rating, 1) : null;
@@ -236,3 +240,44 @@
     @endforelse
 </div>
 @endsection
+
+@push('scripts')
+<div class="offcanvas offcanvas-end" tabindex="-1" id="quoteSupplierOffcanvas" aria-labelledby="quoteSupplierOffcanvasLabel" style="width: 600px;">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title fw-bold" id="quoteSupplierOffcanvasLabel">Supplier Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+
+    </div>
+</div>
+<script>
+    $(document).on('click', '.quote-supplier-link', function () {
+        const supplierId = $(this).data('id');
+        if (!supplierId) return;
+        const offcanvasElement = document.getElementById('quoteSupplierOffcanvas');
+        const offCanvas = new bootstrap.Offcanvas(offcanvasElement);
+        offCanvas.show();
+        $('#quoteSupplierOffcanvas .offcanvas-body').html(`
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 mb-0">Loading supplier details...</p>
+            </div>
+        `);
+        $.ajax({
+            url: "{{ route('customer-panel.suppliers.details', ':id') }}".replace(':id', supplierId),
+            type: 'GET',
+            success: function (response) {
+                $('#quoteSupplierOffcanvas .offcanvas-body').html(response);
+            },
+            error: function () {
+                $('#quoteSupplierOffcanvas .offcanvas-body').html(`
+                    <div class="alert alert-danger">Failed to load supplier details.</div>
+                `);
+            }
+        });
+    });
+</script>
+@endpush

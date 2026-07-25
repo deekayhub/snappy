@@ -96,4 +96,40 @@ class CategoryFieldController extends Controller
             'message' => 'Field Deleted Successfully'
         ]);
     }
+
+    public function duplicate(Request $request)
+    {
+        $request->validate([
+            'source_category_id' => 'required|exists:organisation_categories,id',
+            'target_category_ids' => 'required|array',
+            'target_category_ids.*' => 'exists:organisation_categories,id',
+        ]);
+
+        $sourceFields = CategoryField::where('category_id', $request->source_category_id)->get();
+
+        if ($sourceFields->isEmpty()) {
+            return redirect()->back()->with('error', 'Source category has no fields to duplicate.');
+        }
+
+        foreach ($request->target_category_ids as $targetId) {
+            if ((int) $targetId === (int) $request->source_category_id) continue;
+
+            foreach ($sourceFields as $field) {
+                CategoryField::create([
+                    'category_id' => $targetId,
+                    'field_label' => $field->field_label,
+                    'field_name' => $field->field_name,
+                    'field_type' => $field->field_type,
+                    'field_options' => $field->field_options,
+                    'placeholder' => $field->placeholder,
+                    'help_text' => $field->help_text,
+                    'is_required' => $field->is_required,
+                    'sort_order' => $field->sort_order,
+                    'status' => $field->status,
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Fields duplicated successfully.');
+    }
 }

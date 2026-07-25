@@ -49,15 +49,13 @@
                     </div>
                     <div style="max-height: 300px; overflow-y: auto;">
                         @forelse($supplierLatestNotifications as $notif)
-                            <div class="dropdown-item border-bottom px-3 py-2 {{ $notif->is_read ? '' : 'bg-light' }}">
-                                <form method="POST" action="{{ route('supplier-panel.notifications.read', $notif) }}" class="d-block">
-                                    @csrf
-                                    <button type="submit" class="btn btn-link text-decoration-none p-0 d-block text-start w-100">
-                                        <div class="small fw-semibold">{{ $notif->message }}</div>
-                                        <div class="small text-muted">{{ $notif->created_at->diffForHumans() }}</div>
-                                    </button>
-                                </form>
-                            </div>
+                            <a href="{{ route('supplier-panel.notifications.read', $notif) }}"
+                               class="dropdown-item border-bottom px-3 py-2 {{ $notif->is_read ? '' : 'bg-light' }} text-decoration-none"
+                               onclick="event.preventDefault(); document.getElementById('supplier-read-{{ $notif->id }}').submit();">
+                                <div class="small fw-semibold text-dark">{{ $notif->message }}</div>
+                                <div class="small text-muted">{{ $notif->created_at->diffForHumans() }}</div>
+                            </a>
+                            <form id="supplier-read-{{ $notif->id }}" method="POST" action="{{ route('supplier-panel.notifications.read', $notif) }}" style="display:none;">@csrf</form>
                         @empty
                             <div class="dropdown-item text-center text-muted py-3">No notifications</div>
                         @endforelse
