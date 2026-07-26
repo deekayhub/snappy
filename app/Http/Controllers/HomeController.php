@@ -13,7 +13,7 @@ class HomeController extends Controller
     {
         $faqs = PageSection::where('section_type', 'faq')->first();
         $howItWork = PageSection::where('section_type', 'how_it_work')->first();
-        $features = OrganisationCategorySetting::with('organisationCategory')->where('status', 'active')->take(6)->get();
+        $features = OrganisationCategorySetting::with('organisationCategory')->where('status', 'active')->get();
         $homeContactSection = PageSection::where('section_type', 'home_contact_section')->first();
         // dd($homeContactSection->toArray());
         return view('home', compact('faqs', 'howItWork', 'features', 'homeContactSection'));

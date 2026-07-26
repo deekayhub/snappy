@@ -69,17 +69,31 @@
             </div>
             <div class="row">
                     @foreach ($features as $item)
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3{{ $loop->index >= 6 ? ' d-none category-extra' : '' }}">
                             <div class="card position-relative border-0 shadow-sm">
                                 <img  src="{{ $item->image ? asset($item->image) : asset('assets/images/category-placeholder-img.png') }}" class="card-img-top" height="315" alt="{{ $item->organisationCategory?->name }}">
                                 @if($item->coming_soon)
                                     <div class="position-absolute" style="top: 12px; right: 12px; background: #f59e0b; color: #fff; padding: 4px 14px; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; z-index: 2; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">Coming Soon</div>
                                 @endif
-                                <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-2 text-shadow {{ $item->coming_soon ? 'opacity-50' : '' }}">{{ $item->organisationCategory?->name }}</h4>
+                                <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-0 pb-3 pt-4 text-capitalize" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">{{ $item->organisationCategory?->name }}</h4>
                             </div>
                         </div>
                     @endforeach
             </div>
+
+            @if($features->count() > 6)
+                <div class="text-center mt-4">
+                    <button type="button" id="showMoreCategories" class="btn btn-primary px-5 py-2 rounded-pill fw-semibold">
+                        Show More
+                    </button>
+                </div>
+            @endif
         </div>
-    </section>    
+    </section>
+    <script>
+        $('#showMoreCategories').click(function () {
+            $('.category-extra').toggleClass('d-none');
+            $(this).text($('.category-extra.d-none').length ? 'Show More' : 'Show Less');
+        });
+    </script>
 @endif
