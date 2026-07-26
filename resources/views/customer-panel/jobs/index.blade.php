@@ -62,9 +62,9 @@
 
                         <!-- Footer -->
                         <div class="d-flex justify-content-between align-items-center">
-                            <div class="fw-semibold">
+                            <a href="{{ route('customer-panel.quotes') }}#job-{{ $job->id }}" class="fw-semibold text-decoration-none">
                                 {{ $job->quotes_count }} quotes
-                            </div>
+                            </a>
 
                             <div class="d-flex gap-1">
                                 <button class="btn btn-light btn-sm rounded-circle border view-job-btn"
@@ -147,7 +147,7 @@
                             </div>
 
                             <div class="col-12 mb-3">
-                                <label class="form-label mb-1">Job Description</label>
+                                <label class="form-label mb-1">Job Description <span class="text-danger">*</span></label>
                                 <textarea id="job_description" name="description" rows="6" class="form-control" placeholder="Tell suppliers what you need, quantities, delivery expectations, colors, sizes, or any special notes.">{{ old('description') }}</textarea>
                             </div>
                             <div class="col-md-12 mb-3">
@@ -219,7 +219,7 @@
                                 </div>
 
                                 <div class="col-12 mb-3">
-                                    <label class="form-label mb-1">Job Description</label>
+                                    <label class="form-label mb-1">Job Description <span class="text-danger">*</span></label>
                                     <textarea id="edit_job_description" name="description" rows="6" class="form-control" placeholder="Tell suppliers what you need, quantities, delivery expectations, colors, sizes, or any special notes."></textarea>
                                 </div>
                                 <div class="col-md-12 mb-3">

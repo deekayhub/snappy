@@ -48,7 +48,7 @@
         @php
             $supplierCount = $job->quotes->pluck('supplier_user_id')->filter()->unique()->count();
         @endphp
-        <div class="card border-0 shadow-sm rounded-3 mb-4">
+        <div class="card border-0 shadow-sm rounded-3 mb-4" id="job-{{ $job->id }}">
             <div class="card-body p-4">
                 <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-3 mb-4">
                     <div>
@@ -278,6 +278,20 @@
                 `);
             }
         });
+    });
+
+    $(function () {
+        if (window.location.hash) {
+            var target = window.location.hash;
+            setTimeout(function () {
+                var $el = $(target);
+                if ($el.length) {
+                    $('html, body').animate({
+                        scrollTop: $el.offset().top - 100
+                    }, 600);
+                }
+            }, 300);
+        }
     });
 </script>
 @endpush
