@@ -16,11 +16,11 @@
 /public/build
 /public/hot
 /public/storage
-/public
 /storage/*.key
 /storage/pail
 /vendor
 Homestead.json
 Homestead.yaml
 Thumbs.db
-public/organisation-category-images/*
+public/organisation_category_images/*
+public/profile-pictures/*

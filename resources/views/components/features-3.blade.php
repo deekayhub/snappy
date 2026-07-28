@@ -75,7 +75,7 @@
                                 @if($item->coming_soon)
                                     <div class="position-absolute" style="top: 12px; right: 12px; background: #f59e0b; color: #fff; padding: 4px 14px; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; z-index: 2; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">Coming Soon</div>
                                 @endif
-                                <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-0 pb-3 pt-4 text-capitalize" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">{{ $item->organisationCategory?->name }}</h4>
+                                <h4 class="fw-bolder fst-italic text-white position-absolute bottom-0 start-0 end-0 text-center mb-0 pb-3 pt-4 text-capitalize" style="background: linear-gradient(transparent, rgba(0,0,0,9));">{{ $item->organisationCategory?->name }}</h4>
                             </div>
                         </div>
                     @endforeach
