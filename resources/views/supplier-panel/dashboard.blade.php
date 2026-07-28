@@ -1,7 +1,7 @@
 @extends('supplier-panel.layouts.app')
 @section('title', 'Supplier Dashboard')
 
-@php
+<?php
     $endingSoonThresholdSeconds = 86400;
 
     $statusMeta = function ($job) use ($endingSoonThresholdSeconds) {
@@ -19,7 +19,7 @@
 
         return ['Active', 'success'];
     };
-@endphp
+?>
 
 @section('content')
     <div class="content-wrapper p-3">
@@ -116,45 +116,102 @@
             </div>
 
             <div class="col-xl-4">
+                <?php
+                    $profile = $user->supplierProfile;
+                    $fields = [
+                        ['label' => 'Company name', 'key' => 'company_name', 'icon' => 'fa-building'],
+                        ['label' => 'Company logo', 'key' => 'company_logo', 'icon' => 'fa-image'],
+                        ['label' => 'Address', 'key' => 'address', 'icon' => 'fa-map-marker'],
+                        ['label' => 'Description', 'key' => 'company_description', 'icon' => 'fa-file-text'],
+                        ['label' => 'Website', 'key' => 'website', 'icon' => 'fa-globe'],
+                        ['label' => 'Review link', 'key' => 'review_link', 'icon' => 'fa-star'],
+                        ['label' => 'Social link', 'key' => 'social_link', 'icon' => 'fa-link'],
+                    ];
+                    $completedFields = collect($fields)->filter(fn($f) => filled($profile?->{$f['key']}))->count();
+                    $totalFields = count($fields);
+                    $completionPct = $totalFields > 0 ? round(($completedFields / $totalFields) * 100) : 0;
+                    $isComplete = $completionPct === 100;
+                ?>
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
                     <div class="card-body p-4">
-                        <h4 class="mb-2">Profile completion</h4>
-                        <p class="text-muted">Supplier profile fields requested in your document.</p>
-                        <ul class="list-unstyled mb-0">
-                            <li class="py-2 border-bottom">Company name: {{ $user->supplierProfile?->company_name ?: 'Missing' }}</li>
-                        <li class="py-2 border-bottom">Website: {{ $user->supplierProfile?->website ?: 'Missing' }}</li>
-                        <li class="py-2 border-bottom">Review link: {{ $user->supplierProfile?->review_link ?: 'Missing' }}</li>
-                        <li class="py-2 border-bottom">Social link: {{ $user->supplierProfile?->social_link ?: 'Missing' }}</li>
-                        <li class="py-2">
-                            Supplier rating:
-                            @if ($supplierAverageRating)
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h4 class="mb-0">Profile completion</h4>
+                            <span class="badge bg-{{ $isComplete ? 'success' : ($completionPct >= 50 ? 'warning' : 'danger') }} rounded-pill px-3 py-2">{{ $completionPct }}%</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 8px; border-radius: 4px;">
+                            <div class="progress-bar bg-{{ $isComplete ? 'success' : ($completionPct >= 50 ? 'warning' : 'danger') }}"
+                                 role="progressbar" style="width: {{ $completionPct }}%; border-radius: 4px;"
+                                 aria-valuenow="{{ $completionPct }}" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                        <ul class="list-unstyled mb-3">
+                            @foreach($fields as $field)
+                                <?php $filled = filled($profile?->{$field['key']}); ?>
+                                <li class="py-2 border-bottom d-flex align-items-center gap-2">
+                                    <i class="fa {{ $field['icon'] }} text-muted" style="width: 16px;"></i>
+                                    <span class="small">{{ $field['label'] }}</span>
+                                    <span class="ms-auto small fw-semibold {{ $filled ? 'text-success' : 'text-danger' }}">
+                                        @if($filled)
+                                            <i class="fa fa-check-circle"></i> Done
+                                        @else
+                                            <i class="fa fa-times-circle"></i> Add
+                                        @endif
+                                    </span>
+                                </li>
+                            @endforeach
+                        </ul>
+                        @if($supplierAverageRating)
+                            <div class="d-flex align-items-center gap-2 mb-3 p-2 bg-light rounded-3">
+                                <i class="fa fa-star text-warning"></i>
+                                <span class="small fw-semibold">Supplier rating:</span>
                                 <span class="text-warning">
                                     @for ($i = 1; $i <= 5; $i++)
                                         <i class="fa {{ $i <= round($supplierAverageRating) ? 'fa-star' : 'fa-star-o' }}"></i>
                                     @endfor
                                 </span>
-                                <span class="text-muted">{{ $supplierAverageRating }}/5 ({{ $supplierRatingsCount }} ratings)</span>
-                            @else
-                                <span class="text-muted">No ratings yet</span>
-                            @endif
-                        </li>
-                        </ul>
+                                <span class="small text-muted">{{ $supplierAverageRating }}/5 ({{ $supplierRatingsCount }})</span>
+                            </div>
+                        @endif
+                        <a href="{{ route('supplier-panel.profile') }}" class="btn btn-outline-primary rounded-4 w-100">
+                            <i class="fa fa-edit me-1"></i> Edit profile
+                        </a>
                     </div>
                 </div>
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body p-4">
-                        <h4 class="mb-3">Recent quotes</h4>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h4 class="mb-0">Recent quotes</h4>
+                            <span class="badge bg-primary rounded-pill px-3 py-2">{{ $stats['submitted_quotes'] }}</span>
+                        </div>
                         @forelse ($recentQuotes as $quote)
-                            <div class="border rounded-4 p-3 mb-3">
-                                <div class="d-flex align-items-center justify-content-between ">
-                                    <div class="small text-muted">{{ $quote->created_at?->format('d M Y h:i A') }}</div>
-                                    <div class="small text-muted text-uppercase">{{ $quote->status }}</div>
+                            <?php
+                                $statusColors = ['submitted' => 'primary', 'accepted' => 'success', 'rejected' => 'danger', 'completed' => 'dark'];
+                                $color = $statusColors[$quote->status] ?? 'secondary';
+                            ?>
+                            <div class="border rounded-4 p-3 mb-3" style="border-left: 4px solid var(--bs-{{ $color }}) !important;">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <span class="small text-muted">{{ $quote->created_at?->format('d M Y') }}</span>
+                                    <span class="badge bg-{{ $color }} text-uppercase">{{ $quote->status }}</span>
                                 </div>
-                                <div class="fw-semibold">{{ $quote->job?->title ?: 'Job removed' }}</div>
-                                <div class="fw-bold mt-1">£ {{ number_format((float) $quote->total_price, 2) }}</div>
+                                <div class="fw-semibold mb-1">{{ $quote->job?->title ?: 'Job removed' }}</div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="fw-bold fs-5">£{{ number_format((float) $quote->total_price, 2) }}</span>
+                                    @if($quote->status === 'submitted')
+                                        <span class="small text-muted"><i class="fa fa-clock-o"></i> Awaiting response</span>
+                                    @elseif($quote->status === 'accepted')
+                                        <span class="small text-success"><i class="fa fa-check-circle"></i> Accepted</span>
+                                    @elseif($quote->status === 'rejected')
+                                        <span class="small text-danger"><i class="fa fa-times-circle"></i> Rejected</span>
+                                    @elseif($quote->status === 'completed')
+                                        <span class="small text-dark"><i class="fa fa-check-circle"></i> Completed</span>
+                                    @endif
+                                </div>
                             </div>
                         @empty
-                            <p class="text-muted mb-0">You have not submitted any quotes yet.</p>
+                            <div class="text-center py-4">
+                                <i class="fa fa-file-text-o text-muted" style="font-size: 32px;"></i>
+                                <p class="text-muted mb-0 mt-2">You have not submitted any quotes yet.</p>
+                            </div>
                         @endforelse
                     </div>
                 </div>
