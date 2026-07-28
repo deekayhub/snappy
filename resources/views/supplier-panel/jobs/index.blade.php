@@ -704,7 +704,7 @@
                             <hr class="my-0" style="border-color: #e5e7eb; opacity: 1;">
                         </div>
 
-                        <form method="POST" action="{{ route('supplier-panel.quotes.store', $job) }}">
+                        <form method="POST" action="{{ route('supplier-panel.quotes.store', $job) }}" style="display: flex; flex-direction: column; overflow: hidden;">
                             @csrf
                             <div class="modal-body px-4 py-4">
                                 <div class="row g-4">

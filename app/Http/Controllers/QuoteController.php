@@ -162,7 +162,7 @@ class QuoteController extends Controller
             'user_id' => $quote->supplier_user_id,
             'type' => "quote_{$validated['status']}",
             'message' => "Your quote for {$quote->job?->title} has been " . ucfirst($validated['status']),
-            'action_url' => route('supplier-panel.quotes'),
+            'action_url' => route('supplier-panel.jobs'),
         ]);
 
         return back()->with('success', 'Quote status updated successfully.');

@@ -48,37 +48,32 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <select id="categoryFilter" class="form-select form-select-sm">
+                        <select id="categoryFilter" class="form-select text-dark">
                             <option value="">All Categories</option>
                             @foreach($categories as $cat)
                                 <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-2">
-                        <select id="ratingFilter" class="form-select form-select-sm">
+                    <div class="col-md-3">
+                        <select id="ratingFilter" class="form-select text-dark">
                             <option value="">Any Rating</option>
                             <option value="4">4 ★ & up</option>
                             <option value="3">3 ★ & up</option>
                             <option value="2">2 ★ & up</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <div class="d-flex gap-1">
-                            <button id="filterBtn" class="btn btn-primary btn-sm flex-fill px-2">
-                                <i class="fa fa-filter"></i> Filter
-                            </button>
-                            <button id="resetBtn" class="btn btn-outline-secondary btn-sm flex-fill px-2">
-                                <i class="fa fa-undo"></i> Reset
-                            </button>
-                        </div>
+                    <div class="col-md-2">
+                        <button id="resetBtn" class="btn btn-outline-secondary w-100 px-3">
+                            <i class="fa fa-undo"></i> Reset
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-body p-0">
+            <div class="card-body">
                 <div class="table-responsive">
                     <table class="table w-100 mb-0" id="supplierTable">
                         <thead>
@@ -148,10 +143,6 @@
                 dom: '<"d-flex justify-content-between align-items-center px-3 py-2 border-bottom"<"d-flex align-items-center"l><"d-flex align-items-center"f>>rt<"d-flex justify-content-between align-items-center px-3 py-2"ip>',
             });
 
-            $('#filterBtn').on('click', function () {
-                table.draw();
-            });
-
             $('#resetBtn').on('click', function () {
                 $('#searchInput').val('');
                 $('#categoryFilter').val('');
@@ -159,10 +150,12 @@
                 table.draw();
             });
 
-            $('#searchInput').on('keydown', function (e) {
-                if (e.key === 'Enter') {
-                    table.draw();
-                }
+            $('#searchInput').on('keyup', function () {
+                table.draw();
+            });
+
+            $('#categoryFilter, #ratingFilter').on('change', function () {
+                table.draw();
             });
         });
 
