@@ -131,170 +131,734 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="jobModal{{ $job->id }}" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content rounded-4 border-0">
-                        <div class="modal-header border0">
-                            <div>
-                                <div class="small text-muted">Job No. {{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</div>
-                                <h5 class="modal-title">{{ $job->title }}</h5>
+            <style>
+                .modal-job-details {
+                    --modal-radius: 20px;
+                    --card-shadow: 0 4px 20px rgba(15,23,42,.06);
+                }
+                .modal-job-details .modal-content {
+                    border-radius: var(--modal-radius) !important;
+                    box-shadow: 0 25px 60px rgba(15,23,42,.12);
+                }
+                .modal-job-details .stat-card {
+                    background: #fff;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 16px;
+                    padding: 18px 16px;
+                    transition: transform .2s ease, box-shadow .2s ease;
+                    box-shadow: 0 1px 3px rgba(15,23,42,.04);
+                }
+                .modal-job-details .stat-card:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 25px rgba(15,23,42,.08);
+                }
+                .modal-job-details .icon-circle {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 12px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                }
+                .modal-job-details .profile-avatar {
+                    width: 56px;
+                    height: 56px;
+                    border-radius: 16px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 700;
+                    font-size: 22px;
+                    color: #fff;
+                    flex-shrink: 0;
+                    background: linear-gradient(135deg, #2563eb, #7c3aed);
+                }
+                .modal-job-details .description-card {
+                    background: #fff;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 16px;
+                    padding: 24px;
+                }
+                .modal-job-details .profile-card {
+                    background: #fff;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 16px;
+                    padding: 24px;
+                }
+                .modal-job-details .org-badge {
+                    background: #eff6ff;
+                    color: #2563eb;
+                    border-radius: 20px;
+                    padding: 3px 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    display: inline-block;
+                }
+                .modal-job-details .btn-premium {
+                    height: 48px;
+                    border-radius: 12px;
+                    font-size: 15px;
+                    font-weight: 600;
+                    padding: 0 24px;
+                    transition: all .2s ease;
+                }
+                .modal-job-details .btn-premium-primary {
+                    background: #2563eb;
+                    border: none;
+                    color: #fff;
+                }
+                .modal-job-details .btn-premium-primary:hover {
+                    background: #1d4ed8;
+                    transform: translateY(-1px);
+                    box-shadow: 0 8px 25px rgba(37,99,235,.25);
+                }
+                .modal-job-details .btn-premium-outline {
+                    background: transparent;
+                    border: 1px solid #e5e7eb;
+                    color: #374151;
+                }
+                .modal-job-details .btn-premium-outline:hover {
+                    background: #f8fafc;
+                    border-color: #d1d5db;
+                }
+                .modal-job-details .sticky-header {
+                    position: sticky;
+                    top: 0;
+                    z-index: 10;
+                    background: #fff;
+                    border-radius: var(--modal-radius) var(--modal-radius) 0 0;
+                }
+                .modal-job-details .sticky-footer {
+                    position: sticky;
+                    bottom: 0;
+                    z-index: 10;
+                    background: #fff;
+                    border-radius: 0 0 var(--modal-radius) var(--modal-radius);
+                }
+                @media (max-width: 991.98px) {
+                    .modal-job-details .stat-card { padding: 14px 12px; }
+                    .modal-job-details .profile-avatar { width: 48px; height: 48px; font-size: 18px; }
+                }
+                @media (max-width: 575.98px) {
+                    .modal-dialog.modal-job-details { margin: 0; }
+                    .modal-job-details .modal-content { border-radius: 0 !important; min-height: 100vh; }
+                    .modal-job-details .sticky-footer .d-flex { flex-direction: column; }
+                    .modal-job-details .sticky-footer .btn-premium { width: 100%; }
+                }
+            </style>
+            <div class="modal fade modal-job-details" id="jobModal{{ $job->id }}" tabindex="-1" aria-hidden="true" aria-labelledby="jobModalLabel{{ $job->id }}">
+                <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable modal-job-details" style="max-width: 1200px;">
+                    <div class="modal-content border-0">
+                        <div class="sticky-header px-4 pt-4 pb-0">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa fa-briefcase text-muted" style="font-size: 14px;"></i>
+                                    <span style="font-size: 13px; font-weight: 600; color: #6b7280;">Job #{{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
+                                    <span id="status-{{ $job->id }}" class="badge" style="background: #22c55e; color: #fff; border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 600;">{{ $meta[0] }}</span>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="opacity: .6;"></button>
+                                </div>
                             </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-4">
-                                    <div class="border rounded-4 p-3 h-100">
-                                        <div class="small text-muted">Category</div><div class="fw-semibold">{{ $job->categoryId?->name ?? 'General' }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="border rounded-4 p-3 h-100">
-                                        <div class="small text-muted">Location</div><div class="fw-semibold">{{ $job->location ?: 'Not provided' }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="border rounded-4 p-3 h-100">
-                                        <div class="small text-muted">Budget</div><div class="fw-semibold">{{ $job->budget ? '£ '.number_format((float) $job->budget, 2) : 'Not shared' }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="border rounded-4 p-3 h-100">
-                                        <div class="small text-muted">Description</div><div class="fw-semibold">{{ $job->description ?? ''}}</div>
-                                    </div>
-                                </div>
-                                @if($job->dynamicFieldValues->isNotEmpty())
-                                    <div class="col-md-12">
-                                        <strong>More Details</strong>
-                                    </div>
-
-                                    <div class="col-12">
-                                        @foreach ($job->dynamicFieldValues as $itemFields)
-                                            <div class="row border rounded-4 p-2 m-0 mb-3">
-                                                <div class="col-12 mb-3">
-                                                    <div class="badge bg-secondary rounded">#Item - {{ $loop->index + 1 }}</div>
-                                                </div>
-
-                                                @foreach ($itemFields as $fieldsValue)
-                                                    @if(($fieldsValue['category_fields']['field_type'] ?? null) === 'file')
-                                                        <div class="col-md-4 mb-3">
-                                                            <div class="border rounded-4 p-3 h-100">
-                                                                <div class="small text-muted">
-                                                                    {{ $fieldsValue['category_fields']['field_label'] }}
-                                                                </div>
-
-                                                                <div class="d-flex flex-wrap gap-2 mt-2">
-                                                                    @forelse ((array) ($fieldsValue['parsed_value'] ?? $fieldsValue['field_value'] ?? []) as $filePath)
-                                                                        <div class="border rounded-3 p-2" style="max-width: 140px;">
-                                                                            @if(in_array(strtolower(pathinfo($filePath, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg']))
-                                                                                <img
-                                                                                    src="{{ asset($filePath) }}"
-                                                                                    alt="{{ $fieldsValue['category_fields']['field_label'] }}"
-                                                                                    style="max-height: 140px; max-width: 120px; object-fit: cover;"
-                                                                                    class="rounded-3"
-                                                                                >
-                                                                            @else
-                                                                                <a href="{{ asset($filePath) }}" target="_blank" rel="noopener">
-                                                                                    {{ \Illuminate\Support\Str::afterLast($filePath, '/') }}
-                                                                                </a>
-                                                                            @endif
-                                                                        </div>
-                                                                    @empty
-                                                                        <div class="text-muted">No file uploaded</div>
-                                                                    @endforelse
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @else
-                                                        <div class="col-md-4 mb-3">
-                                                            <div class="border rounded-4 p-3 h-100">
-                                                                <div class="small text-muted">
-                                                                    {{ $fieldsValue['category_fields']['field_label'] }}
-                                                                </div>
-
-                                                                <div class="fw-semibold">
-                                                                    {{ is_array($fieldsValue['parsed_value'] ?? null)
-                                                                        ? implode(', ', array_map('strval', $fieldsValue['parsed_value']))
-                                                                        : (string) ($fieldsValue['parsed_value'] ?? $fieldsValue['field_value'] ?? '') }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-                                                @endforeach
-                                            </div>
-                                        @endforeach
-                                    </div>
+                            <h2 class="fw-bold mb-2" style="font-size: 28px; letter-spacing: -.02em; color: #111827;">{{ $job->title }}</h2>
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-3" style="font-size: 15px; color: #6b7280;">
+                                <span class="text-capitalize">{{ $job->categoryId?->name ?? 'General' }}</span>
+                                @if($job->organisation_name)
+                                <span class="mx-1" style="color: #d1d5db;">•</span>
+                                <span class="org-badge text-capitalize"><i class="fa fa-building me-1" style="font-size: 11px;"></i>{{ $job->organisation_name }}</span>
                                 @endif
                             </div>
-
                         </div>
-                        {{-- <div class="modal-footer border-0">
-                            <button class="btn btn-secondary rounded-4" disabled>Upgrade to quote</button>
-                        </div> --}}
+
+                        <div class="modal-body px-4 py-3">
+                            <div class="row g-3 mb-4">
+                                <div class="col-sm-6 col-lg-4">
+                                    <div class="stat-card d-flex align-items-center gap-3">
+                                        <div class="icon-circle" style="background: #eff6ff; color: #2563eb;">
+                                            <i class="fa fa-gbp" style="font-size: 18px;"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 20px; font-weight: 700; color: #111827;">{{ $job->budget ? '£'.number_format((float) $job->budget, 2) : 'N/A' }}</div>
+                                            <div style="font-size: 12px; color: #94a3b8; font-weight: 500;">Budget</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-4">
+                                    <div class="stat-card d-flex align-items-center gap-3">
+                                        <div class="icon-circle" style="background: #fef3c7; color: #d97706;">
+                                            <i class="fa fa-calendar-check-o" style="font-size: 18px;"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 20px; font-weight: 700; color: #111827;">{{ $job->needed_by?->format('d M Y') ?? 'N/A' }}</div>
+                                            <div style="font-size: 12px; color: #94a3b8; font-weight: 500;">Needed By</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-4">
+                                    <div class="stat-card d-flex align-items-center gap-3">
+                                        <div class="icon-circle" style="background: #fee2e2; color: #dc2626;">
+                                            <i class="fa fa-map-marker" style="font-size: 18px;"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 20px; font-weight: 700; color: #111827;" class="text-capitalize">{{ $job->location ?: 'N/A' }}</div>
+                                            <div style="font-size: 12px; color: #94a3b8; font-weight: 500;">Location</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-4">
+                                    <div class="stat-card d-flex align-items-center gap-3">
+                                        <div class="icon-circle" style="background: #f3e8ff; color: #7c3aed;">
+                                            <i class="fa fa-building" style="font-size: 18px;"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 20px; font-weight: 700; color: #111827;" class="text-capitalize">{{ $job->organisation_name ?: 'N/A' }}</div>
+                                            <div style="font-size: 12px; color: #94a3b8; font-weight: 500;">Organisation</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-4">
+                                    <div class="stat-card d-flex align-items-center gap-3">
+                                        <div class="icon-circle" style="background: #ccfbf1; color: #0d9488;">
+                                            <i class="fa fa-calendar" style="font-size: 18px;"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 20px; font-weight: 700; color: #111827;">{{ $job->created_at?->format('d M Y') ?? 'N/A' }}</div>
+                                            <div style="font-size: 12px; color: #94a3b8; font-weight: 500;">Posted</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-4">
+                                    <div class="stat-card d-flex align-items-center gap-3">
+                                        <div class="icon-circle" style="background: #dbeafe; color: #2563eb;">
+                                            <i class="fa fa-commenting" style="font-size: 18px;"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 20px; font-weight: 700; color: #111827;">{{ $job->quotes->count() }}</div>
+                                            <div style="font-size: 12px; color: #94a3b8; font-weight: 500;">Quote{{ $job->quotes->count() !== 1 ? 's' : '' }} Received</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="description-card mb-4">
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    <i class="fa fa-file-text" style="color: #2563eb; font-size: 16px;"></i>
+                                    <span style="font-size: 18px; font-weight: 700; color: #111827;">Description</span>
+                                </div>
+                                <div class="job-description-wrap">
+                                    <div class="job-description-text js-desc-text" style="font-size: 16px; line-height: 1.7; color: #374151; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
+                                        {{ $job->description ?? 'No description provided.' }}
+                                    </div>
+                                    @if(strlen($job->description ?? '') > 300)
+                                    <button type="button" class="btn btn-link p-0 mt-2 js-desc-toggle" style="font-size: 14px; font-weight: 600; color: #2563eb; text-decoration: none;" onclick="var t = this.previousElementSibling; var c = t.style.webkitLineClamp; t.style.webkitLineClamp = c === 'none' ? '4' : 'none'; this.textContent = c === 'none' ? 'Read more →' : 'Show less ↑';">
+                                        Read more →
+                                    </button>
+                                    @endif
+                                </div>
+                            </div>
+
+                            @if($job->dynamicFieldValues->isNotEmpty())
+                            <div class="description-card mb-4">
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    <i class="fa fa-list-alt" style="color: #7c3aed; font-size: 16px;"></i>
+                                    <span style="font-size: 18px; font-weight: 700; color: #111827;">Additional Details</span>
+                                </div>
+                                @foreach ($job->dynamicFieldValues as $itemFields)
+                                <div style="background: #f8fafc; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                                    <span style="background: #e5e7eb; color: #374151; border-radius: 20px; padding: 2px 10px; font-size: 11px; font-weight: 600; display: inline-block; margin-bottom: 12px;">Item #{{ $loop->index + 1 }}</span>
+                                    <div class="row g-3">
+                                        @foreach ($itemFields as $fieldsValue)
+                                            @if(($fieldsValue['category_fields']['field_type'] ?? null) === 'file')
+                                                <div class="col-md-4">
+                                                    <div style="font-size: 12px; color: #6b7280; font-weight: 600; margin-bottom: 4px;">{{ $fieldsValue['category_fields']['field_label'] }}</div>
+                                                    <div class="d-flex flex-wrap gap-2">
+                                                        @forelse ((array) ($fieldsValue['parsed_value'] ?? $fieldsValue['field_value'] ?? []) as $filePath)
+                                                            <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 4px; max-width: 80px;">
+                                                                @if(in_array(strtolower(pathinfo($filePath, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg']))
+                                                                    <img src="{{ asset($filePath) }}" alt="{{ $fieldsValue['category_fields']['field_label'] }}" style="max-height: 60px; max-width: 60px; object-fit: cover; border-radius: 4px;">
+                                                                @else
+                                                                    <a href="{{ asset($filePath) }}" target="_blank" rel="noopener" style="font-size: 11px; color: #2563eb;">{{ \Illuminate\Support\Str::afterLast($filePath, '/') }}</a>
+                                                                @endif
+                                                            </div>
+                                                        @empty
+                                                            <span style="font-size: 13px; color: #94a3b8;">No file uploaded</span>
+                                                        @endforelse
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <div class="col-md-4">
+                                                    <div style="font-size: 12px; color: #6b7280; font-weight: 600; margin-bottom: 2px;">{{ $fieldsValue['category_fields']['field_label'] }}</div>
+                                                    <div style="font-weight: 600; color: #111827;">
+                                                        {{ is_array($fieldsValue['parsed_value'] ?? null)
+                                                            ? implode(', ', array_map('strval', $fieldsValue['parsed_value']))
+                                                            : (string) ($fieldsValue['parsed_value'] ?? $fieldsValue['field_value'] ?? '') }}
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                            @endif
+
+                            @if($job->user)
+                            <div class="profile-card">
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    <i class="fa fa-user" style="color: #7c3aed; font-size: 16px;"></i>
+                                    <span style="font-size: 18px; font-weight: 700; color: #111827;">Posted By</span>
+                                </div>
+                                <div class="d-flex flex-column flex-sm-row align-items-start gap-3">
+                                    <div class="profile-avatar">{{ strtoupper(substr($job->user->name, 0, 2)) }}</div>
+                                    <div class="flex-grow-1" style="width: 100%;">
+                                        <div style="font-size: 18px; font-weight: 700; color: #111827;">{{ $job->user->name }}</div>
+                                        @if($job->user->customerProfile && $job->user->customerProfile->school_name)
+                                        <div style="font-size: 14px; color: #6b7280; margin-bottom: 2px;">School Administrator</div>
+                                        <div class="org-badge mb-3"><i class="fa fa-graduation-cap me-1" style="font-size: 11px;"></i>{{ $job->user->customerProfile->school_name }}</div>
+                                        @endif
+                                        <div class="row g-2 mt-2" style="font-size: 14px; color: #6b7280;">
+                                            <div class="col-sm-6">
+                                                <div class="d-flex align-items-center gap-2"><i class="fa fa-envelope" style="color: #94a3b8; width: 16px;"></i>{{ $job->user->email }}</div>
+                                            </div>
+                                            @if($job->user->phone)
+                                            <div class="col-sm-6">
+                                                <div class="d-flex align-items-center gap-2"><i class="fa fa-phone" style="color: #94a3b8; width: 16px;"></i>{{ $job->user->phone }}</div>
+                                            </div>
+                                            @endif
+                                            @if($job->user->customerProfile)
+                                                @if($job->user->customerProfile->county)
+                                                <div class="col-sm-6">
+                                                    <div class="d-flex align-items-center gap-2"><i class="fa fa-globe" style="color: #94a3b8; width: 16px;"></i><span class="text-capitalize">{{ $job->user->customerProfile->county }}</span></div>
+                                                </div>
+                                                @endif
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+
+                        <div class="sticky-footer px-4 pb-4 pt-3">
+                            <hr class="my-0 mb-3" style="border-color: #e5e7eb; opacity: 1;">
+                            <div class="d-flex justify-content-end gap-3">
+                                <button type="button" class="btn btn-premium btn-premium-outline" data-bs-dismiss="modal">Cancel</button>
+                                @if($usage['can_submit_quote'])
+                                <button type="button" class="btn btn-premium btn-premium-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#quoteModal{{ $job->id }}">
+                                    {{ $existingQuote ? 'Update Quote' : 'Send Quote' }}
+                                    <i class="fa fa-arrow-right" style="font-size: 14px;"></i>
+                                </button>
+                                @else
+                                <button type="button" class="btn btn-premium btn-premium-primary d-flex align-items-center gap-2" disabled
+                                    @if($usage['quotes_remaining_this_month'] <= 0 && $usage['quotes_remaining_this_year'] <= 0)
+                                        title="Quote limit reached. Upgrade to submit more quotes."
+                                    @else
+                                        title="Upgrade to submit quotes."
+                                    @endif
+                                >
+                                    <i class="mdi mdi-lock me-1"></i>Upgrade to Quote
+                                </button>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="modal fade job-modal" id="quoteModal{{ $job->id }}" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content rounded-4 border-0">
-                        <div class="modal-header border-0">
-                            <div>
-                                <div class="small text-muted">Quote for Job No. {{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</div>
-                                <h5 class="modal-title">{{ $job->title }}</h5>
-                                @hasFeature('professional_quote')
-                                <span class="badge bg-primary mt-1">Professional Quote Template</span>
-                                @else
-                                <span class="badge bg-secondary mt-1">Basic Quote Template</span>
-                                @endhasFeature
-                            </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form method="POST" action="{{ route('supplier-panel.quotes.store', $job) }}">
-                            @csrf
-                            <div class="modal-body">
-                                <div class="row g-3">
-                                    <div class="col-md-3">
-                                        <label class="form-label">Price for job</label>
-                                        <input type="number" name="price_for_job" step="0.01" min="0" class="form-control rounded-4" value="{{ old('price_for_job', optional($existingQuote)->price_for_job) }}" required>
+            <style>
+                .modal-quote {
+                    --modal-radius: 20px;
+                }
+                .modal-quote .modal-content {
+                    border-radius: var(--modal-radius) !important;
+                    box-shadow: 0 25px 60px rgba(15,23,42,.12);
+                }
+                .modal-quote .form-card {
+                    background: #fff;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 16px;
+                    padding: 24px;
+                    margin-bottom: 16px;
+                    box-shadow: 0 1px 3px rgba(15,23,42,.04);
+                }
+                .modal-quote .form-card:hover {
+                    box-shadow: 0 4px 15px rgba(15,23,42,.06);
+                }
+                .modal-quote .section-header {
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: #111827;
+                    margin-bottom: 20px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                .modal-quote .input-56 {
+                    height: 56px;
+                    border-radius: 12px;
+                    border: 1px solid #e5e7eb;
+                    padding: 0 16px 0 44px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #111827;
+                    transition: all .2s ease;
+                    background: #fff;
+                    width: 100%;
+                }
+                .modal-quote .input-56:focus {
+                    border-color: #2563eb;
+                    box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+                    outline: none;
+                }
+                .modal-quote .input-56-prefix {
+                    position: relative;
+                }
+                .modal-quote .input-56-prefix .prefix {
+                    position: absolute;
+                    left: 16px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #94a3b8;
+                    z-index: 2;
+                    pointer-events: none;
+                }
+                .modal-quote .input-56-icon {
+                    position: relative;
+                }
+                .modal-quote .input-56-icon .icon {
+                    position: absolute;
+                    right: 16px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: #94a3b8;
+                    z-index: 2;
+                    pointer-events: none;
+                }
+                .modal-quote .total-display {
+                    background: #eff6ff;
+                    border: 2px solid #2563eb;
+                    border-radius: 12px;
+                    padding: 16px 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+                .modal-quote .total-display .total-value {
+                    font-size: 24px;
+                    font-weight: 800;
+                    color: #2563eb;
+                }
+                .modal-quote .total-display .total-label {
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #2563eb;
+                }
+                .modal-quote .form-textarea {
+                    border-radius: 12px;
+                    border: 1px solid #e5e7eb;
+                    padding: 16px;
+                    font-size: 15px;
+                    color: #111827;
+                    transition: all .2s ease;
+                    width: 100%;
+                    background: #fff;
+                }
+                .modal-quote .form-textarea:focus {
+                    border-color: #2563eb;
+                    box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+                    outline: none;
+                }
+                .modal-quote .char-counter {
+                    font-size: 12px;
+                    color: #94a3b8;
+                    text-align: right;
+                    margin-top: 6px;
+                }
+                .modal-quote .summary-card {
+                    background: #fff;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 16px;
+                    padding: 24px;
+                    box-shadow: 0 4px 20px rgba(15,23,42,.06);
+                    position: sticky;
+                    top: 24px;
+                }
+                .modal-quote .summary-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 8px 0;
+                    font-size: 14px;
+                    color: #6b7280;
+                }
+                .modal-quote .summary-row .value {
+                    font-weight: 600;
+                    color: #111827;
+                }
+                .modal-quote .summary-total {
+                    background: #eff6ff;
+                    border-radius: 12px;
+                    padding: 14px 16px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-top: 8px;
+                }
+                .modal-quote .summary-total .label {
+                    font-size: 14px;
+                    font-weight: 700;
+                    color: #2563eb;
+                }
+                .modal-quote .summary-total .value {
+                    font-size: 22px;
+                    font-weight: 800;
+                    color: #2563eb;
+                }
+                .modal-quote .sticky-header {
+                    position: sticky;
+                    top: 0;
+                    z-index: 10;
+                    background: #fff;
+                    border-radius: var(--modal-radius) var(--modal-radius) 0 0;
+                }
+                .modal-quote .sticky-footer {
+                    position: sticky;
+                    bottom: 0;
+                    z-index: 10;
+                    background: #fff;
+                    border-radius: 0 0 var(--modal-radius) var(--modal-radius);
+                }
+                .modal-quote .btn-premium {
+                    height: 48px;
+                    border-radius: 12px;
+                    font-size: 15px;
+                    font-weight: 600;
+                    padding: 0 28px;
+                    transition: all .2s ease;
+                }
+                .modal-quote .btn-premium-primary {
+                    background: #2563eb;
+                    border: none;
+                    color: #fff;
+                }
+                .modal-quote .btn-premium-primary:hover {
+                    background: #1d4ed8;
+                    transform: translateY(-1px);
+                    box-shadow: 0 8px 25px rgba(37,99,235,.25);
+                }
+                .modal-quote .btn-premium-outline {
+                    background: transparent;
+                    border: 1px solid #e5e7eb;
+                    color: #374151;
+                }
+                .modal-quote .btn-premium-outline:hover {
+                    background: #f8fafc;
+                    border-color: #d1d5db;
+                }
+                @media (max-width: 991.98px) {
+                    .modal-quote .summary-card { position: static; margin-top: 16px; }
+                }
+                @media (max-width: 575.98px) {
+                    .modal-dialog.modal-quote { margin: 0; }
+                    .modal-quote .modal-content { border-radius: 0 !important; min-height: 100vh; }
+                    .modal-quote .sticky-footer .d-flex { flex-direction: column; }
+                    .modal-quote .sticky-footer .btn-premium { width: 100%; }
+                    .modal-quote .form-card { padding: 16px; }
+                }
+            </style>
+            <div class="modal fade job-modal modal-quote" id="quoteModal{{ $job->id }}" tabindex="-1" aria-hidden="true" aria-labelledby="quoteModalLabel{{ $job->id }}">
+                <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable modal-quote" style="max-width: 1200px;">
+                    <div class="modal-content border-0">
+                        <div class="sticky-header px-4 pt-4 pb-0">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <i class="fa fa-file-text-o" style="color: #6b7280; font-size: 14px;"></i>
+                                        <span style="font-size: 13px; font-weight: 600; color: #6b7280;">Quote for Job #{{ str_pad((string) $job->id, 4, '0', STR_PAD_LEFT) }}</span>
                                     </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Discount offered</label>
-                                        <input type="number" name="discount_offered" step="0.01" min="0" class="form-control rounded-4" value="{{ old('discount_offered', optional($existingQuote)->discount_offered) }}">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Delivery cost</label>
-                                        <input type="number" name="delivery_cost" step="0.01" min="0" class="form-control rounded-4" value="{{ old('delivery_cost', optional($existingQuote)->delivery_cost) }}">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Total</label>
-                                        <input type="number" name="total" step="0.01" min="0" class="form-control rounded-4" value="{{ old('total', optional($existingQuote)->total_price) }}" readonly>
-                                    </div>
+                                    <h2 class="fw-bold mb-0" style="font-size: 28px; letter-spacing: -.02em; color: #111827;">{{ $job->title }}</h2>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
                                     @hasFeature('professional_quote')
-                                    <div class="col-md-6">
-                                        <label class="form-label">Estimated completion date</label>
-                                        <input type="date" name="estimated_completion_date" class="form-control rounded-4" value="{{ old('estimated_completion_date', optional($existingQuote)->estimated_completion_date?->format('Y-m-d')) }}">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Warranty / Guarantee (months)</label>
-                                        <input type="number" name="warranty_months" min="0" class="form-control rounded-4" value="{{ old('warranty_months', optional($existingQuote)->warranty_months) }}" placeholder="e.g. 12">
-                                    </div>
+                                    <span style="background: #eff6ff; color: #2563eb; border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                                        <i class="fa fa-shield" style="font-size: 11px;"></i>Professional Quote
+                                    </span>
+                                    @else
+                                    <span style="background: #f3f4f6; color: #6b7280; border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                                        <i class="fa fa-file-text-o" style="font-size: 11px;"></i>Basic Quote
+                                    </span>
                                     @endhasFeature
-                                    <div class="col-12">
-                                        <label class="form-label">Notes</label>
-                                        <textarea name="notes" rows="4" class="form-control rounded-4" placeholder="Add delivery terms, timing, extras, or any helpful context for the customer.">{{ old('notes', optional($existingQuote)->notes) }}</textarea>
-                                    </div>
-                                    @hasFeature('professional_quote')
-                                    <div class="col-12">
-                                        <label class="form-label">Terms & Conditions</label>
-                                        <textarea name="terms" rows="3" class="form-control rounded-4" placeholder="Optional: add your terms and conditions for this quote.">{{ old('terms', optional($existingQuote)->terms) }}</textarea>
-                                    </div>
-                                    @endhasFeature
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="opacity: .6;"></button>
                                 </div>
                             </div>
-                            <div class="modal-footer border-0">
-                                <button type="button" class="btn btn-light rounded-4" data-bs-dismiss="modal">Cancel</button>
-                                <button class="btn btn-primary rounded-4">{{ $existingQuote ? 'Update quote' : 'Submit quote' }}</button>
+                            <div class="d-flex flex-wrap align-items-center gap-3 py-2" style="font-size: 13px; color: #6b7280;">
+                                @if($job->user)
+                                <span><i class="fa fa-user me-1" style="color: #94a3b8;"></i>{{ $job->user->name }}</span>
+                                @endif
+                                <span><i class="fa fa-gbp me-1" style="color: #94a3b8;"></i>Budget: {{ $job->budget ? '£'.number_format((float) $job->budget, 2) : 'N/A' }}</span>
+                                <span><i class="fa fa-clock-o me-1" style="color: #94a3b8;"></i>Needed by: {{ $job->needed_by?->format('d M Y') ?? 'N/A' }}</span>
+                            </div>
+                            <hr class="my-0" style="border-color: #e5e7eb; opacity: 1;">
+                        </div>
+
+                        <form method="POST" action="{{ route('supplier-panel.quotes.store', $job) }}">
+                            @csrf
+                            <div class="modal-body px-4 py-4">
+                                <div class="row g-4">
+                                    <div class="col-lg-7">
+                                        <div class="form-card">
+                                            <div class="section-header"><i class="fa fa-gbp" style="color: #2563eb;"></i>Pricing Details</div>
+                                            <div class="row g-3">
+                                                <div class="col-sm-6">
+                                                    <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block;">Price for job <span style="color: #dc2626;">*</span></label>
+                                                    <div class="input-56-prefix">
+                                                        <span class="prefix">£</span>
+                                                        <input type="number" name="price_for_job" step="0.01" min="0" class="input-56" value="{{ old('price_for_job', optional($existingQuote)->price_for_job) }}" required placeholder="0.00">
+                                                    </div>
+                                                    <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Your total charge for this job</div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block;">Discount offered</label>
+                                                    <div class="input-56-prefix">
+                                                        <span class="prefix">£</span>
+                                                        <input type="number" name="discount_offered" step="0.01" min="0" class="input-56" value="{{ old('discount_offered', optional($existingQuote)->discount_offered) }}" placeholder="0.00">
+                                                    </div>
+                                                    <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Optional discount to apply</div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block;">Delivery cost</label>
+                                                    <div class="input-56-prefix">
+                                                        <span class="prefix">£</span>
+                                                        <input type="number" name="delivery_cost" step="0.01" min="0" class="input-56" value="{{ old('delivery_cost', optional($existingQuote)->delivery_cost) }}" placeholder="0.00">
+                                                    </div>
+                                                    <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Shipping, travel or installation fees</div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block;">Total</label>
+                                                    <div class="total-display">
+                                                        <span class="total-label"><i class="fa fa-calculator me-1"></i>Final Total</span>
+                                                        <span class="total-value js-total-display">£0.00</span>
+                                                        <input type="hidden" name="total" step="0.01" min="0" value="{{ old('total', optional($existingQuote)->total_price ?? '0') }}" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @hasFeature('professional_quote')
+                                        <div class="form-card">
+                                            <div class="section-header"><i class="fa fa-calendar" style="color: #d97706;"></i>Delivery Details</div>
+                                            <div class="row g-3">
+                                                <div class="col-sm-6">
+                                                    <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block;">Estimated completion date</label>
+                                                    <div class="input-56-icon">
+                                                        <input type="date" name="estimated_completion_date" class="input-56" style="padding: 0 44px 0 16px;" value="{{ old('estimated_completion_date', optional($existingQuote)->estimated_completion_date?->format('Y-m-d')) }}">
+                                                        <span class="icon"><i class="fa fa-calendar"></i></span>
+                                                    </div>
+                                                    <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">When will the work be completed?</div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block;">Warranty / Guarantee (months)</label>
+                                                    <div class="input-56-icon">
+                                                        <input type="number" name="warranty_months" min="0" class="input-56" style="padding: 0 44px 0 16px;" value="{{ old('warranty_months', optional($existingQuote)->warranty_months) }}" placeholder="e.g. 12">
+                                                        <span class="icon"><i class="fa fa-shield"></i></span>
+                                                    </div>
+                                                    <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Length of warranty period in months</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endhasFeature
+
+                                        <div class="form-card">
+                                            <div class="section-header"><i class="fa fa-pencil-square-o" style="color: #7c3aed;"></i>Notes</div>
+                                            <textarea name="notes" rows="4" class="form-textarea js-notes-textarea" style="min-height: 140px; resize: vertical;" placeholder="Include delivery details, installation, packaging, after-sales support or any additional information." oninput="var c=this.nextElementSibling; if(c)c.textContent=this.value.length + ' / 2000';">{{ old('notes', optional($existingQuote)->notes) }}</textarea>
+                                            <div class="char-counter js-notes-counter">{{ strlen(old('notes', optional($existingQuote)->notes ?? '')) }} / 2000</div>
+                                        </div>
+
+                                        @hasFeature('professional_quote')
+                                        <div class="form-card">
+                                            <div class="section-header"><i class="fa fa-shield" style="color: #dc2626;"></i>Terms &amp; Conditions</div>
+                                            <textarea name="terms" rows="4" class="form-textarea js-terms-textarea" style="min-height: 160px; resize: vertical;" placeholder="Specify payment terms, exclusions, validity period, warranty conditions or other contractual information." oninput="var c=this.nextElementSibling; if(c)c.textContent=this.value.length + ' / 3000';">{{ old('terms', optional($existingQuote)->terms) }}</textarea>
+                                            <div class="char-counter js-terms-counter">{{ strlen(old('terms', optional($existingQuote)->terms ?? '')) }} / 3000</div>
+                                            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Clearly define terms to protect both parties.</div>
+                                        </div>
+                                        @endhasFeature
+                                    </div>
+
+                                    <div class="col-lg-5">
+                                        <div class="summary-card" style="position: sticky; top: 24px;">
+                                            <div class="d-flex align-items-center gap-2 mb-3">
+                                                <i class="fa fa-file-text" style="color: #2563eb; font-size: 16px;"></i>
+                                                <span style="font-size: 16px; font-weight: 700; color: #111827;">Quote Summary</span>
+                                            </div>
+                                            <div style="font-size: 15px; font-weight: 700; color: #111827; margin-bottom: 4px;">{{ $job->title }}</div>
+                                            <div style="font-size: 12px; color: #6b7280; margin-bottom: 16px;">{{ $job->categoryId?->name ?? 'General' }}</div>
+
+                                            <hr style="border-color: #e5e7eb; opacity: 1; margin: 12px 0;">
+
+                                            <div class="summary-row">
+                                                <span>Price for job</span>
+                                                <span class="value js-summary-price">£0.00</span>
+                                            </div>
+                                            <div class="summary-row">
+                                                <span>Discount</span>
+                                                <span class="value js-summary-discount" style="color: #dc2626;">-£0.00</span>
+                                            </div>
+                                            <div class="summary-row">
+                                                <span>Delivery cost</span>
+                                                <span class="value js-summary-delivery">£0.00</span>
+                                            </div>
+
+                                            <hr style="border-color: #e5e7eb; opacity: 1; margin: 12px 0;">
+
+                                            <div class="summary-total">
+                                                <span class="label"><i class="fa fa-calculator me-1"></i>Final Total</span>
+                                                <span class="value js-summary-total">£0.00</span>
+                                            </div>
+
+                                            @hasFeature('professional_quote')
+                                            <hr style="border-color: #e5e7eb; opacity: 1; margin: 16px 0 12px;">
+                                            <div class="summary-row">
+                                                <span>Completion date</span>
+                                                <span class="value js-summary-date">—</span>
+                                            </div>
+                                            <div class="summary-row">
+                                                <span>Warranty</span>
+                                                <span class="value js-summary-warranty">—</span>
+                                            </div>
+                                            @endhasFeature
+
+                                            <hr style="border-color: #e5e7eb; opacity: 1; margin: 16px 0 12px;">
+
+                                            @hasFeature('professional_quote')
+                                            <span style="background: #eff6ff; color: #2563eb; border-radius: 20px; padding: 3px 12px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                                <i class="fa fa-shield" style="font-size: 10px;"></i>Professional Quote
+                                            </span>
+                                            @else
+                                            <span style="background: #f3f4f6; color: #6b7280; border-radius: 20px; padding: 3px 12px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                                <i class="fa fa-file-text-o" style="font-size: 10px;"></i>Basic Quote
+                                            </span>
+                                            @endhasFeature
+
+                                            <div style="font-size: 12px; color: #94a3b8; margin-top: 12px;">
+                                                <i class="fa fa-refresh me-1"></i>Auto-updates as you type
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sticky-footer px-4 pb-4 pt-3">
+                                <hr class="my-0 mb-3" style="border-color: #e5e7eb; opacity: 1;">
+                                <div class="d-flex justify-content-end gap-3">
+                                    <button type="button" class="btn btn-premium btn-premium-outline" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-premium btn-premium-primary d-flex align-items-center gap-2" id="submitQuoteBtn{{ $job->id }}">
+                                        <i class="fa fa-paper-plane-o" style="font-size: 14px;"></i>
+                                        {{ $existingQuote ? 'Update Quote' : 'Submit Quote' }}
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -326,40 +890,60 @@
 
     document.addEventListener("DOMContentLoaded", function () {
 
-        // Loop through all modals
+        function fmt(n) { return '£' + (n || 0).toFixed(2); }
+
         document.querySelectorAll(".job-modal").forEach(function (modal) {
 
-            const priceInput = modal.querySelector('input[name="price_for_job"]');
-            const discountInput = modal.querySelector('input[name="discount_offered"]');
-            const deliveryInput = modal.querySelector('input[name="delivery_cost"]');
-            const totalInput = modal.querySelector('input[name="total"]');
+            var priceInput = modal.querySelector('input[name="price_for_job"]');
+            var discountInput = modal.querySelector('input[name="discount_offered"]');
+            var deliveryInput = modal.querySelector('input[name="delivery_cost"]');
+            var totalInput = modal.querySelector('input[name="total"]');
 
-            // Skip if fields not found
-            if (!priceInput || !discountInput || !deliveryInput || !totalInput) {
-                return;
-            }
+            if (!priceInput || !discountInput || !deliveryInput || !totalInput) return;
 
-            function calculateTotal() {
-                let price = parseFloat(priceInput.value) || 0;
-                let discount = parseFloat(discountInput.value) || 0;
-                let delivery = parseFloat(deliveryInput.value) || 0;
+            var totalDisplay = modal.querySelector('.js-total-display');
+            var summaryPrice = modal.querySelector('.js-summary-price');
+            var summaryDiscount = modal.querySelector('.js-summary-discount');
+            var summaryDelivery = modal.querySelector('.js-summary-delivery');
+            var summaryTotal = modal.querySelector('.js-summary-total');
 
-                let total = price - discount + delivery;
+            var dateInput = modal.querySelector('input[name="estimated_completion_date"]');
+            var warrantyInput = modal.querySelector('input[name="warranty_months"]');
+            var summaryDate = modal.querySelector('.js-summary-date');
+            var summaryWarranty = modal.querySelector('.js-summary-warranty');
 
-                if (total < 0) {
-                    total = 0;
+            function updateSummary() {
+                var price = parseFloat(priceInput.value) || 0;
+                var discount = parseFloat(discountInput.value) || 0;
+                var delivery = parseFloat(deliveryInput.value) || 0;
+                var total = Math.max(0, price - discount + delivery);
+                var totalStr = total.toFixed(2);
+
+                totalInput.value = totalStr;
+                if (totalDisplay) totalDisplay.textContent = fmt(total);
+                if (summaryPrice) summaryPrice.textContent = fmt(price);
+                if (summaryDiscount) summaryDiscount.textContent = '-£' + discount.toFixed(2);
+                if (summaryDelivery) summaryDelivery.textContent = fmt(delivery);
+                if (summaryTotal) summaryTotal.textContent = fmt(total);
+
+                if (summaryDate && dateInput) {
+                    summaryDate.textContent = dateInput.value
+                        ? new Date(dateInput.value + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                        : '—';
                 }
-
-                totalInput.value = total.toFixed(2);
+                if (summaryWarranty && warrantyInput) {
+                    var w = parseInt(warrantyInput.value) || 0;
+                    summaryWarranty.textContent = w ? w + ' month' + (w !== 1 ? 's' : '') : '—';
+                }
             }
 
-            // Initial calculation
-            calculateTotal();
+            updateSummary();
 
-            // Event listeners for current modal only
-            priceInput.addEventListener("input", calculateTotal);
-            discountInput.addEventListener("input", calculateTotal);
-            deliveryInput.addEventListener("input", calculateTotal);
+            priceInput.addEventListener("input", updateSummary);
+            discountInput.addEventListener("input", updateSummary);
+            deliveryInput.addEventListener("input", updateSummary);
+            if (dateInput) dateInput.addEventListener("input", updateSummary);
+            if (warrantyInput) warrantyInput.addEventListener("input", updateSummary);
         });
 
     });

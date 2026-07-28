@@ -56,7 +56,7 @@ class SupplierPanelController extends Controller
     public function jobs(Request $request): View
     {
         $query = CustomerJob::query()
-            ->with(['categoryId', 'dynamicFieldValues', 'user:id,name,email', 'quotes' => fn ($quoteQuery) => $quoteQuery->where('supplier_user_id', $request->user()->id)]);
+            ->with(['categoryId', 'dynamicFieldValues', 'user' => fn ($q) => $q->with('customerProfile')->select('id', 'name', 'email', 'phone'), 'quotes' => fn ($quoteQuery) => $quoteQuery->where('supplier_user_id', $request->user()->id)]);
 
         if ($request->filled('search')) {
             $search = $request->string('search')->toString();
