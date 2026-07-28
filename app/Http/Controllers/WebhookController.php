@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewSubscriptionNotifyMail;
+use App\Models\Plan;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Cashier\Cashier;
 use Laravel\Cashier\Http\Controllers\WebhookController as CashierWebhookController;
 
@@ -20,6 +23,53 @@ class WebhookController extends CashierWebhookController
             'payment_status' => $session['payment_status'] ?? null,
             'subscription' => $session['subscription'] ?? null,
         ]);
+
+        $notifyEmail = config('app.notify_email');
+
+        if ($notifyEmail && ($session['mode'] ?? null) === 'subscription' && ($session['payment_status'] ?? null) === 'paid') {
+            $customerId = $session['customer'] ?? null;
+
+            if ($customerId) {
+                $user = Cashier::findBillable($customerId);
+
+                if ($user) {
+                    $stripeSubscriptionId = $session['subscription'] ?? null;
+                    $localSubscription = $stripeSubscriptionId
+                        ? $user->subscriptions()->where('stripe_id', $stripeSubscriptionId)->first()
+                        : null;
+
+                    $planName = 'Unknown';
+                    $amount = '£0.00';
+                    $billingPeriod = 'One-time';
+
+                    if ($localSubscription?->stripe_price) {
+                        $plan = Plan::where('stripe_price_id', $localSubscription->stripe_price)->first();
+                        if ($plan) {
+                            $planName = $plan->name;
+                            $billingPeriod = $plan->duration_label ?? 'Recurring';
+                        }
+                    }
+
+                    if (isset($session['amount_total'])) {
+                        $amount = '£' . number_format($session['amount_total'] / 100, 2);
+                    }
+
+                    try {
+                        Mail::to($notifyEmail)->send(new NewSubscriptionNotifyMail(
+                            $user,
+                            $planName,
+                            $amount,
+                            $billingPeriod,
+                        ));
+                    } catch (\Throwable $e) {
+                        Log::error('Failed to send new subscription notification.', [
+                            'user_id' => $user->id,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                }
+            }
+        }
 
         return $this->successMethod();
     }

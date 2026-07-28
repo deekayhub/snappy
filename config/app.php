@@ -118,6 +118,8 @@ return [
     |
     */
 
+    'notify_email' => env('APP_NOTIFY_EMAIL', 'sales@snappyquotes.co.uk'),
+
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),

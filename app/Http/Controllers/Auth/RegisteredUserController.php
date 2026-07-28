@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NewUserRegisteredNotifyMail;
 use App\Mail\WelcomeCustomerMail;
 use App\Mail\WelcomeSupplierMail;
 use App\Models\OrganisationCategory;
@@ -113,6 +114,18 @@ class RegisteredUserController extends Controller
             ]);
         }
 
+        $notifyEmail = config('app.notify_email');
+        if ($notifyEmail) {
+            try {
+                Mail::to($notifyEmail)->send(new NewUserRegisteredNotifyMail($user, 'customer'));
+            } catch (\Throwable $e) {
+                Log::error('Failed to send new registration notification.', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
         return redirect()->intended(route('customer-panel.dashboard', absolute: false));
     }
 
@@ -202,6 +215,18 @@ class RegisteredUserController extends Controller
                 'email' => $user->email,
                 'error' => $e->getMessage(),
             ]);
+        }
+
+        $notifyEmail = config('app.notify_email');
+        if ($notifyEmail) {
+            try {
+                Mail::to($notifyEmail)->send(new NewUserRegisteredNotifyMail($user, 'supplier'));
+            } catch (\Throwable $e) {
+                Log::error('Failed to send new registration notification.', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
 
         return redirect()->intended(route('home', absolute: false));

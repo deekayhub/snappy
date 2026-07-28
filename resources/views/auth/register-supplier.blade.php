@@ -99,7 +99,7 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label class="form-label mb-0">Address (Optional)</label>
+                            <label class="form-label mb-0">Address</label>
                             <textarea name="address" class="form-control @error('address') is-invalid @enderror">{{ old('address') }}</textarea>
                             @error('address')
                                 <div class="invalid-feedback">{{ $message }}</div>
