@@ -12,7 +12,7 @@
                 <span class="menu-title">My Jobs</span>
             </a>
         </li>
-        <li class="nav-item{{ request()->routeIs('customer-panel.quotes') || request()->routeIs('customer.quotes.index') ? ' active' : '' }}">
+        <li class="nav-item{{ request()->routeIs('customer-panel.quotes') ? ' active' : '' }}">
             <a class="nav-link" href="{{ route('customer-panel.quotes') }}">
                 <i class="mdi mdi-email-outline menu-icon"></i>
                 <span class="menu-title">Supplier Quotes</span>
