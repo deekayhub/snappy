@@ -103,7 +103,22 @@
                                             </span>
                                         @endif
                                     </div>
-                                    <p class="mb-0 text-muted">{{ $quote->notes ?: 'No extra notes were provided for this quote.' }}</p>
+                                    @if ($quote->notes || $quote->terms)
+                                    <div class="d-flex flex-wrap gap-1 mb-2">
+                                        @if ($quote->estimated_completion_date)
+                                            <span class="badge" style="background: #f0fdf4; color: #15803d; font-weight: 500; font-size: 11px;"><i class="mdi mdi-calendar-check me-1"></i>Est: {{ $quote->estimated_completion_date->format('d M Y') }}</span>
+                                        @endif
+                                        @if ($quote->warranty_months)
+                                            <span class="badge" style="background: #fef3c7; color: #92400e; font-weight: 500; font-size: 11px;"><i class="mdi mdi-shield me-1"></i>{{ $quote->warranty_months }}mo warranty</span>
+                                        @endif
+                                        @if ($quote->notes)
+                                            <span class="badge" style="background: #f8f9fa; color: #495057; font-weight: 500; font-size: 11px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#quoteDetailsModal{{ $quote->id }}"><i class="mdi mdi-text me-1"></i>Has Notes</span>
+                                        @endif
+                                        @if ($quote->terms)
+                                            <span class="badge" style="background: #eff6ff; color: #1e40af; font-weight: 500; font-size: 11px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#quoteDetailsModal{{ $quote->id }}"><i class="mdi mdi-file-document me-1"></i>Has Terms</span>
+                                        @endif
+                                    </div>
+                                    @endif
                                 </div>
                                 <div class="mb-3 p-2 rounded" style="background: #f7f9fc;">
                                     <ul class="list-unstyled">
@@ -227,6 +242,36 @@
                                     </div>
                                 </div>
                             </div>
+
+                            @if ($quote->notes || $quote->terms)
+                            <div class="modal fade" id="quoteDetailsModal{{ $quote->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header border-0 pb-0">
+                                            <h6 class="modal-title fw-bold">Extra Details</h6>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            @if ($quote->terms)
+                                            <div class="mb-3">
+                                                <span class="badge mb-2" style="background: #eff6ff; color: #1e40af;">Terms & Conditions</span>
+                                                <p class="mb-0 text-muted small">{{ $quote->terms }}</p>
+                                            </div>
+                                            @endif
+                                            @if ($quote->notes)
+                                            <div>
+                                                <span class="badge mb-2" style="background: #f8f9fa; color: #495057;">Notes</span>
+                                                <p class="mb-0 text-muted small">{{ $quote->notes }}</p>
+                                            </div>
+                                            @endif
+                                        </div>
+                                        <div class="modal-footer border-0 pt-0">
+                                            <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
 
                         </div>
                     @empty
