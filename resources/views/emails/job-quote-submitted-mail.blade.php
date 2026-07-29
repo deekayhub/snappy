@@ -39,6 +39,17 @@ Good news! A supplier has submitted a quote for your job.
 {{ $quote->notes }}
 @endif
 
+@if ($quote->product_image || $quote->product_link)
+### Product Details
+
+@if ($quote->product_image)
+![Product Image]({{ asset($quote->product_image) }})
+@endif
+@if ($quote->product_link)
+- **Product Link:** {{ $quote->product_link }}
+@endif
+@endif
+
 <x-mail::button :url="route('customer-panel.jobs')">
 View Quote
 </x-mail::button>

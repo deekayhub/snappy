@@ -40,6 +40,8 @@ class QuoteController extends Controller
             'discount_offered' => ['nullable', 'numeric', 'min:0'],
             'price_for_job' => ['required', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:2000'],
+            'product_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif,webp', 'max:5120'],
+            'product_link' => ['nullable', 'url', 'max:2048'],
         ];
 
         if ($request->user()->hasFeature('professional_quote')) {
@@ -55,6 +57,17 @@ class QuoteController extends Controller
         $priceForJob = (float) $validated['price_for_job'];
         $totalPrice = max(0, $deliveryCost + $priceForJob - $discountOffered);
 
+        $productImage = null;
+        if ($request->hasFile('product_image')) {
+            $file = $request->file('product_image');
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $file->getClientOriginalExtension();
+            $originalName = str_replace(' ', '_', $originalName);
+            $fileName = 'product_' . $request->user()->id . '_' . time() . '_' . $originalName . '.' . $extension;
+            $file->move(public_path('assets/jobimage'), $fileName);
+            $productImage = 'assets/jobimage/' . $fileName;
+        }
+
         $quote = Quote::updateOrCreate(
             [
                 'customer_job_id' => $job->id,
@@ -69,6 +82,8 @@ class QuoteController extends Controller
                 'estimated_completion_date' => $validated['estimated_completion_date'] ?? null,
                 'warranty_months' => $validated['warranty_months'] ?? null,
                 'terms' => $validated['terms'] ?? null,
+                'product_image' => $productImage,
+                'product_link' => $validated['product_link'] ?? null,
                 'status' => 'submitted',
                 'sent_at' => now(),
             ]

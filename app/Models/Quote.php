@@ -18,6 +18,8 @@ class Quote extends Model
         'estimated_completion_date',
         'warranty_months',
         'terms',
+        'product_image',
+        'product_link',
         'status',
         'customer_rating',
         'customer_review',

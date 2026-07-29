@@ -1,6 +1,10 @@
 ﻿@extends('supplier-panel.layouts.app')
 @section('title', 'Job Board')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+@endpush
+
 @php
     $endingSoonThresholdSeconds = 86400;
     $usage = auth()->user()->subscriptionUsage();
@@ -68,7 +72,7 @@
 
     <div class="card border-0 shadow-sm rounded-4 mb-4">
         <div class="card-body p-3">
-            <ul class="nav nav-pills gap-2 mb-0" style="flex-wrap: wrap;">
+            <ul class="nav nav-pills gap-2 mb-0 border-0 p-0" style="flex-wrap: wrap;">
                 <li class="nav-item">
                     <a class="nav-link rounded-4 px-4 {{ $tab === 'open' ? 'active' : 'text-dark' }}" href="{{ request()->fullUrlWithQuery(['tab' => 'open']) }}">
                         <i class="mdi mdi-briefcase-outline me-1"></i>Open Jobs
@@ -736,7 +740,7 @@
                             <hr class="my-0" style="border-color: #e5e7eb; opacity: 1;">
                         </div>
 
-                        <form method="POST" action="{{ route('supplier-panel.quotes.store', $job) }}" style="display: flex; flex-direction: column; overflow: hidden;">
+                        <form method="POST" action="{{ route('supplier-panel.quotes.store', $job) }}" enctype="multipart/form-data" style="display: flex; flex-direction: column; overflow: hidden;">
                             @csrf
                             <div class="modal-body px-4 py-4">
                                 <div class="row g-4">
@@ -786,13 +790,13 @@
                                                 <div class="col-sm-6">
                                                     <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block;">Estimated completion date</label>
                                                     <div class="input-56-icon">
-                                                        <input type="date" name="estimated_completion_date" class="input-56" style="padding: 0 44px 0 16px;" value="{{ old('estimated_completion_date', optional($existingQuote)->estimated_completion_date?->format('Y-m-d')) }}">
+                                                        <input type="text" name="estimated_completion_date" class="input-56 js-datepicker" style="padding: 0 44px 0 16px;" value="{{ old('estimated_completion_date', optional($existingQuote)->estimated_completion_date?->format('Y-m-d')) }}" placeholder="Select a date">
                                                         <span class="icon"><i class="fa fa-calendar"></i></span>
                                                     </div>
                                                     <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">When will the work be completed?</div>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block;">Warranty / Guarantee (months)</label>
+                                                    <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block;">Warranty / Guarantee (months) <span style="font-size: 12px; font-weight: 400; color: #94a3b8;">(optional)</span></label>
                                                     <div class="input-56-icon">
                                                         <input type="number" name="warranty_months" min="0" class="input-56" style="padding: 0 44px 0 16px;" value="{{ old('warranty_months', optional($existingQuote)->warranty_months) }}" placeholder="e.g. 12">
                                                         <span class="icon"><i class="fa fa-shield"></i></span>
@@ -804,14 +808,36 @@
                                         @endhasFeature
 
                                         <div class="form-card">
-                                            <div class="section-header"><i class="fa fa-pencil-square-o" style="color: #7c3aed;"></i>Notes</div>
+                                            <div class="section-header"><i class="fa fa-pencil-square-o" style="color: #7c3aed;"></i>Notes <span style="font-size: 12px; font-weight: 400; color: #94a3b8;">(optional)</span></div>
                                             <textarea name="notes" rows="4" class="form-textarea js-notes-textarea" style="min-height: 140px; resize: vertical;" placeholder="Include delivery details, installation, packaging, after-sales support or any additional information." oninput="var c=this.nextElementSibling; if(c)c.textContent=this.value.length + ' / 2000';">{{ old('notes', optional($existingQuote)->notes) }}</textarea>
                                             <div class="char-counter js-notes-counter">{{ strlen(old('notes', optional($existingQuote)->notes ?? '')) }} / 2000</div>
                                         </div>
 
+                                        <div class="form-card">
+                                            <div class="section-header"><i class="fa fa-image" style="color: #0891b2;"></i>Product Details <span style="font-size: 12px; font-weight: 400; color: #94a3b8;">(optional)</span></div>
+                                            <div class="row g-3">
+                                                <div class="col-sm-6">
+                                                    <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block;">Product Image</label>
+                                                    <input type="file" name="product_image" accept="image/jpg,image/jpeg,image/png,image/gif,image/webp" class="form-control" style="border-radius: 12px; border: 1px solid #e5e7eb; padding: 10px 16px; font-size: 14px;">
+                                                    <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Upload an image of the product (max 5MB, jpg/png/gif/webp)</div>
+                                                    @if ($existingQuote && $existingQuote->product_image)
+                                                        <div class="mt-2">
+                                                            <img src="{{ asset($existingQuote->product_image) }}" style="max-width: 120px; max-height: 80px; border-radius: 8px; border: 1px solid #e5e7eb;">
+                                                            <div class="small text-muted mt-1">Current image</div>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block;">Product Link</label>
+                                                    <input type="url" name="product_link" class="form-control" style="border-radius: 12px; border: 1px solid #e5e7eb; padding: 10px 16px; font-size: 14px;" placeholder="https://example.com/product" value="{{ old('product_link', optional($existingQuote)->product_link) }}">
+                                                    <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Link to the product page or portfolio</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         @hasFeature('professional_quote')
                                         <div class="form-card">
-                                            <div class="section-header"><i class="fa fa-shield" style="color: #dc2626;"></i>Terms &amp; Conditions</div>
+                                            <div class="section-header"><i class="fa fa-shield" style="color: #dc2626;"></i>Terms &amp; Conditions <span style="font-size: 12px; font-weight: 400; color: #94a3b8;">(optional)</span></div>
                                             <textarea name="terms" rows="4" class="form-textarea js-terms-textarea" style="min-height: 160px; resize: vertical;" placeholder="Specify payment terms, exclusions, validity period, warranty conditions or other contractual information." oninput="var c=this.nextElementSibling; if(c)c.textContent=this.value.length + ' / 3000';">{{ old('terms', optional($existingQuote)->terms) }}</textarea>
                                             <div class="char-counter js-terms-counter">{{ strlen(old('terms', optional($existingQuote)->terms ?? '')) }} / 3000</div>
                                             <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Clearly define terms to protect both parties.</div>
@@ -1067,5 +1093,16 @@
         tick();
         setInterval(tick, 1000);
     })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        flatpickr(".js-datepicker", {
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            allowInput: true,
+        });
+    });
 </script>
 @endpush
