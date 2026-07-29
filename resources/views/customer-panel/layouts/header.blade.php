@@ -36,10 +36,10 @@
                         </span>
                     @endif
                 </a>
-                <div class="dropdown-menu dropdown-menu-end navbar-dropdown p-0" aria-labelledby="CustomerNotificationDropdown" style="width: 340px;">
+                <div class="dropdown-menu dropdown-menu-end navbar-dropdown p-0" aria-labelledby="CustomerNotificationDropdown" style="width: 420px;">
                     <div class="dropdown-header border-bottom px-3 py-2">
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold">Notifications</span>
+                            <span class="fw-semibold"><i class="mdi mdi-bell-outline me-1"></i>Notifications</span>
                             @if($customerUnreadCount > 0)
                             <form method="POST" action="{{ route('customer-panel.notifications.mark-all-read') }}" class="d-inline">
                                 @csrf
@@ -48,21 +48,38 @@
                             @endif
                         </div>
                     </div>
-                    <div style="max-height: 300px; overflow-y: auto;">
+                    <div style="max-height: 360px; overflow-y: auto;">
                         @forelse($customerLatestNotifications as $notif)
                             <a href="{{ route('customer-panel.notifications.read', $notif) }}"
-                               class="dropdown-item border-bottom px-3 py-2 {{ $notif->is_read ? '' : 'bg-light' }} text-decoration-none"
+                               class="dropdown-item border-bottom px-3 py-3 {{ $notif->is_read ? '' : 'bg-light' }} text-decoration-none"
                                onclick="event.preventDefault(); document.getElementById('customer-read-{{ $notif->id }}').submit();">
-                                <div class="small fw-semibold text-dark">{{ $notif->message }}</div>
-                                <div class="small text-muted">{{ $notif->created_at->diffForHumans() }}</div>
+                                <div class="d-flex gap-3 align-items-start">
+                                    <div class="flex-shrink-0">
+                                        <div style="width: 36px; height: 36px; border-radius: 10px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center;">
+                                            <i class="mdi mdi-bell-outline" style="font-size: 16px;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 min-width-0">
+                                        <div class="small fw-semibold text-dark text-truncate" style="max-width: 320px;">{{ $notif->message }}</div>
+                                        <div class="small text-muted mt-1">
+                                            <i class="mdi mdi-clock-outline me-1" style="font-size: 11px;"></i>{{ $notif->created_at->diffForHumans() }}
+                                        </div>
+                                    </div>
+                                    @if(!$notif->is_read)
+                                        <div style="width: 8px; height: 8px; border-radius: 50%; background: #2563eb; flex-shrink: 0; margin-top: 6px;"></div>
+                                    @endif
+                                </div>
                             </a>
                             <form id="customer-read-{{ $notif->id }}" method="POST" action="{{ route('customer-panel.notifications.read', $notif) }}" style="display:none;">@csrf</form>
                         @empty
-                            <div class="dropdown-item text-center text-muted py-3">No notifications</div>
+                            <div class="dropdown-item text-center text-muted py-4">
+                                <i class="mdi mdi-bell-off-outline" style="font-size: 24px; color: #d1d5db;"></i>
+                                <div class="mt-2">No notifications</div>
+                            </div>
                         @endforelse
                     </div>
                     <div class="dropdown-footer text-center border-top p-2">
-                        <a href="{{ route('customer-panel.notifications.index') }}" class="small text-decoration-none">View all notifications</a>
+                        <a href="{{ route('customer-panel.notifications.index') }}" class="small text-decoration-none fw-semibold"><i class="mdi mdi-eye-outline me-1"></i>View all notifications</a>
                     </div>
                 </div>
             </li>
