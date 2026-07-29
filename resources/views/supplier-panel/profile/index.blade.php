@@ -24,7 +24,8 @@
                     <h3 class="mb-1">Supplier profile</h3>
                     <p class="text-muted mb-0">Edit the company details listed in your supplier requirements file.</p>
                 </div>
-                <span class="badge bg-light text-dark px-3 py-2 rounded-3">Free supplier account</span>
+                @php($currentPlan = Auth::user()->currentPlan())
+                <span class="badge {{ $currentPlan?->is_free ? 'bg-light text-dark' : 'bg-success text-white' }} px-3 py-2 rounded-3">{{ $currentPlan?->name ?? 'Free' }} supplier account</span>
             </div> 
 
             <div class="row g-4">

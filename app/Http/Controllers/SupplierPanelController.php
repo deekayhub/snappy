@@ -603,6 +603,6 @@ class SupplierPanelController extends Controller
 
         $categories = \App\Models\OrganisationCategory::query()->where('type', 'supplier')->orderBy('name')->get();
 
-        return view('supplier-panel.jobs.index', compact('jobs', 'sort', 'categories'));
+        return view('supplier-panel.jobs.index', compact('jobs', 'sort', 'categories') + ['tab' => 'open']);
     }
 }

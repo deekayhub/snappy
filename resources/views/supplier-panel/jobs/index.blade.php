@@ -74,17 +74,17 @@
         <div class="card-body p-3">
             <ul class="nav nav-pills gap-2 mb-0 border-0 p-0" style="flex-wrap: wrap;">
                 <li class="nav-item">
-                    <a class="nav-link rounded-4 px-4 {{ $tab === 'open' ? 'active' : 'text-dark' }}" href="{{ request()->fullUrlWithQuery(['tab' => 'open']) }}">
+                    <a class="nav-link rounded-4 px-4 {{ $tab === 'open' ? 'active' : 'text-dark' }}" href="{{ route('supplier-panel.jobs', ['tab' => 'open']) }}">
                         <i class="mdi mdi-briefcase-outline me-1"></i>Open Jobs
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link rounded-4 px-4 {{ $tab === 'my_quotes' ? 'active' : 'text-dark' }}" href="{{ request()->fullUrlWithQuery(['tab' => 'my_quotes']) }}">
+                    <a class="nav-link rounded-4 px-4 {{ $tab === 'my_quotes' ? 'active' : 'text-dark' }}" href="{{ route('supplier-panel.jobs', ['tab' => 'my_quotes']) }}">
                         <i class="mdi mdi-file-document-outline me-1"></i>My Quotes
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link rounded-4 px-4 {{ $tab === 'won' ? 'active' : 'text-dark' }}" href="{{ request()->fullUrlWithQuery(['tab' => 'won']) }}">
+                    <a class="nav-link rounded-4 px-4 {{ $tab === 'won' ? 'active' : 'text-dark' }}" href="{{ route('supplier-panel.jobs', ['tab' => 'won']) }}">
                         <i class="mdi mdi-trophy-outline me-1"></i>Won Jobs
                     </a>
                 </li>
