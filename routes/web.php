@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use App\Http\Controllers\Admin\CategoryFieldController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -150,6 +150,7 @@ Route::middleware(['auth', 'verified'])->prefix('subscription')->name('subscript
 Route::middleware(['auth', 'verified', 'role:supplier'])->prefix('supplier-panel')->name('supplier-panel.')->group(function () {
     Route::get('/dashboard', [SupplierPanelController::class, 'dashboard'])->name('dashboard');
     Route::get('/jobs', [SupplierPanelController::class, 'jobs'])->name('jobs');
+    Route::get('/won-jobs', [SupplierPanelController::class, 'wonJobs'])->name('won.jobs');
     Route::post('/jobs/{job}/quotes', [QuoteController::class, 'store'])->name('quotes.store');
     Route::get('/reports', [SupplierPanelController::class, 'reports'])->name('reports');
     Route::get('/activity', [SupplierPanelController::class, 'activity'])->name('activity');

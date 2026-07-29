@@ -23,7 +23,7 @@ class JobQuoteSubmittedMail extends Mailable
         
     public function __construct(public CustomerJob $job, public Quote $quote)
     {
-        //
+        $this->quote->load('supplier.supplierProfile');
     }
 
     /**

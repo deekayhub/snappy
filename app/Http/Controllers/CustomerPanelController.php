@@ -98,7 +98,15 @@ class CustomerPanelController extends Controller
 
         $this->syncDynamicFields($request, $job, $validated['dynamic_fields'] ?? []);
 
-        User::role('supplier')->where('is_active', true)->chunk(100, function ($suppliers) use ($job) {
+        $query = User::role('supplier')->where('is_active', true);
+
+        if ($job->category) {
+            $query->whereHas('organisationCategories', function ($q) use ($job) {
+                $q->where('organisation_category_id', $job->category);
+            });
+        }
+
+        $query->chunk(100, function ($suppliers) use ($job) {
             foreach ($suppliers as $supplier) {
                 if ($supplier->hasFeature('instant_job_alerts')) {
                     UserNotification::create([

@@ -1,4 +1,4 @@
-<nav class="sidebar sidebar-offcanvas d-flex flex-column" id="sidebar">
+﻿<nav class="sidebar sidebar-offcanvas d-flex flex-column" id="sidebar">
     <ul class="nav pt-3 flex-grow-1">
         <li class="nav-item">
             <a class="nav-link" href="{{ route('supplier-panel.dashboard') }}">
@@ -10,6 +10,12 @@
             <a class="nav-link" href="{{ route('supplier-panel.jobs') }}">
                 <i class="mdi mdi-briefcase-search menu-icon"></i>
                 <span class="menu-title">Job Board</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('supplier-panel.won.jobs') }}">
+                <i class="mdi mdi-trophy-outline menu-icon"></i>
+                <span class="menu-title">Won Jobs</span>
             </a>
         </li>
         @hasFeature('instant_job_alerts')

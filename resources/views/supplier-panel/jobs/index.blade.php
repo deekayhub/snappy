@@ -1,4 +1,4 @@
-@extends('supplier-panel.layouts.app')
+﻿@extends('supplier-panel.layouts.app')
 @section('title', 'Job Board')
 
 @php
@@ -39,7 +39,7 @@
                     <select name="category" class="form-select rounded-4 text-dark">
                         <option value="">All Categories</option>
                         @foreach ($categories as $category)
-                            <option value="{{ $category->name }}" @selected($category->name === request('category'))>
+                            <option value="{{ $category->id }}" @selected($category->id === request('category'))>
                                 {{ ucfirst($category->name) }}
                             </option>
                         @endforeach
@@ -63,6 +63,28 @@
                     <button type="button" class="btn btn-secondary rounded-4 w-100" onclick="removeParams()"><i class="fa fa-undo"></i></button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-3">
+            <ul class="nav nav-pills gap-2 mb-0" style="flex-wrap: wrap;">
+                <li class="nav-item">
+                    <a class="nav-link rounded-4 px-4 {{ $tab === 'open' ? 'active' : 'text-dark' }}" href="{{ request()->fullUrlWithQuery(['tab' => 'open']) }}">
+                        <i class="mdi mdi-briefcase-outline me-1"></i>Open Jobs
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link rounded-4 px-4 {{ $tab === 'my_quotes' ? 'active' : 'text-dark' }}" href="{{ request()->fullUrlWithQuery(['tab' => 'my_quotes']) }}">
+                        <i class="mdi mdi-file-document-outline me-1"></i>My Quotes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link rounded-4 px-4 {{ $tab === 'won' ? 'active' : 'text-dark' }}" href="{{ request()->fullUrlWithQuery(['tab' => 'won']) }}">
+                        <i class="mdi mdi-trophy-outline me-1"></i>Won Jobs
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 
@@ -108,12 +130,18 @@
 
                             </div>
                         </div>
-                        @if ($existingQuote)
-                            <div class="small text-success mb-3">Your quote is already submitted for this job.</div>
+                        @if ($existingQuote && $existingQuote->status === 'submitted')
+                            <div class="small text-primary mb-3"><i class="mdi mdi-check-circle me-1"></i>Your quote is submitted.</div>
+                        @elseif ($existingQuote && $existingQuote->status === 'accepted')
+                            <div class="small text-success fw-semibold mb-3"><i class="mdi mdi-trophy me-1"></i>You won this job!</div>
+                        @elseif ($existingQuote && $existingQuote->status === 'completed')
+                            <div class="small text-dark fw-semibold mb-3"><i class="mdi mdi-check-all me-1"></i>This job is completed.</div>
                         @endif
                         <div class="mt-auto d-flex gap-2">
                             <button class="btn btn-outline-dark rounded-4 flex-fill" type="button" data-bs-toggle="modal" data-bs-target="#jobModal{{ $job->id }}">View details</button>
-                            @if($usage['can_submit_quote'])
+                            @if ($existingQuote && in_array($existingQuote->status, ['accepted', 'completed']))
+                                <a href="{{ route('supplier-panel.won.jobs') }}" class="btn btn-success rounded-4 flex-fill"><i class="mdi mdi-trophy me-1"></i>View Won Job</a>
+                            @elseif($usage['can_submit_quote'])
                                 <button class="btn btn-primary rounded-4 flex-fill" type="button" data-bs-toggle="modal" data-bs-target="#quoteModal{{ $job->id }}">{{ $existingQuote ? 'Update Quote' : 'Send Quote' }}</button>
                             @else
                                 <button class="btn btn-secondary rounded-4 flex-fill" type="button" disabled
@@ -444,7 +472,11 @@
                             <hr class="my-0 mb-3" style="border-color: #e5e7eb; opacity: 1;">
                             <div class="d-flex justify-content-end gap-3">
                                 <button type="button" class="btn btn-premium btn-premium-outline" data-bs-dismiss="modal">Cancel</button>
-                                @if($usage['can_submit_quote'])
+                                @if ($existingQuote && in_array($existingQuote->status, ['accepted', 'completed']))
+                                    <a href="{{ route('supplier-panel.won.jobs') }}" class="btn btn-premium btn-premium-primary d-flex align-items-center gap-2">
+                                        <i class="mdi mdi-trophy me-1"></i>View Won Job
+                                    </a>
+                                @elseif($usage['can_submit_quote'])
                                 <button type="button" class="btn btn-premium btn-premium-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#quoteModal{{ $job->id }}">
                                     {{ $existingQuote ? 'Update Quote' : 'Send Quote' }}
                                     <i class="fa fa-arrow-right" style="font-size: 14px;"></i>

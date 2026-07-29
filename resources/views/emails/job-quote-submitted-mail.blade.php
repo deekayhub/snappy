@@ -7,7 +7,27 @@ Good news! A supplier has submitted a quote for your job.
 
 ### Job Details
 - **Job Title:** {{ $job->title }}
-- **Supplier:** {{ $quote->supplier->name }}
+- **Job Description:** {{ $job->description }}
+- **Job Location:** {{ $job->location }}
+- **Job Budget:** £{{ number_format($job->budget, 2) }}
+- **Job Deadline:** {{ $job->deadline->format('d M Y') }}
+
+### Supplier Details
+- **Name:** {{ $quote->supplier->name }}
+@if ($quote->supplier->supplierProfile?->company_name)
+- **Company:** {{ $quote->supplier->supplierProfile->company_name }}
+@endif
+- **Email:** {{ $quote->supplier->email }}
+@if ($quote->supplier->phone)
+- **Phone:** {{ $quote->supplier->phone }}
+@endif
+@if ($quote->supplier->supplierProfile?->website)
+- **Website:** {{ $quote->supplier->supplierProfile->website }}
+@endif
+@if ($quote->supplier->supplierProfile?->address)
+- **Address:** {{ $quote->supplier->supplierProfile->address }}
+@endif
+#### Quote Details
 - **Quoted Price:**  £{{ number_format($quote->price_for_job, 2) }}
 - **Delivery Cost:**  £{{ number_format($quote->delivery_cost, 2) }}
 - **Discount Offered:**  £{{ number_format($quote->discount_offered, 2) }}

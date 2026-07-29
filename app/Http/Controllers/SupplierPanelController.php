@@ -55,8 +55,27 @@ class SupplierPanelController extends Controller
 
     public function jobs(Request $request): View
     {
+        $tab = $request->string('tab', 'open')->toString();
+        $userId = $request->user()->id;
+
         $query = CustomerJob::query()
-            ->with(['categoryId', 'dynamicFieldValues', 'user' => fn ($q) => $q->with('customerProfile')->select('id', 'name', 'email', 'phone'), 'quotes' => fn ($quoteQuery) => $quoteQuery->where('supplier_user_id', $request->user()->id)]);
+            ->with([
+                'categoryId',
+                'dynamicFieldValues',
+                'user' => fn ($q) => $q->with('customerProfile')->select('id', 'name', 'email', 'phone'),
+                'quotes' => fn ($quoteQuery) => $quoteQuery->where('supplier_user_id', $userId),
+            ]);
+
+        $query->where(function ($q) {
+            $q->where('status', 'open')
+                ->orWhereHas('quotes', fn ($qq) => $qq->whereIn('status', ['accepted', 'completed']));
+        });
+
+        match ($tab) {
+            'my_quotes' => $query->whereHas('quotes', fn ($q) => $q->where('supplier_user_id', $userId)),
+            'won' => $query->whereHas('quotes', fn ($q) => $q->where('supplier_user_id', $userId)->whereIn('status', ['accepted', 'completed'])),
+            default => $query->whereDoesntHave('quotes', fn ($q) => $q->where('supplier_user_id', $userId)->whereIn('status', ['accepted', 'completed'])),
+        };
 
         if ($request->filled('search')) {
             $search = $request->string('search')->toString();
@@ -118,7 +137,25 @@ class SupplierPanelController extends Controller
         // dd($jobs->toArray());
         $categories = OrganisationCategory::query()->where('type', 'supplier')->orderBy('name')->get();
 
-        return view('supplier-panel.jobs.index', compact('jobs', 'sort', 'categories'));
+        return view('supplier-panel.jobs.index', compact('jobs', 'sort', 'categories', 'tab'));
+    }
+
+    public function wonJobs(Request $request): View
+    {
+        $wonQuotes = $request->user()
+            ->supplierQuotes()
+            ->whereIn('status', ['accepted', 'completed'])
+            ->with([
+                'job' => fn ($q) => $q->with([
+                    'categoryId',
+                    'user' => fn ($q) => $q->with('customerProfile')->select('id', 'name', 'email', 'phone'),
+                ]),
+            ])
+            ->latest()
+            ->paginate(9)
+            ->withQueryString();
+
+        return view('supplier-panel.won-jobs.index', compact('wonQuotes'));
     }
 
     public function reports(Request $request): View
