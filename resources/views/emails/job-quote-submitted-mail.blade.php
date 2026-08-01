@@ -10,7 +10,7 @@ Good news! A supplier has submitted a quote for your job.
 - **Job Description:** {{ $job->description }}
 - **Job Location:** {{ $job->location }}
 - **Job Budget:** £{{ number_format($job->budget, 2) }}
-- **Job Deadline:** {{ $job->deadline->format('d M Y') }}
+- **Job Deadline:** {{ $job->needed_by?->format('d M Y') ?? 'No deadline set' }}
 
 ### Supplier Details
 - **Name:** {{ $quote->supplier->name }}
