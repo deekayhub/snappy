@@ -103,7 +103,7 @@
                                             </span>
                                         @endif
                                     </div>
-                                    @if ($quote->notes || $quote->terms)
+                                    @if ($quote->notes || $quote->terms || $quote->product_image || $quote->product_link)
                                     <div class="d-flex flex-wrap gap-1 mb-2">
                                         @if ($quote->estimated_completion_date)
                                             <span class="badge" style="background: #f0fdf4; color: #15803d; font-weight: 500; font-size: 11px;"><i class="mdi mdi-calendar-check me-1"></i>Est: {{ $quote->estimated_completion_date->format('d M Y') }}</span>
@@ -116,6 +116,9 @@
                                         @endif
                                         @if ($quote->terms)
                                             <span class="badge" style="background: #eff6ff; color: #1e40af; font-weight: 500; font-size: 11px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#quoteDetailsModal{{ $quote->id }}"><i class="mdi mdi-file-document me-1"></i>Has Terms</span>
+                                        @endif
+                                        @if ($quote->product_image || $quote->product_link)
+                                            <span class="badge" style="background: #fce7f3; color: #be185d; font-weight: 500; font-size: 11px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#quoteProductModal{{ $quote->id }}"><i class="mdi mdi-image me-1"></i>Has Product</span>
                                         @endif
                                     </div>
                                     @endif
@@ -263,6 +266,34 @@
                                                 <span class="badge mb-2" style="background: #f8f9fa; color: #495057;">Notes</span>
                                                 <p class="mb-0 text-muted small">{{ $quote->notes }}</p>
                                             </div>
+                                            @endif
+                                        </div>
+                                        <div class="modal-footer border-0 pt-0">
+                                            <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+
+                            @if ($quote->product_image || $quote->product_link)
+                            <div class="modal fade" id="quoteProductModal{{ $quote->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header border-0 pb-0">
+                                            <h6 class="modal-title fw-bold">Product Details</h6>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            @if ($quote->product_image)
+                                            <a href="{{ asset($quote->product_image) }}" target="_blank" title="View full size image">
+                                                <img src="{{ asset($quote->product_image) }}" alt="Product image" class="img-fluid rounded-3 mb-3 w-100" style="max-height: 320px; object-fit: contain; border: 1px solid #e5e7eb;">
+                                            </a>
+                                            @endif
+                                            @if ($quote->product_link)
+                                            <a href="{{ $quote->product_link }}" target="_blank" rel="noopener" class="btn btn-primary rounded-3 w-100">
+                                                <i class="mdi mdi-open-in-new me-1"></i> View Product
+                                            </a>
                                             @endif
                                         </div>
                                         <div class="modal-footer border-0 pt-0">
