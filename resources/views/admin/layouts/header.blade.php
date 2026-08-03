@@ -12,10 +12,10 @@
         </div>
         <div>
         <a class="navbar-brand brand-logo" href="{{ route('admin.dashboard') }}">
-            <img src="{{ asset('assets/images/snappy-logo.png') }}" alt="logo" />
+            <img src="{{ asset(setting('site_logo', 'assets/images/snappy-logo.png')) }}" alt="logo" />
         </a>
         <a class="navbar-brand brand-logo-mini" href="{{ route('admin.dashboard') }}">
-            <img src="{{ asset('assets/images/favicon.png') }}" alt="logo" />
+            <img src="{{ asset(setting('favicon', 'assets/images/favicon.png')) }}" alt="logo" />
         </a>
         </div>
     </div>

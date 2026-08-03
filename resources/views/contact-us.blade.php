@@ -44,15 +44,15 @@
                     <ul class="list-unstyled">
                         <li class="mb-3">
                             <i class="bi bi-envelope text-primary me-2"></i>
-                            support@snappyquotes.com
+                            {{ setting('help_email', 'support@snappyquotes.com') }}
                         </li>
                         <li class="mb-3">
                             <i class="bi bi-telephone text-primary me-2"></i>
-                            +1 234 567 890
+                            {{ setting('support_phone', '+1 234 567 890') }}
                         </li>
                         <li>
                             <i class="bi bi-geo-alt text-primary me-2"></i>
-                            123 Business Street, City, Country
+                            {{ setting('support_address', '123 Business Street, City, Country') }}
                         </li>
                     </ul>
                 </div>

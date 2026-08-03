@@ -4,7 +4,7 @@
 
       <!-- Logo -->
       <a href="{{ route('home') }}" class="navbar-brand">
-        <img src="{{ asset('assets/images/snappy-logo.png') }}" alt="snappy logo" width="180">
+        <img src="{{ asset(setting('site_logo', 'assets/images/snappy-logo.png')) }}" alt="snappy logo" width="180">
       </a>
 
       <!-- Toggle Button (mobile only) -->

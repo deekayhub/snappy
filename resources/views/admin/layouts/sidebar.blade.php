@@ -49,15 +49,15 @@
                 <span class="menu-title">Reports</span>
             </a>
         </li>
-        <li class="nav-item{{ request()->routeIs('admin.categories*') || request()->routeIs('admin.categories.fields*') || request()->routeIs('admin.page-sections*') || request()->routeIs('admin.subscription.settings*') || request()->routeIs('admin.features*') ? ' active' : '' }}">
-    <a class="nav-link{{ request()->routeIs('admin.categories*') || request()->routeIs('admin.categories.fields*') || request()->routeIs('admin.page-sections*') || request()->routeIs('admin.subscription.settings*') || request()->routeIs('admin.features*') ? '' : ' collapsed' }}" data-bs-toggle="collapse" href="#settings-menu"
-       aria-expanded="{{ request()->routeIs('admin.categories*') || request()->routeIs('admin.categories.fields*') || request()->routeIs('admin.page-sections*') || request()->routeIs('admin.subscription.settings*') || request()->routeIs('admin.features*') ? 'true' : 'false' }}" aria-controls="settings-menu">
+        <li class="nav-item{{ request()->routeIs('admin.categories*') || request()->routeIs('admin.categories.fields*') || request()->routeIs('admin.page-sections*') || request()->routeIs('admin.subscription.settings*') || request()->routeIs('admin.features*') || request()->routeIs('admin.settings*') ? ' active' : '' }}">
+    <a class="nav-link{{ request()->routeIs('admin.categories*') || request()->routeIs('admin.categories.fields*') || request()->routeIs('admin.page-sections*') || request()->routeIs('admin.subscription.settings*') || request()->routeIs('admin.features*') || request()->routeIs('admin.settings*') ? '' : ' collapsed' }}" data-bs-toggle="collapse" href="#settings-menu"
+       aria-expanded="{{ request()->routeIs('admin.categories*') || request()->routeIs('admin.categories.fields*') || request()->routeIs('admin.page-sections*') || request()->routeIs('admin.subscription.settings*') || request()->routeIs('admin.features*') || request()->routeIs('admin.settings*') ? 'true' : 'false' }}" aria-controls="settings-menu">
         <i class="mdi mdi-cog-outline menu-icon"></i>
         <span class="menu-title">Settings</span>
         <i class="menu-arrow"></i>
     </a>
 
-    <div class="collapse{{ request()->routeIs('admin.categories*') || request()->routeIs('admin.categories.fields*') || request()->routeIs('admin.page-sections*') || request()->routeIs('admin.subscription.settings*') || request()->routeIs('admin.features*') ? ' show' : '' }}" id="settings-menu">
+    <div class="collapse{{ request()->routeIs('admin.categories*') || request()->routeIs('admin.categories.fields*') || request()->routeIs('admin.page-sections*') || request()->routeIs('admin.subscription.settings*') || request()->routeIs('admin.features*') || request()->routeIs('admin.settings*') ? ' show' : '' }}" id="settings-menu">
         <ul class="nav flex-column sub-menu">
 
             <li class="nav-item">
@@ -87,6 +87,12 @@
             <li class="nav-item d-none">
                 <a class="nav-link{{ request()->routeIs('admin.features*') ? ' active' : '' }}" href="{{ route('admin.features.index') }}">
                     Features
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link{{ request()->routeIs('admin.settings*') ? ' active' : '' }}" href="{{ route('admin.settings') }}">
+                    System Settings
                 </a>
             </li>
 

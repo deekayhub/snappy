@@ -114,7 +114,7 @@ class RegisteredUserController extends Controller
             ]);
         }
 
-        $notifyEmail = config('app.notify_email');
+        $notifyEmail = \App\Models\Setting::get('notify_email', config('app.notify_email'));
         if ($notifyEmail) {
             try {
                 Mail::to($notifyEmail)->send(new NewUserRegisteredNotifyMail($user, 'customer'));
@@ -217,7 +217,7 @@ class RegisteredUserController extends Controller
             ]);
         }
 
-        $notifyEmail = config('app.notify_email');
+        $notifyEmail = \App\Models\Setting::get('notify_email', config('app.notify_email'));
         if ($notifyEmail) {
             try {
                 Mail::to($notifyEmail)->send(new NewUserRegisteredNotifyMail($user, 'supplier'));

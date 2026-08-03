@@ -24,7 +24,7 @@ class WebhookController extends CashierWebhookController
             'subscription' => $session['subscription'] ?? null,
         ]);
 
-        $notifyEmail = config('app.notify_email');
+        $notifyEmail = \App\Models\Setting::get('notify_email', config('app.notify_email'));
 
         if ($notifyEmail && ($session['mode'] ?? null) === 'subscription' && ($session['payment_status'] ?? null) === 'paid') {
             $customerId = $session['customer'] ?? null;
