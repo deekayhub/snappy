@@ -1,3 +1,29 @@
+<style>
+    @media (min-width: 992px) {
+        .navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .navbar-dropdown.notification-menu {
+            width: 420px;
+        }
+    }
+
+    @media (max-width: 991px) {
+        .navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .navbar-dropdown.notification-menu {
+            width: calc(100% - 40px) !important;
+            left: 20px;
+            right: 20px;
+            top: 97px;
+            transform: none !important;
+        }
+
+        .navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .navbar-dropdown.notification-menu .notification-message {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            max-width: 100% !important;
+            word-break: break-word;
+        }
+    }
+</style>
+
 <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row" >
     @php
         $supplierHeaderAvatar = Auth::user()->profile_picture
@@ -35,7 +61,7 @@
                         </span>
                     @endif
                 </a>
-                <div class="dropdown-menu dropdown-menu-end navbar-dropdown p-0" aria-labelledby="SupplierNotificationDropdown" style="width: 420px;">
+                <div class="dropdown-menu dropdown-menu-end navbar-dropdown p-0 notification-menu" aria-labelledby="SupplierNotificationDropdown">
                     <div class="dropdown-header border-bottom px-3 py-2">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-semibold"><i class="mdi mdi-bell-outline me-1"></i>Notifications</span>
@@ -59,7 +85,7 @@
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 min-width-0">
-                                        <div class="small fw-semibold text-dark text-truncate" style="max-width: 320px;">{{ $notif->message }}</div>
+                                        <div class="small fw-semibold text-dark text-truncate notification-message">{{ $notif->message }}</div>
                                         <div class="small text-muted mt-1">
                                             <i class="mdi mdi-clock-outline me-1" style="font-size: 11px;"></i>{{ $notif->created_at->diffForHumans() }}
                                         </div>

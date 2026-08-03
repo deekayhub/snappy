@@ -59,9 +59,34 @@ class CustomerPanelController extends Controller
             ->latest()
             ->paginate(9);
 
+        return view('customer-panel.jobs.index', compact('jobs'));
+    }
+
+    public function createJob(Request $request): View
+    {
         $categories = OrganisationCategory::where('type', 'supplier')->get();
 
-        return view('customer-panel.jobs.index', compact('jobs', 'categories'));
+        return view('customer-panel.jobs.create', compact('categories'));
+    }
+
+    public function showJob(Request $request, CustomerJob $job): View
+    {
+        $this->authorizeJob($request, $job);
+
+        $job->loadMissing([
+            'categoryId',
+            'dynamicFieldValues.categoryFields',
+            'quotes',
+        ]);
+
+        $groupedDynamicFieldValues = $this->groupDynamicFieldValues($job);
+
+        $fields = CategoryField::where('category_id', $job->category)
+            ->where('status', 1)
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('customer-panel.jobs.show', compact('job', 'groupedDynamicFieldValues', 'fields'));
     }
 
     public function getCategoryFields(Request $request, $id)
@@ -125,14 +150,9 @@ class CustomerPanelController extends Controller
         ]);
     }
 
-    public function editJob(Request $request, CustomerJob $job): JsonResponse
+    public function editJob(Request $request, CustomerJob $job): View
     {
-        if ((int) $job->user_id !== (int) $request->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not allowed to edit this job.'
-            ], 403);
-        }
+        $this->authorizeJob($request, $job);
 
         $job->loadMissing([
             'categoryId',
@@ -147,48 +167,22 @@ class CustomerPanelController extends Controller
 
         $groupedDynamicFieldValues = $this->groupDynamicFieldValues($job);
 
-        $dynamicFieldsHtml = '';
         $renderableItems = empty($groupedDynamicFieldValues) ? [[]] : $groupedDynamicFieldValues;
 
-        foreach ($renderableItems as $index => $itemValues) {
-            $dynamicFieldsHtml .= view('customer-panel.jobs.dynamic-fields', [
-                'fields' => $fields,
-                'itemIndex' => $index + 1,
-                'itemValues' => $itemValues,
-            ])->render();
-        }
+        $categories = OrganisationCategory::where('type', 'supplier')->get();
 
-        return response()->json([
-            'success' => true,
-            'job' => [
-                'id' => $job->id,
-                'title' => $job->title,
-                'category' => $job->category,
-                'category_label' => $job->categoryId?->name ?? 'General',
-                'organisation_name' => $job->organisation_name,
-                'location' => $job->location,
-                'budget' => $job->budget,
-                'needed_by' => $job->needed_by?->format('Y-m-d H:i'),
-                'description' => $job->description,
-                'status' => $job->status,
-            ],
-            'view_html' => view('customer-panel.jobs.job-details', [
-                'job' => $job,
-                'groupedDynamicFieldValues' => $groupedDynamicFieldValues,
-            ])->render(),
-            'edit_fields_html' => $dynamicFieldsHtml,
-            'item_count' => count($renderableItems),
+        return view('customer-panel.jobs.edit', [
+            'job' => $job,
+            'fields' => $fields,
+            'groupedDynamicFieldValues' => $groupedDynamicFieldValues,
+            'itemCount' => count($renderableItems),
+            'categories' => $categories,
         ]);
     }
 
     public function updateJob(Request $request, CustomerJob $job): JsonResponse
     {
-        if ((int) $job->user_id !== (int) $request->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not allowed to update this job.'
-            ], 403);
-        }
+        $this->authorizeJob($request, $job);
 
         $validated = $this->validateJob($request);
         $job->update(Arr::except($validated, ['dynamic_fields', 'dynamic_fields_existing']));
@@ -203,12 +197,7 @@ class CustomerPanelController extends Controller
 
     public function destroyJob(Request $request, CustomerJob $job): JsonResponse
     {
-        if ((int) $job->user_id !== (int) $request->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not allowed to delete this job.'
-            ], 403);
-        }
+        $this->authorizeJob($request, $job);
 
         $job->delete();
 
@@ -216,6 +205,11 @@ class CustomerPanelController extends Controller
             'success' => true,
             'message' => 'Job deleted successfully.'
         ]);
+    }
+
+    private function authorizeJob(Request $request, CustomerJob $job): void
+    {
+        abort_if((int) $job->user_id !== (int) $request->user()->id, 403, 'You are not allowed to manage this job.');
     }
 
     public function quotes(Request $request): View

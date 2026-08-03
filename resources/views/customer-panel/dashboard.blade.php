@@ -7,12 +7,12 @@
         <div class="card-body text-white p-4 p-lg-5">
             <div class="row align-items-center g-4">
                 <div class="col-lg-8">
-                    <span class="badge bg-white text-primary px-3 py-2 mb-3">Customer Hub</span>
+                    <span class="badge bg-white text-primary px-3 py-2 mb-3 rounded">Customer Hub</span>
                     <h2 class="text-white mb-2">Manage jobs, compare supplier quotes, and contact suppliers quickly.</h2>
                     <p class="mb-0 text-white-50">Everything you need in one panel: post jobs, track quote activity, and follow up with suppliers from a single screen.</p>
                 </div>
-                <div class="col-lg-4">
-                    {{-- <a href="{{ route('customer.jobs.create') }}" class="btn btn-light rounded-4 w-100 py-3">Post New Quote Request</a> --}}
+                <div class="col-lg-4 text-md-end">
+                    <a href="{{ route('customer-panel.jobs.create') }}" class="btn btn-light rounded-4 py-3"> Post a New Job</a>
                 </div>
             </div>
         </div>

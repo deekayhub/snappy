@@ -3,9 +3,9 @@
 
 @section('content')
 <div class="content-wrapper p-3">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between gap-3 flex-wrap align-items-center mb-4">
         <div>
-            <h1 class="fw-bold mb-1">Notifications</h1>
+            <h1 class="fw-bold mb-1 fs-1">Notifications</h1>
             <p class="text-muted mb-0">Stay updated on quotes and job activity.</p>
         </div>
         <form method="POST" action="{{ route('customer-panel.notifications.mark-all-read') }}">

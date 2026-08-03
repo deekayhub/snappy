@@ -6,7 +6,7 @@
                 <span class="menu-title">Dashboard</span>
             </a>
         </li>
-        <li class="nav-item{{ request()->routeIs('customer-panel.jobs') ? ' active' : '' }}">
+        <li class="nav-item{{ request()->routeIs('customer-panel.jobs*') ? ' active' : '' }}">
             <a class="nav-link" href="{{ route('customer-panel.jobs') }}">
                 <i class="mdi mdi-briefcase menu-icon"></i>
                 <span class="menu-title">My Jobs</span>
