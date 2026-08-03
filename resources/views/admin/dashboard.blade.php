@@ -180,7 +180,7 @@
                                                 <h6>{{ $job->title ?? '' }}</h6>
                                                 {{-- <p class="text-truncate">{{ $job->description ?? '' }}</p> --}}
                                                 </td>
-                                                <td>{{ $job->category ?? '' }}</td>
+                                                <td>{{ $job->categoryId?->name ?? 'General' }}</td>
                                                 <td>
                                                 <div class="badge badge-opacity-success">{{ $job->status }}</div>
                                                 </td>

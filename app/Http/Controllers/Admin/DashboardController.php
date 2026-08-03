@@ -17,7 +17,7 @@ class DashboardController extends Controller
         // Counts
         $customerCount = User::role('customer')->count();
         $supplierCount = User::role('supplier')->count();
-        $jobs = CustomerJob::with(['user'])->get(); 
+        $jobs = CustomerJob::with(['user', 'categoryId'])->get(); 
 
         // Date ranges
         $startOfThisWeek = Carbon::now()->startOfWeek();
