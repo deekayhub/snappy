@@ -32,7 +32,8 @@ class SupplierController extends Controller
                     'supplier_profiles.address',
                     'supplier_profiles.website',
                     'users.created_at',
-                    DB::raw("GROUP_CONCAT(DISTINCT organisation_categories.name ORDER BY organisation_categories.name SEPARATOR ', ') as organisation_names"),
+                    'users.last_login_at',
+                    DB::raw("GROUP_CONCAT(DISTINCT organisation_categories.name ORDER BY organisation_categories.name SEPARATOR ', ') as organisation_categories"),
                 ])
                 ->groupBy([
                     'users.id',
@@ -44,12 +45,21 @@ class SupplierController extends Controller
                     'supplier_profiles.address',
                     'supplier_profiles.website',
                     'users.created_at',
+                    'users.last_login_at',
                 ]);
 
             return DataTables::of($suppliers)
                 ->addIndexColumn()
                 ->editColumn('company_name', fn ($row) => $row->company_name ?: '-')
-                ->editColumn('organisation_names', fn ($row) => $row->organisation_names ?: '-')
+                ->editColumn('organisation_categories', function ($row) {
+                    if (! $row->organisation_categories) {
+                        return '-';
+                    }
+
+                    return collect(explode(', ', $row->organisation_categories))
+                        ->map(fn ($name) => '<span class="supplier-category-badge">' . e($name) . '</span>')
+                        ->implode(' ');
+                })
                 ->editColumn('address', fn ($row) => $row->address ?: '-')
                 ->editColumn('website', fn ($row) => $row->website ?: '-')
                 ->addColumn('action', function ($row) { 
@@ -67,7 +77,8 @@ class SupplierController extends Controller
                 ->editColumn('created_at', function ($row) {
                     return $row->created_at->format('d M Y');
                 })
-                ->rawColumns(['action', 'status'])
+                ->editColumn('last_login_at', fn ($row) => $row->last_login_at?->format('d M Y H:i') ?? '-')
+                ->rawColumns(['action', 'status', 'organisation_categories'])
                 ->make(true);
         }
 

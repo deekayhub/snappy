@@ -31,6 +31,7 @@ class CustomerController extends Controller
                     'customer_profiles.county',
                     'customer_profiles.school_name',
                     'users.created_at',
+                    'users.last_login_at',
                     DB::raw("GROUP_CONCAT(DISTINCT organisation_categories.name ORDER BY organisation_categories.name SEPARATOR ', ') as organisation_names"),
                 ])
                 ->groupBy([
@@ -42,11 +43,20 @@ class CustomerController extends Controller
                     'customer_profiles.county',
                     'customer_profiles.school_name',
                     'users.created_at',
+                    'users.last_login_at',
                 ]);
 
             return DataTables::of($customers)
                 ->addIndexColumn()
-                ->editColumn('organisation_names', fn ($row) => $row->organisation_names ?: '-')
+                ->editColumn('organisation_names', function ($row) {
+                    if (! $row->organisation_names) {
+                        return '-';
+                    }
+
+                    return collect(explode(', ', $row->organisation_names))
+                        ->map(fn ($name) => '<span class="customer-category-badge">' . e($name) . '</span>')
+                        ->implode(' ');
+                })
                 ->editColumn('school_name', fn ($row) => $row->school_name ?: '-')
                 ->editColumn('county', fn ($row) => $row->county ?: '-')
                 ->addColumn('status', function ($row) {
@@ -63,7 +73,8 @@ class CustomerController extends Controller
                     return $btn;
                 })
                 ->editColumn('created_at', fn ($row) => $row->created_at->format('d M Y'))
-                ->rawColumns(['status', 'action'])
+                ->editColumn('last_login_at', fn ($row) => $row->last_login_at?->format('d M Y H:i') ?? '-')
+                ->rawColumns(['status', 'action', 'organisation_names'])
                 ->make(true);
         }
 

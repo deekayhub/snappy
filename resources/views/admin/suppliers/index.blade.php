@@ -119,6 +119,19 @@
         color: #991b1b;
     }
 
+    .supplier-category-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: .3rem .65rem;
+        margin: .1rem .2rem;
+        border-radius: 999px;
+        background: rgba(37, 99, 235, 0.1);
+        color: #1d4ed8;
+        font-weight: 600;
+        font-size: .75rem;
+        white-space: nowrap;
+    }
+
     .supplier-actions {
         display: flex;
         gap: .5rem;
@@ -296,6 +309,7 @@
                                     <th>Address</th>
                                     <th>Website</th>
                                     <th>Date Added</th>
+                                    <th>Last Login</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -409,10 +423,11 @@
                 { data: 'email', name: 'email' },
                 { data: 'phone', name: 'phone' },
                 { data: 'company_name', name: 'company_name' },
-                { data: 'organisation_names', name: 'organisation_names', orderable: false },
+                { data: 'organisation_categories', name: 'organisation_categories', orderable: false },
                 { data: 'address', name: 'address' },
                 { data: 'website', name: 'website' },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'last_login_at', name: 'last_login_at' },
                 { data: 'status', name: 'status', orderable: false, searchable: false },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
