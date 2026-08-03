@@ -170,7 +170,7 @@
                             </div>
                         </div>
 
-                        <div class="text-end">
+                        <div class="text-end mt-3">
                             <button type="submit" class="btn btn-primary rounded-4 px-4" id="saveSettingsBtn">
                                 <i class="mdi mdi-content-save mr-1"></i> Save Settings
                             </button>
