@@ -442,7 +442,7 @@
                                     <span style="font-size: 18px; font-weight: 700; color: #111827;">Posted By</span>
                                 </div>
                                 <div class="d-flex flex-column flex-sm-row align-items-start gap-3">
-                                    <div class="profile-avatar">{{ strtoupper(substr($job->user->name, 0, 2)) }}</div>
+                                    <div class="profile-avatar">{{ strtoupper(collect(explode(' ', trim($job->user->name)))->map(fn($word) => substr($word, 0, 1))->implode('')) }}</div>
                                     <div class="flex-grow-1" style="width: 100%;">
                                         <div style="font-size: 18px; font-weight: 700; color: #111827;">{{ $job->user->name }}</div>
                                         @if($job->user->customerProfile && $job->user->customerProfile->school_name)
