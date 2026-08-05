@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-sm-12 mb-3">
             <div class="row">
-                <div class="col-sm-6 col-xl-3">
+                <div class="col-sm-4 col-xl-2 mb-3">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
@@ -15,11 +15,11 @@
 
                                 <div class="col-auto">
                                     <div class="stat text-primary">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign align-middle"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-briefcase align-middle"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
                                     </div>
                                 </div>
                             </div>
-                            <h2 class="mt-1 mb-3">{{ $jobs->count() ?? '0' }}</h2>
+                            <h2 class="mt-1 mb-3">{{ $totalJobs ?? '0' }}</h2>
                             <div class="mb-0">
                                 <span class="badge {{ $jobPercentage >= 0 ? 'badge-success' : 'badge-danger' }}">
                                     {{ number_format($jobPercentage, 1) }}%
@@ -29,29 +29,77 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-xl-3">
+                <div class="col-sm-4 col-xl-2 mb-3">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col mt-0">
-                                    <h5 class="card-title">Total Orders</h5>
+                                    <h5 class="card-title">Open Jobs</h5>
+                                </div>
+
+                                <div class="col-auto">
+                                    <div class="stat text-info">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder align-middle"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 class="mt-1 mb-3">{{ $openJobs ?? '0' }}</h2>
+                            <div class="mb-0">
+                                <span class="badge badge-info">{{ number_format($openJobShare, 1) }}%</span>
+                                <span class="text-muted">of all jobs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-xl-2 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Total Quotes</h5>
                                 </div>
 
                                 <div class="col-auto">
                                     <div class="stat text-primary">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-bag align-middle"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square align-middle"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                                     </div>
                                 </div>
                             </div>
-                            <h2 class="mt-1 mb-3">0</h2>
+                            <h2 class="mt-1 mb-3">{{ $totalQuotes ?? '0' }}</h2>
                             <div class="mb-0">
-                                <span class="badge badge-danger">0%</span>
+                                <span class="badge {{ $quotePercentage >= 0 ? 'badge-success' : 'badge-danger' }}">
+                                    {{ number_format($quotePercentage, 1) }}%
+                                </span>
                                 <span class="text-muted">Since last week</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-xl-3">
+                <div class="col-sm-4 col-xl-2 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Total Revenue</h5>
+                                </div>
+
+                                <div class="col-auto">
+                                    <div class="stat text-success">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign align-middle"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 class="mt-1 mb-3">£ {{ number_format((float) ($totalRevenue ?? 0), 2) }}</h2>
+                            <div class="mb-0">
+                                <span class="badge {{ $revenuePercentage >= 0 ? 'badge-success' : 'badge-danger' }}">
+                                    {{ number_format($revenuePercentage, 1) }}%
+                                </span>
+                                <span class="text-muted">Since last week</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-xl-2 mb-3">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
@@ -75,7 +123,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-xl-3">
+                <div class="col-sm-4 col-xl-2 mb-3">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
@@ -85,7 +133,7 @@
 
                                 <div class="col-auto">
                                     <div class="stat text-primary">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart align-middle"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users align-middle"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                                     </div>
                                 </div>
                             </div>
@@ -110,8 +158,8 @@
                         <div class="card-body">
                             <div class="d-sm-flex justify-content-between align-items-start">
                             <div>
-                                <h4 class="card-title card-title-dash">Quote Overview</h4>
-                                <p class="card-subtitle card-subtitle-dash">Customer Quote post by Month</p>
+                                <h4 class="card-title card-title-dash">Jobs Overview</h4>
+                                <p class="card-subtitle card-subtitle-dash">Customer jobs created by month</p>
                             </div>
                             {{-- <div>
                                 <div class="dropdown">
@@ -129,9 +177,9 @@
                             </div>
                             <div class="d-sm-flex align-items-center mt-1 justify-content-between">
                             <div class="d-sm-flex align-items-center mt-4 justify-content-between">
-                                <h2 class="me-2 fw-bold">0</h2>
-                                {{-- <h4 class="me-2">USD</h4> --}}
-                                <h4 class="text-success">(+0%)</h4>
+                                <h2 class="me-2 fw-bold">{{ $jobsCurrentWeek ?? '0' }}</h2>
+                                <h4 class="{{ $jobsWeekPercentage >= 0 ? 'text-success' : 'text-danger' }}">({{ $jobsWeekPercentage >= 0 ? '+' : '' }}{{ number_format($jobsWeekPercentage, 1) }}%)</h4>
+                                <span class="text-muted ms-1">this week</span>
                             </div>
                             <div class="me-3">
                                 <div id="marketingOverview-legend"></div>
@@ -253,4 +301,99 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(function () {
+        var canvas = document.getElementById('marketingOverview');
+        if (!canvas || typeof Chart === 'undefined') return;
+
+        var existing = Chart.getChart(canvas);
+        if (existing) existing.destroy();
+
+        var monthlyJobs = @json($monthlyJobsChart);
+
+        new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: monthlyJobs.map(function (m) { return m.label; }),
+                datasets: [{
+                    label: 'Jobs',
+                    data: monthlyJobs.map(function (m) { return m.total; }),
+                    backgroundColor: "#1F3BB3",
+                    borderColor: '#1F3BB3',
+                    borderWidth: 0,
+                    barPercentage: 0.55,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        border: { display: false },
+                        grid: { display: true, drawTicks: false, color: "#F0F0F0", zeroLineColor: '#F0F0F0' },
+                        ticks: { beginAtZero: true, autoSkip: true, maxTicksLimit: 4, color: "#6B778C", font: { size: 10 } }
+                    },
+                    x: {
+                        border: { display: false },
+                        stacked: true,
+                        grid: { display: false, drawTicks: false },
+                        ticks: { autoSkip: false, maxTicksLimit: 12, color: "#6B778C", font: { size: 9 } }
+                    }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        var doughnutCanvas = document.getElementById('doughnutChart');
+        if (doughnutCanvas && typeof Chart !== 'undefined') {
+            var existingDoughnut = Chart.getChart(doughnutCanvas);
+            if (existingDoughnut) existingDoughnut.destroy();
+
+            var amountByStatus = @json($quoteAmountByStatus);
+
+            new Chart(doughnutCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: amountByStatus.map(function (s) { return s.label; }),
+                    datasets: [{
+                        data: amountByStatus.map(function (s) { return s.value; }),
+                        backgroundColor: amountByStatus.map(function (s) { return s.color; }),
+                        borderColor: amountByStatus.map(function (s) { return s.color; }),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    cutout: 90,
+                    animationEasing: "easeOutBounce",
+                    animateRotate: true,
+                    animateScale: false,
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    showScale: true,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            var legendEl = document.getElementById('doughnutChart-legend');
+            if (legendEl) {
+                legendEl.innerHTML = '';
+                var ul = document.createElement('ul');
+                ul.style.cssText = 'list-style:none;margin:0;padding:0;display:inline-flex;flex-direction:column;gap:6px;text-align:left;';
+                amountByStatus.forEach(function (s) {
+                    var li = document.createElement('li');
+                    li.style.fontSize = '.8rem';
+                    li.style.color = '#6B778C';
+                    li.innerHTML = '<span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:' + s.color + ';margin-right:6px;vertical-align:-1px;"></span>' +
+                        s.label + ' &mdash; &pound;' + Number(s.value).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    ul.appendChild(li);
+                });
+                legendEl.appendChild(ul);
+            }
+        }
+    });
+</script>
+@endpush
 
