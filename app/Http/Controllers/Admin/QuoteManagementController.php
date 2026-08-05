@@ -89,6 +89,8 @@ class QuoteManagementController extends Controller
             'total_quotes' => Quote::count(),
             'submitted_quotes' => Quote::where('status', 'submitted')->count(),
             'accepted_quotes' => Quote::where('status', 'accepted')->count(),
+            'completed_quotes' => Quote::where('status', 'completed')->count(),
+            'rejected_quotes' => Quote::where('status', 'rejected')->count(),
             'jobs_with_quotes' => CustomerJob::has('quotes')->count(),
         ];
 

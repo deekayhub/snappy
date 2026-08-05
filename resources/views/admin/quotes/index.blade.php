@@ -154,6 +154,83 @@
         color: #15803d;
     }
 
+    #quotePageLength,
+    #filterQuoteStatus,
+    #filterJobStatus {
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2364748b' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.9rem center;
+        background-size: 12px 8px;
+        padding-right: 2.4rem;
+    }
+
+    .quote-metric-card {
+        border: 1px solid rgba(15, 23, 42, 0.06);
+        border-radius: 20px;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+        position: relative;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .quote-metric-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 22px 50px rgba(15, 23, 42, 0.12);
+    }
+
+    .quote-metric-card::after {
+        content: '';
+        position: absolute;
+        right: -30px;
+        bottom: -40px;
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        background: rgba(15, 23, 42, 0.03);
+    }
+
+    .quote-metric-icon {
+        width: 52px;
+        height: 52px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        font-size: 1.4rem;
+    }
+
+    .quote-metric-icon.total {
+        background: rgba(29, 78, 216, 0.1);
+        color: #1d4ed8;
+    }
+
+    .quote-metric-icon.submitted {
+        background: rgba(14, 165, 233, 0.1);
+        color: #0284c7;
+    }
+
+    .quote-metric-icon.accepted {
+        background: rgba(34, 197, 94, 0.12);
+        color: #16a34a;
+    }
+
+    .quote-metric-icon.jobs {
+        background: rgba(245, 158, 11, 0.12);
+        color: #d97706;
+    }
+
+    .quote-metric-icon.completed {
+        background: rgba(20, 184, 166, 0.12);
+        color: #0f766e;
+    }
+
+    .quote-metric-icon.rejected {
+        background: rgba(239, 68, 68, 0.12);
+        color: #dc2626;
+    }
+
     @media (max-width: 767.98px) {
         .quote-search-chip {
             min-width: 100%;
@@ -173,17 +250,83 @@
     </div>
 
     <div class="row g-4">
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-4"><div class="card-body p-4"><div class="small text-muted">Total Quotes</div><div class="display-6 fw-bold">{{ $stats['total_quotes'] }}</div></div></div>
+        <div class="col-sm-6 col-xl-2">
+            <div class="card quote-metric-card">
+                <div class="card-body d-flex align-items-center justify-content-between p-4">
+                    <div>
+                        <p class="text-muted mb-1">Total Quotes</p>
+                        <h3 class="mb-0 fw-bold">{{ $stats['total_quotes'] }}</h3>
+                    </div>
+                    <span class="quote-metric-icon total">
+                        <i class="mdi mdi-file-document-multiple-outline"></i>
+                    </span>
+                </div>
+            </div>
         </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-4"><div class="card-body p-4"><div class="small text-muted">Submitted Quotes</div><div class="display-6 fw-bold text-success">{{ $stats['submitted_quotes'] }}</div></div></div>
+        <div class="col-sm-6 col-xl-2">
+            <div class="card quote-metric-card">
+                <div class="card-body d-flex align-items-center justify-content-between p-4">
+                    <div>
+                        <p class="text-muted mb-1">Submitted</p>
+                        <h3 class="mb-0 fw-bold text-success">{{ $stats['submitted_quotes'] }}</h3>
+                    </div>
+                    <span class="quote-metric-icon submitted">
+                        <i class="mdi mdi-send-outline"></i>
+                    </span>
+                </div>
+            </div>
         </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-4"><div class="card-body p-4"><div class="small text-muted">Accepted Quotes</div><div class="display-6 fw-bold text-warning">{{ $stats['accepted_quotes'] }}</div></div></div>
+        <div class="col-sm-6 col-xl-2">
+            <div class="card quote-metric-card">
+                <div class="card-body d-flex align-items-center justify-content-between p-4">
+                    <div>
+                        <p class="text-muted mb-1">Accepted</p>
+                        <h3 class="mb-0 fw-bold text-warning">{{ $stats['accepted_quotes'] }}</h3>
+                    </div>
+                    <span class="quote-metric-icon accepted">
+                        <i class="mdi mdi-check-circle-outline"></i>
+                    </span>
+                </div>
+            </div>
         </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-4"><div class="card-body p-4"><div class="small text-muted">Jobs With Quotes</div><div class="display-6 fw-bold text-primary">{{ $stats['jobs_with_quotes'] }}</div></div></div>
+        <div class="col-sm-6 col-xl-2">
+            <div class="card quote-metric-card">
+                <div class="card-body d-flex align-items-center justify-content-between p-4">
+                    <div>
+                        <p class="text-muted mb-1">Completed</p>
+                        <h3 class="mb-0 fw-bold text-info">{{ $stats['completed_quotes'] }}</h3>
+                    </div>
+                    <span class="quote-metric-icon completed">
+                        <i class="mdi mdi-clipboard-check-outline"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-2">
+            <div class="card quote-metric-card">
+                <div class="card-body d-flex align-items-center justify-content-between p-4">
+                    <div>
+                        <p class="text-muted mb-1">Rejected</p>
+                        <h3 class="mb-0 fw-bold text-danger">{{ $stats['rejected_quotes'] }}</h3>
+                    </div>
+                    <span class="quote-metric-icon rejected">
+                        <i class="mdi mdi-close-circle-outline"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-2">
+            <div class="card quote-metric-card">
+                <div class="card-body d-flex align-items-center justify-content-between p-4">
+                    <div>
+                        <p class="text-muted mb-1">Jobs With Quotes</p>
+                        <h3 class="mb-0 fw-bold text-primary">{{ $stats['jobs_with_quotes'] }}</h3>
+                    </div>
+                    <span class="quote-metric-icon jobs">
+                        <i class="mdi mdi-briefcase-outline"></i>
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 
