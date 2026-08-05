@@ -34,6 +34,8 @@ class SupplierController extends Controller
                     'users.created_at',
                     'users.last_login_at',
                     DB::raw("GROUP_CONCAT(DISTINCT organisation_categories.name ORDER BY organisation_categories.name SEPARATOR ', ') as organisation_categories"),
+                    DB::raw("(SELECT COUNT(*) FROM quotes WHERE quotes.supplier_user_id = users.id) as quotes_count"),
+                    DB::raw("(SELECT COUNT(*) FROM quotes WHERE quotes.supplier_user_id = users.id AND quotes.status IN ('accepted','completed')) as won_count"),
                 ])
                 ->groupBy([
                     'users.id',
@@ -62,6 +64,8 @@ class SupplierController extends Controller
                 })
                 ->editColumn('address', fn ($row) => $row->address ?: '-')
                 ->editColumn('website', fn ($row) => $row->website ?: '-')
+                ->editColumn('quotes_count', fn ($row) => '<span class="supplier-quote-badge">' . (int) $row->quotes_count . '</span>')
+                ->editColumn('won_count', fn ($row) => '<span class="supplier-win-badge"><i class="mdi mdi-trophy-outline"></i>' . (int) $row->won_count . '</span>')
                 ->addColumn('action', function ($row) { 
                     $btn = '<div class="supplier-actions">';
                     $btn .= '<button type="button" class="supplier-action-btn edit" data-id="' . $row->id . '" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil"></i></button>';
@@ -78,7 +82,7 @@ class SupplierController extends Controller
                     return $row->created_at->format('d M Y');
                 })
                 ->editColumn('last_login_at', fn ($row) => $row->last_login_at?->format('d M Y H:i') ?? '-')
-                ->rawColumns(['action', 'status', 'organisation_categories'])
+                ->rawColumns(['action', 'status', 'organisation_categories', 'quotes_count', 'won_count'])
                 ->make(true);
         }
 

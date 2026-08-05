@@ -132,6 +132,39 @@
         white-space: nowrap;
     }
 
+    .supplier-quote-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 30px;
+        height: 24px;
+        padding: 0 8px;
+        border-radius: 999px;
+        background: rgba(14, 165, 233, 0.12);
+        color: #0284c7;
+        font-size: .78rem;
+        font-weight: 700;
+    }
+
+    .supplier-win-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 30px;
+        height: 24px;
+        padding: 0 8px;
+        border-radius: 999px;
+        background: rgba(34, 197, 94, 0.14);
+        color: #15803d;
+        font-size: .78rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .supplier-win-badge .mdi {
+        font-size: 1rem;
+    }
+
     .supplier-actions {
         display: flex;
         gap: .5rem;
@@ -306,6 +339,8 @@
                                     <th>Phone</th>
                                     <th>Company</th>
                                     <th>Categories</th>
+                                    <th>Quotes</th>
+                                    <th>Wins</th>
                                     <th>Address</th>
                                     <th>Website</th>
                                     <th>Date Added</th>
@@ -424,6 +459,8 @@
                 { data: 'phone', name: 'phone' },
                 { data: 'company_name', name: 'company_name' },
                 { data: 'organisation_categories', name: 'organisation_categories', orderable: false },
+                { data: 'quotes_count', name: 'quotes_count', orderable: false, searchable: false },
+                { data: 'won_count', name: 'won_count', orderable: false, searchable: false },
                 { data: 'address', name: 'address' },
                 { data: 'website', name: 'website' },
                 { data: 'created_at', name: 'created_at' },
