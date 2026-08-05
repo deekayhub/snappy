@@ -85,7 +85,10 @@ class CustomerJobController extends Controller
                 ->editColumn('needed_by', fn (CustomerJob $job) => $job->needed_by?->format('d M Y') ?? '-')
                 ->editColumn('status', fn (CustomerJob $job) => '<span class="supplier-status-badge">'.e(ucfirst($job->status)).'</span>')
                 ->editColumn('created_at', fn (CustomerJob $job) => $job->created_at?->format('d M Y') ?? '-')
-                ->rawColumns(['status'])
+                ->addColumn('action', function (CustomerJob $job) {
+                    return '<button type="button" class="job-action-btn delete" data-id="' . $job->id . '" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-trash-can-outline"></i></button>';
+                })
+                ->rawColumns(['status', 'action'])
                 ->make(true);
         }
 
@@ -96,5 +99,15 @@ class CustomerJobController extends Controller
         ];
 
         return view('admin.jobs.index', compact('stats'));
+    }
+
+    public function destroy(CustomerJob $job)
+    {
+        $job->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Job deleted successfully.',
+        ]);
     }
 }

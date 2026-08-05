@@ -33,6 +33,54 @@
         background: #fff;
         overflow: hidden;
     }
+
+    .job-table-card .table {
+        margin-bottom: 0;
+    }
+
+    .job-table-card .table thead th {
+        border-top: 0;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1rem .85rem;
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        color: #64748b;
+        background: #f8fafc;
+    }
+
+    .job-table-card .table tbody td {
+        padding: 1rem .85rem;
+        border-color: #eef2f7;
+        vertical-align: middle;
+        color: #1e293b;
+    }
+
+    .job-table-card .table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .job-action-btn {
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 12px;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .job-action-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 20px rgba(15, 23, 42, 0.12);
+    }
+
+    .job-action-btn.delete {
+        background: rgba(239, 68, 68, 0.12);
+        color: #dc2626;
+    }
 </style>
 @endpush
 
@@ -75,7 +123,7 @@
         <div class="card job-table-card">
             <div class="card-body p-4">
                 <div class="table-responsive">
-                    <table class="table table-bordered align-middle mb-0 w-100" id="jobs-table">
+                    <table class="table align-middle mb-0 w-100" id="jobs-table">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -86,6 +134,7 @@
                                 <th>Needed By</th>
                                 <th>Status</th>
                                 <th>Posted On</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                     </table>
@@ -113,7 +162,8 @@
                 { data: 'budget', name: 'budget' },
                 { data: 'needed_by', name: 'needed_by' },
                 { data: 'status', name: 'status' },
-                { data: 'created_at', name: 'created_at' }
+                { data: 'created_at', name: 'created_at' },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
             language: {
                 processing: '<div class="spinner-border text-primary" role="status" style="height:80px;"><span class="sr-only">Loading...</span></div>',
@@ -121,6 +171,63 @@
                     previous: 'Prev',
                     next: 'Next'
                 }
+            }
+        });
+
+        $('#jobs-table tbody').on('click', '.job-action-btn.delete', function () {
+            var jobId = $(this).data('id');
+
+            var deleteJob = function () {
+                Swal.fire({
+                    title: 'Deleting...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $.ajax({
+                    url: "{{ route('admin.jobs.destroy', ':id') }}".replace(':id', jobId),
+                    type: 'DELETE',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: response.message || 'Job deleted successfully.',
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                        table.ajax.reload(null, false);
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Something went wrong.',
+                        });
+                    }
+                });
+            };
+
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This job and its quotes will be permanently deleted!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deleteJob();
+                    }
+                });
+            } else if (confirm('This job and its quotes will be permanently deleted. Continue?')) {
+                deleteJob();
             }
         });
     });
