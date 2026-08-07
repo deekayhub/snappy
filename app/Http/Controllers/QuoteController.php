@@ -156,6 +156,12 @@ class QuoteController extends Controller
             'status' => $validated['status'],
         ]);
 
+        if ($validated['status'] === 'accepted' && $quote->job) {
+            $quote->job->update(['status' => 'closed']);
+        } elseif ($validated['status'] === 'submitted' && $quote->job) {
+            $quote->job->update(['status' => 'open']);
+        }
+
         try {
             $mailable = match ($validated['status']) {
                 'accepted' => new QuoteAcceptedMail($quote),

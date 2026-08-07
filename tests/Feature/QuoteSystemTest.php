@@ -113,6 +113,7 @@ class QuoteSystemTest extends TestCase
             ->assertRedirect();
 
         $this->assertSame('accepted', $quote->fresh()->status);
+        $this->assertSame('closed', $job->fresh()->status);
     }
 
     public function test_admin_can_view_real_quotes_in_admin_panel(): void
