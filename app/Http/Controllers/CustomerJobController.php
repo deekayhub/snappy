@@ -101,11 +101,12 @@ class CustomerJobController extends Controller
                         ? '<span class="text-muted">No winner yet</span>'
                         : '<span class="text-muted">—</span>';
                 })
+                ->addColumn('checkbox', fn (CustomerJob $job) => '<input type="checkbox" class="form-check-input job-row-check" value="' . $job->id . '">')
                 ->addColumn('action', function (CustomerJob $job) {
                     return '<button type="button" class="job-action-btn view" data-id="' . $job->id . '" data-toggle="tooltip" data-placement="top" title="View"><i class="mdi mdi-eye-outline"></i></button>
                             <button type="button" class="job-action-btn delete" data-id="' . $job->id . '" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-trash-can-outline"></i></button>';
                 })
-                ->rawColumns(['status', 'quotes_count', 'winner', 'action'])
+                ->rawColumns(['checkbox', 'status', 'quotes_count', 'winner', 'action'])
                 ->make(true);
         }
 
@@ -125,6 +126,21 @@ class CustomerJobController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job deleted successfully.',
+        ]);
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer'],
+        ]);
+
+        $count = CustomerJob::whereIn('id', $validated['ids'])->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => $count.' job(s) deleted successfully.',
         ]);
     }
 

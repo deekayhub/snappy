@@ -87,6 +87,7 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/jobs', [CustomerJobController::class, 'index'])->name('jobs');
+    Route::post('/jobs/bulk-delete', [CustomerJobController::class, 'bulkDestroy'])->name('jobs.bulkDelete');
     Route::get('/jobs/{job}/details', [CustomerJobController::class, 'details'])->name('jobs.details');
     Route::delete('/jobs/{job}', [CustomerJobController::class, 'destroy'])->name('jobs.destroy');
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers');

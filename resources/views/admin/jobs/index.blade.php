@@ -219,10 +219,20 @@
 
         <div class="card job-table-card">
             <div class="card-body p-4">
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
+                    <h4 class="card-title mb-0">All Jobs</h4>
+                    <button type="button" class="btn btn-danger rounded-3" id="deleteSelectedJobs" disabled>
+                        <i class="mdi mdi-trash-can-outline me-1"></i> Delete Selected
+                        (<span id="selectedJobsCount">0</span>)
+                    </button>
+                </div>
                 <div class="table-responsive">
                     <table class="table align-middle mb-0 w-100" id="jobs-table">
                         <thead>
                             <tr>
+                                <th class="text-center w-auto">
+                                    <input type="checkbox" class="form-check-input" id="selectAllJobs" style="cursor:pointer;">
+                                </th>
                                 <th>#</th>
                                 <th>Job</th>
                                 <th>Customer</th>
@@ -266,14 +276,15 @@
 @push('scripts')
 <script>
     $(function () {
-        $('#jobs-table').DataTable({
+        var table = $('#jobs-table').DataTable({
             processing: true,
             serverSide: true,
             responsive: true,
             scrollX: true,
             ajax: '{{ route('admin.jobs') }}',
-            order: [[9, 'desc']],
+            order: [[10, 'desc']],
             columns: [
+                { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                 { data: 'title', name: 'title' },
                 { data: 'customer_name', name: 'user.name', orderable: false },
@@ -395,6 +406,87 @@
                 );
             }).fail(function () {
                 $('#jobDetailsContent').html('<div class="alert alert-warning mb-0">Something went wrong while loading this job.</div>');
+            });
+        });
+
+        function updateJobSelection() {
+            var checked = $('#jobs-table tbody .job-row-check:checked').length;
+            var total = $('#jobs-table tbody .job-row-check').length;
+            $('#selectedJobsCount').text(checked);
+            $('#deleteSelectedJobs').prop('disabled', checked === 0);
+            $('#selectAllJobs').prop('checked', total > 0 && checked === total);
+        }
+
+        table.on('draw', function () {
+            updateJobSelection();
+        });
+
+        $('#jobs-table tbody').on('change', '.job-row-check', function () {
+            updateJobSelection();
+        });
+
+        $('#selectAllJobs').on('change', function () {
+            $('#jobs-table tbody .job-row-check').prop('checked', this.checked);
+            updateJobSelection();
+        });
+
+        $('#deleteSelectedJobs').on('click', function () {
+            var ids = $('#jobs-table tbody .job-row-check:checked').map(function () {
+                return parseInt($(this).val(), 10);
+            }).get();
+
+            if (!ids.length) {
+                return;
+            }
+
+            var deleteSelected = function () {
+                Swal.fire({
+                    title: 'Deleting...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $.ajax({
+                    url: "{{ route('admin.jobs.bulkDelete') }}",
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        ids: ids
+                    },
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: response.message || 'Selected jobs deleted successfully.',
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                        table.ajax.reload(null, false);
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Something went wrong.',
+                        });
+                    }
+                });
+            };
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'These jobs and their quotes will be permanently deleted!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete them!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteSelected();
+                }
             });
         });
 
