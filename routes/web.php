@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PageSectionController;
 use App\Http\Controllers\Admin\QuoteManagementController;
 use App\Http\Controllers\Admin\FeatureController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SubscribedUsersController;
 use App\Http\Controllers\Admin\SubscriptionSettingController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CustomerController;
@@ -125,6 +126,7 @@ Route::middleware(['auth', 'verified', 'role:superadmin|admin'])->prefix('admin'
     Route::post('/organisation-categories/{category}', [PageSectionController::class, 'organisationCategoryUpdate'])->name('organisation-category.update');
     
     Route::get('/subscription-setting', [SubscriptionSettingController::class, 'index'])->name('subscription.settings');
+    Route::get('/subscribed-users', [SubscribedUsersController::class, 'index'])->name('subscribed-users');
     Route::post('/subscription/add', [SubscriptionSettingController::class, 'store'])->name('subscription.add');
     Route::put('/subscription/update/{plan}', [SubscriptionSettingController::class, 'update'])->name('subscription.update');
     Route::delete('/subscription/delete/{plan}', [SubscriptionSettingController::class, 'destroy'])->name('subscription.destroy');

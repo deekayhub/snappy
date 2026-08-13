@@ -43,6 +43,12 @@
                 <span class="menu-title">Invoice</span>
             </a>
         </li>
+        <li class="nav-item{{ request()->routeIs('admin.subscribed-users') ? ' active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.subscribed-users') }}">
+                <i class="mdi mdi-account-group menu-icon"></i>
+                <span class="menu-title">Subscribed Users</span>
+            </a>
+        </li>
         <li class="nav-item{{ request()->routeIs('admin.reports') ? ' active' : '' }}">
             <a class="nav-link" href="{{ route('admin.reports') }}">
                 <i class="mdi mdi-chart-box-outline menu-icon"></i>
