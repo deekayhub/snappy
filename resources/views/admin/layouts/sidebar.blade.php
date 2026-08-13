@@ -7,44 +7,44 @@
             </a>
         </li> --}}
         @if(auth()->user()->hasAnyRole(['superadmin', 'admin']))
-        <li class="nav-item">
-            <a class="nav-link{{ request()->routeIs('admin.dashboard') ? ' active' : '' }}" href="{{ route('admin.dashboard') }}">
+        <li class="nav-item{{ request()->routeIs('admin.dashboard') ? ' active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.dashboard') }}">
                 <i class="mdi mdi-grid-large menu-icon"></i>
                 <span class="menu-title">Dashboard</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link{{ request()->routeIs('admin.jobs') ? ' active' : '' }}" href="{{ route('admin.jobs') }}">
+        <li class="nav-item{{ request()->routeIs('admin.jobs') ? ' active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.jobs') }}">
                 <i class="mdi mdi-briefcase menu-icon"></i>
                 <span class="menu-title">Active Jobs</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link{{ request()->routeIs('admin.quotes') ? ' active' : '' }}" href="{{ route('admin.quotes') }}">
+        <li class="nav-item{{ request()->routeIs('admin.quotes') ? ' active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.quotes') }}">
                 <i class="mdi mdi-cash-multiple menu-icon"></i>
                 <span class="menu-title">Purchase Quotes</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link{{ request()->routeIs('admin.suppliers*') ? ' active' : '' }}" href="{{ route('admin.suppliers') }}">
+        <li class="nav-item{{ request()->routeIs('admin.suppliers*') ? ' active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.suppliers') }}">
                 <i class="mdi mdi-account-multiple menu-icon"></i>
                 <span class="menu-title">Supplier</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link{{ request()->routeIs('admin.customers*') ? ' active' : '' }}" href="{{ route('admin.customers') }}">
+        <li class="nav-item{{ request()->routeIs('admin.customers*') ? ' active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.customers') }}">
                 <i class="mdi mdi-account-multiple menu-icon"></i>
                 <span class="menu-title">Customer</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link{{ request()->routeIs('admin.invoices') ? ' active' : '' }}" href="{{ route('admin.invoices') }}">
+        <li class="nav-item{{ request()->routeIs('admin.invoices') ? ' active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.invoices') }}">
                 <i class="mdi mdi-invoice menu-icon"></i>
                 <span class="menu-title">Invoice</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link{{ request()->routeIs('admin.reports') ? ' active' : '' }}" href="{{ route('admin.reports') }}">
+        <li class="nav-item{{ request()->routeIs('admin.reports') ? ' active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.reports') }}">
                 <i class="mdi mdi-chart-box-outline menu-icon"></i>
                 <span class="menu-title">Reports</span>
             </a>
