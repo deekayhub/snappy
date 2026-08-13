@@ -257,8 +257,8 @@
             <div class="modal-content">
                 <div class="modal-header px-4 py-3">
                     <h5 class="modal-title fw-bold" id="jobDetailsTitle">Job Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <button type="button" class="close btn p-2" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="fa fa-times"></i></span>
                     </button>
                 </div>
                 <div class="modal-body p-4">
@@ -401,7 +401,7 @@
                     '<div class="d-flex flex-wrap gap-3 small">' +
                         '<div><span class="text-muted fw-semibold">Name:</span> ' + esc(job.posted_by.name) + '</div>' +
                         '<div><span class="text-muted fw-semibold">Email:</span> ' + esc(job.posted_by.email) + '</div>' +
-                        '<div><span class="text-muted fw-semibold">School:</span> ' + esc(job.posted_by.school) + '</div>' +
+                        '<div><span class="text-muted fw-semibold">Organization:</span> ' + esc(job.posted_by.school) + '</div>' +
                     '</div>'
                 );
             }).fail(function () {
