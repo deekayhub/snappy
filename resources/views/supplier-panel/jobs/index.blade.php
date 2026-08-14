@@ -408,7 +408,7 @@
                                                         @forelse ((array) ($fieldsValue['parsed_value'] ?? $fieldsValue['field_value'] ?? []) as $filePath)
                                                             <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 4px; max-width: 80px;">
                                                                 @if(in_array(strtolower(pathinfo($filePath, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg']))
-                                                                    <img src="{{ asset($filePath) }}" alt="{{ $fieldsValue['category_fields']['field_label'] }}" style="max-height: 60px; max-width: 60px; object-fit: cover; border-radius: 4px;">
+                                                                    <img src="{{ asset($filePath) }}" alt="{{ $fieldsValue['category_fields']['field_label'] }}" data-src="{{ asset($filePath) }}" class="js-img-viewer-trigger" style="max-height: 60px; max-width: 60px; object-fit: cover; border-radius: 4px; cursor: zoom-in;">
                                                                 @else
                                                                     <a href="{{ asset($filePath) }}" target="_blank" rel="noopener" style="font-size: 11px; color: #2563eb;">{{ \Illuminate\Support\Str::afterLast($filePath, '/') }}</a>
                                                                 @endif
@@ -450,17 +450,17 @@
                                         <div class="org-badge mb-3"><i class="fa fa-graduation-cap me-1" style="font-size: 11px;"></i>{{ $job->user->customerProfile->school_name }}</div>
                                         @endif
                                         <div class="row g-2 mt-2" style="font-size: 14px; color: #6b7280;">
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-3">
                                                 <div class="d-flex align-items-center gap-2"><i class="fa fa-envelope" style="color: #94a3b8; width: 16px;"></i>{{ $job->user->email }}</div>
                                             </div>
                                             @if($job->user->phone)
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-3">
                                                 <div class="d-flex align-items-center gap-2"><i class="fa fa-phone" style="color: #94a3b8; width: 16px;"></i>{{ $job->user->phone }}</div>
                                             </div>
                                             @endif
                                             @if($job->user->customerProfile)
                                                 @if($job->user->customerProfile->county)
-                                                <div class="col-sm-6">
+                                                <div class="col-sm-3">
                                                     <div class="d-flex align-items-center gap-2"><i class="fa fa-globe" style="color: #94a3b8; width: 16px;"></i><span class="text-capitalize">{{ $job->user->customerProfile->county }}</span></div>
                                                 </div>
                                                 @endif
@@ -933,6 +933,30 @@
         {{ $jobs->links('pagination::bootstrap-5') }}
     </div>
 </div>
+
+<style>
+    #imageViewerModal .modal-content {
+        background: transparent;
+        box-shadow: none;
+        border: none;
+    }
+    #imageViewerModal .js-img-viewer-img {
+        display: block;
+        margin: 0 auto;
+        max-height: 85vh;
+        max-width: 100%;
+        border-radius: 12px;
+        object-fit: contain;
+    }
+</style>
+<div class="modal fade" id="imageViewerModal" tabindex="-1" aria-hidden="true" aria-label="Image preview">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 1200px;">
+        <div class="modal-content">
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; top: -40px; right: 0; opacity: 1; z-index: 5;"></button>
+            <img class="js-img-viewer-img" src="" alt="">
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -945,6 +969,32 @@
         // window.history.replaceState({}, document.title, url.pathname + url.search);
         window.location.href = url.pathname + url.search;
     }
+
+    document.addEventListener("click", function (e) {
+        var trigger = e.target.closest('.js-img-viewer-trigger');
+        if (!trigger) return;
+
+        var viewerModal = document.getElementById('imageViewerModal');
+        if (!viewerModal) return;
+
+        var viewerImg = viewerModal.querySelector('.js-img-viewer-img');
+        if (viewerImg) {
+            viewerImg.src = trigger.getAttribute('data-src') || trigger.src;
+        }
+
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            bootstrap.Modal.getOrCreateInstance(viewerModal).show();
+        } else {
+            viewerModal.classList.add('show');
+            viewerModal.style.display = 'block';
+        }
+    });
+
+    document.addEventListener('hidden.bs.modal', function (e) {
+        if (e.target && e.target.id === 'imageViewerModal' && document.querySelector('.modal.show')) {
+            document.body.classList.add('modal-open');
+        }
+    });
 
     document.addEventListener("DOMContentLoaded", function () {
 
