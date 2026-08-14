@@ -401,7 +401,9 @@
                     '<div class="d-flex flex-wrap gap-3 small">' +
                         '<div><span class="text-muted fw-semibold">Name:</span> ' + esc(job.posted_by.name) + '</div>' +
                         '<div><span class="text-muted fw-semibold">Email:</span> ' + esc(job.posted_by.email) + '</div>' +
-                        '<div><span class="text-muted fw-semibold">Organization:</span> ' + esc(job.posted_by.school) + '</div>' +
+                        (job.posted_by.school
+                            ? '<div><span class="text-muted fw-semibold">Organization:</span> ' + esc(job.posted_by.school) + '</div>'
+                            : '') +
                     '</div>'
                 );
             }).fail(function () {
