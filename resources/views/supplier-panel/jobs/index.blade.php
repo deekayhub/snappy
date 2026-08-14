@@ -939,21 +939,69 @@
         background: transparent;
         box-shadow: none;
         border: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: auto;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    #imageViewerModal .js-img-viewer-outer {
+        position: relative;
+        display: inline-block;
+        max-width: 95vw;
+        max-height: 85vh;
+    }
+    #imageViewerModal .js-img-viewer-wrap {
+        max-width: 95vw;
+        max-height: 85vh;
+        overflow: auto;
+        border-radius: 12px;
+        line-height: 0;
     }
     #imageViewerModal .js-img-viewer-img {
         display: block;
-        margin: 0 auto;
-        max-height: 85vh;
-        max-width: 100%;
+        width: auto;
+        height: auto;
+        max-width: none;
+        max-height: none;
         border-radius: 12px;
-        object-fit: contain;
+    }
+    #imageViewerModal .js-img-viewer-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(15, 23, 42, .85);
+        color: #fff;
+        font-size: 18px;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 5;
+        transition: background .2s ease, transform .2s ease;
+    }
+    #imageViewerModal .js-img-viewer-close:hover {
+        background: #dc2626;
+        transform: scale(1.1);
     }
 </style>
 <div class="modal fade" id="imageViewerModal" tabindex="-1" aria-hidden="true" aria-label="Image preview">
     <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 1200px;">
         <div class="modal-content">
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; top: -40px; right: 0; opacity: 1; z-index: 5;"></button>
-            <img class="js-img-viewer-img" src="" alt="">
+            <div class="js-img-viewer-outer">
+                <button type="button" class="js-img-viewer-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <div class="js-img-viewer-wrap">
+                    <img class="js-img-viewer-img" src="" alt="">
+                </div>
+            </div>
         </div>
     </div>
 </div>
