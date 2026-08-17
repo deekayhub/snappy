@@ -446,10 +446,10 @@
                                     <div class="flex-grow-1" style="width: 100%;">
                                         <div style="font-size: 18px; font-weight: 700; color: #111827;">{{ $job->user->name }}</div>
                                         @if($job->user->customerProfile && $job->user->customerProfile->school_name)
-                                        <div style="font-size: 14px; color: #6b7280; margin-bottom: 2px;">School Administrator</div>
+                                        <!-- <div style="font-size: 14px; color: #6b7280; margin-bottom: 2px;">School Administrator</div> -->
                                         <div class="org-badge mb-3"><i class="fa fa-graduation-cap me-1" style="font-size: 11px;"></i>{{ $job->user->customerProfile->school_name }}</div>
                                         @endif
-                                        <div class="row g-2 mt-2" style="font-size: 14px; color: #6b7280;">
+                                        <!-- <div class="row g-2 mt-2" style="font-size: 14px; color: #6b7280;">
                                             <div class="col-sm-3">
                                                 <div class="d-flex align-items-center gap-2"><i class="fa fa-envelope" style="color: #94a3b8; width: 16px;"></i>{{ $job->user->email }}</div>
                                             </div>
@@ -465,7 +465,7 @@
                                                 </div>
                                                 @endif
                                             @endif
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>
